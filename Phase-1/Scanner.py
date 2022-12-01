@@ -20,7 +20,6 @@ def create_symbol_table():
 
 def write_tokens():
     tokens_file = open('tokens.txt', 'w')
-    tokens_file.write(str(tokens[0][0]) + ' ')
     for i in range(len(tokens)):
         tokens_file.write('(' + tokens[i][1] + ', ' + tokens[i][2] + ') ')
         if i + 1 < len(tokens) and tokens[i + 1][0] > tokens[i][0]:
@@ -43,7 +42,7 @@ def write_symbol_table():
     counter = 1
     symbol_file = open('symbol_table.txt', 'w')
     for symbol in symbols:
-        symbol_file.write(str(counter) + ' ' + symbol + '\n')
+        symbol_file.write(f"{counter}.\t{symbol}\n")
         counter += 1
     symbol_file.close()
 
@@ -148,7 +147,7 @@ def scan_tokens(input_file_path):
     create_symbol_table()
     while text_pointer < len(input_text):
         next_token = get_next_token()
-        if next_token[0] != 'ERROR' or next_token[0] != 'WHITESPACE' or next_token[0] != 'COMMENT':
+        if next_token[0] != 'ERROR' and next_token[0] != 'WHITESPACE' and next_token[0] != 'COMMENT':
             tokens.append(next_token)
     write_symbol_table()
     write_lexical_errors()
