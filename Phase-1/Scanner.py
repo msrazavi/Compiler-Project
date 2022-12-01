@@ -15,22 +15,33 @@ class error_masseges:
 
 
 def create_symbol_table():
-    global symbols
     symbols.extend(['if', 'else', 'void', 'int', 'while', 'break', 'switch', 'default', 'case', 'return', 'endif'])
 
 
 def write_tokens():
-    pass
+    tokens_file = open('tokens.txt', 'w')
+    tokens_file.write(str(tokens[0][0]) + ' ')
+    for i in range(len(tokens)):
+        tokens_file.write('(' + tokens[i][1] + ', ' + tokens[i][2] + ') ')
+        if i + 1 < len(tokens) and tokens[i + 1][0] > tokens[i][0]:
+            tokens_file.write('\n' + str(tokens[i + 1][0]))
 
 
 def write_lexical_errors():
-    pass
+    error_file = open('lexical_errors.txt', 'w')
+    if len(errors) == 0:
+        error_file.write(error_masseges.no_error)
+    else:
+        error_file.write(str(errors[0][0]) + ' ')
+        for i in range(len(errors)):
+            error_file.write('(' + errors[i][1] + ', ' + errors[i][2] + ') ')
+            if i + 1 < len(errors) and errors[i + 1][0] > errors[i][0]:
+                error_file.write('\n' + str(errors[i + 1][0]))
 
 
 def write_symbol_table():
-    global symbols
     counter = 1
-    symbol_file = open('symbol_table.txt', 'a')
+    symbol_file = open('symbol_table.txt', 'w')
     for symbol in symbols:
         symbol_file.write(str(counter) + ' ' + symbol + '\n')
         counter += 1
@@ -38,51 +49,66 @@ def write_symbol_table():
 
 
 def read_input(input_file_path):
+    global input_text
     with open(input_file_path, 'r') as input_file:
-        return ''.join([line for line in input_file.readlines()])
+        input_text = ''.join([line for line in input_file.readlines()])
 
 
 def detect_type(read_char):
     if read_char == ' ' or read_char == '\n' or read_char == '\r' or \
             read_char == '\t' or read_char == '\v' or read_char == '\f':
         return 'WHITESPACE'
+    if read_char == '/' and text_pointer + 1 < len(input_text) and (input_text[text_pointer + 1] == '*' or input_text[text_pointer + 1] == '/'):
+        return 'COMMENT'
     if read_char == ';' or read_char == ':' or read_char == ',' or \
             read_char == '[' or read_char == ']' or read_char == '{' or \
             read_char == '}' or read_char == '(' or read_char == ')' or \
             read_char == '+' or read_char == '-' or read_char == '<' or \
-            read_char == '=' or read_char == '*':
+            read_char == '=' or read_char == '*' or read_char == '/':
         return 'SYMBOL'
     if read_char.isdigit():
         return 'NUMBER'
     if read_char.isalpha():
         return 'ID_or_KEYWORD'
-    if read_char == '/':
-        return 'may_be_COMMENT'
-    return 'INVALID'
 
 
 def get_next_token():
-    global input_text
     global text_pointer
     global line_counter
-    global tokens
     read_char = input_text[text_pointer]
     if read_char == '\n':
         line_counter += 1
+    detected_type = detect_type(read_char)
+    if detected_type == 'WHITESPACE':
+        text_pointer += 1
+        return ['WHITESPACE']
+    if detected_type == 'SYMBOL':
+        if read_char == '=' and text_pointer + 1 < len(input_text) and input_text[text_pointer + 1] == '=':
+            text_pointer += 2
+            return [line_counter, 'SYMBOL', '==']
+        if read_char == '*' and text_pointer + 1 < len(input_text) and input_text[text_pointer + 1] == '=':
+            text_pointer += 2
+            errors.append([line_counter, '*/', error_masseges.unmatched_comment])
+            return ['ERROR']
+        text_pointer += 1
+        return [line_counter, 'SYMBOL', read_char]
+    if detected_type == 'NUMBER':
+        pass
+    if detected_type == 'ID_or_KEYWORD':
+        pass
+    if detected_type == 'COMMENT':
+        pass
+    errors.append([line_counter, read_char, error_masseges.bad_token])
+    return ['ERROR']
 
 
 def scan_tokens(input_file_path):
-    global input_text
-    global text_pointer
-    global line_counter
-    global tokens
-    input_text = read_input(input_file_path)
-    text_pointer = 0
-    line_counter = 0
+    read_input(input_file_path)
+    create_symbol_table()
     while text_pointer < len(input_text):
         next_token = get_next_token()
-        if next_token[0] == "ERROR":
-            pass
-        else:
+        if next_token[0] != 'ERROR':
             tokens.append(next_token)
-    create_symbol_table()
+    write_symbol_table()
+    write_lexical_errors()
+    write_tokens()
