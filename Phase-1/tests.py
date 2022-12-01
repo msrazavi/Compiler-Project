@@ -1,5 +1,6 @@
 import unittest
 import compiler
+import Scanner
 
 ntests = 15
 
@@ -7,8 +8,16 @@ ntests = 15
 class Phase01Tests(unittest.TestCase):
     maxDiff = None
 
+    def setUp(self) -> None:
+        Scanner.input_text = ""
+        Scanner.text_pointer = 0
+        Scanner.line_counter = 1
+        Scanner.tokens = []
+        Scanner.errors = []
+        Scanner.symbols = []
+
     def test_all(self):
-        for i in range(ntests + 1)[6:]:
+        for i in range(ntests + 1)[8:]:
             with self.subTest(f"Testcase[{i:02d}]"):
                 print(f"running Testcase[{i:02d}]")
                 input = ""
@@ -34,6 +43,9 @@ class Phase01Tests(unittest.TestCase):
                 print("compiling started")
                 compiler.main()
                 print("compiling ended")
+
+                if i == 8:  # for debugging
+                    print("", end="")
 
                 symbol_table, lexical_errors, tokens = "", "", ""
                 with open("symbol_table.txt") as file:

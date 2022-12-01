@@ -146,6 +146,7 @@ def get_next_token():
         else:
             return [line_counter,'SYMBOL',read_char]
     errors.append([line_counter, read_char, error_masseges.bad_token])
+    text_pointer += 1
     return ['ERROR']
 
 
