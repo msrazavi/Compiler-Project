@@ -4,7 +4,11 @@ void main(int a, int b, Int c) {
 		killed = me; */
 		a;=;b-^&2d$a3#=3
 		break;
-		/* this is not wrong */
+		/* this is
+		not
+		wrong
+		*/
+		// hello
 		/*this is wrong *
 	return;
 	}

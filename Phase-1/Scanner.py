@@ -162,17 +162,21 @@ def get_next_token():
         text_pointer += 1
         comment = read_char
         if input_text[text_pointer] == '*':
+            comment_start_line_count = line_counter
             while text_pointer < len(input_text):
                 if len(comment) < 7 and input_text[text_pointer] != '\n':
                     comment += input_text[text_pointer]
                 text_pointer += 1
+                if text_pointer < len(input_text) and input_text[text_pointer] == '\n':
+                    line_counter += 1
+                    continue
                 if text_pointer + 1 < len(input_text) and \
                         input_text[text_pointer] == '*' and \
                         input_text[text_pointer + 1] == '/':
                     text_pointer += 2
                     return ['COMMENT']
             text_pointer += 1
-            errors.append([line_counter, comment + '...', ErrorMessages.unclosed_comment])
+            errors.append([comment_start_line_count, comment + '...', ErrorMessages.unclosed_comment])
             return ['ERROR']
         elif input_text[text_pointer] == '/':
             while text_pointer + 1 < len(input_text):
