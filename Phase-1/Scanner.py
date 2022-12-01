@@ -82,6 +82,7 @@ def detect_type(read_char):
         return 'NUM'
     if read_char.isalpha():
         return 'ID_or_KEYWORD'
+    return 'INVALID'
 
 
 def get_next_token():
@@ -95,10 +96,18 @@ def get_next_token():
         text_pointer += 1
         return ['WHITESPACE']
     if detected_type == 'SYMBOL':
-        if read_char == '=' and text_pointer + 1 < len(input_text) and input_text[text_pointer + 1] == '=':
-            text_pointer += 2
-            return [line_counter, 'SYMBOL', '==']
-        if read_char == '*' and text_pointer + 1 < len(input_text) and input_text[text_pointer + 1] == '=':
+        if read_char == '=' and text_pointer + 1 < len(input_text):
+            lookahead = input_text[text_pointer + 1]
+            text_pointer += 1
+            if lookahead == '=':
+                text_pointer += 1
+                return [line_counter, 'SYMBOL', '==']
+            elif detect_type(lookahead) == 'INVALID':
+                text_pointer += 1
+                errors.append([line_counter, f'={lookahead}', error_masseges.bad_token])
+                return ['ERROR']
+
+        if read_char == '*' and text_pointer + 1 < len(input_text) and input_text[text_pointer + 1] == '/':
             text_pointer += 2
             errors.append([line_counter, '*/', error_masseges.unmatched_comment])
             return ['ERROR']
