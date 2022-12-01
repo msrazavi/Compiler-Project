@@ -5,6 +5,8 @@ ntests = 15
 
 
 class Phase01Tests(unittest.TestCase):
+    maxDiff = None
+
     def test_all(self):
         for i in range(ntests + 1)[6:]:
             with self.subTest(f"Testcase[{i:02d}]"):
@@ -53,9 +55,10 @@ class Phase01Tests(unittest.TestCase):
                 print("tokens assertion passed")
 
     def assertSymbolTableEquals(self, symbol_table, expected_symbol_table, title):
-        self.assertCountEqual(symbol_table.split("\n"), expected_symbol_table.split("\n"), f"{title} line count")
+        self.assertEqual(len(symbol_table.split("\n")), len(expected_symbol_table.split("\n")), f"{title} line count")
 
-        for symbol in [s.split("\t")[1] for s in expected_symbol_table]:
+        for symbol in ["".join(s.split(".")[1:]).strip() for s in expected_symbol_table.split("\n")]:
+            if symbol == "": continue
             self.assertRegexpMatches(symbol_table, f".*\d+\.\t{symbol}\n.*?", f"{title} symbol={symbol} check exists")
 
 
