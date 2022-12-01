@@ -17,9 +17,11 @@ class Phase01Tests(unittest.TestCase):
         Scanner.symbols = []
 
     def test_all(self):
-        for i in range(ntests + 1)[8:]:
+        for i in range(ntests + 1)[6:]:
             with self.subTest(f"Testcase[{i:02d}]"):
                 print(f"running Testcase[{i:02d}]")
+                self.setUp()
+
                 input = ""
                 with open(f"testcases/T{i:02d}/input.txt") as file:
                     input = file.read()
@@ -44,7 +46,7 @@ class Phase01Tests(unittest.TestCase):
                 compiler.main()
                 print("compiling ended")
 
-                if i == 8:  # for debugging
+                if i == 9:  # for debugging
                     print("", end="")
 
                 symbol_table, lexical_errors, tokens = "", "", ""
@@ -58,12 +60,12 @@ class Phase01Tests(unittest.TestCase):
                 with open("lexical_errors.txt") as file:
                     lexical_errors = file.read()
                     print("read lexical_errors file for actual value")
-                self.assertEqual(lexical_errors, expected_lexical_errors, f"lexical_errors[{i:02d}]")
+                self.assertEqualTrimWS(lexical_errors, expected_lexical_errors, f"lexical_errors[{i:02d}]")
                 print("lexical_errors assertion passed")
                 with open("tokens.txt") as file:
                     tokens = file.read()
                     print("read tokens file for actual value")
-                self.assertEqual(tokens, expected_tokens, f"tokens[{i:02d}]")
+                self.assertEqualTrimWS(tokens, expected_tokens, f"tokens[{i:02d}]")
                 print("tokens assertion passed")
 
     def assertSymbolTableEquals(self, symbol_table, expected_symbol_table, title):
@@ -72,6 +74,9 @@ class Phase01Tests(unittest.TestCase):
         for symbol in ["".join(s.split(".")[1:]).strip() for s in expected_symbol_table.split("\n")]:
             if symbol == "": continue
             self.assertRegex(symbol_table, f".*\d+\.\t{symbol}\n.*?", f"{title} symbol={symbol} check exists")
+
+    def assertEqualTrimWS(self, first: str, second: str, msg):
+        self.assertEqual("\n".join([s.strip() for s in first.split("\n")]), "\n".join([s.strip() for s in second.split("\n")]), msg)
 
 
 if __name__ == "__main__":

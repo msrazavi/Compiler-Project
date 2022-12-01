@@ -38,11 +38,17 @@ def write_lexical_errors():
         if len(errors) == 0:
             error_file.write(error_masseges.no_error)
         else:
-            error_file.write(str(errors[0][0]) + ' ')
-            for i in range(len(errors)):
-                error_file.write('(' + errors[i][1] + ', ' + errors[i][2] + ') ')
-                if i + 1 < len(errors) and errors[i + 1][0] > errors[i][0]:
-                    error_file.write('\n' + str(errors[i + 1][0]))
+            grouped = []
+            for error in errors:
+                while len(grouped) < error[0]: grouped.append([])
+                grouped[error[0] - 1].append(error[1:])
+            for i, errors_inline in enumerate(grouped):
+                if len(errors_inline) == 0: continue
+
+                line = f"{i+1}.\t"
+                line += "".join([f"({error[0]}, {error[1]}) " for error in errors_inline])
+                line += "\n"
+                error_file.write(line)
 
 
 def write_symbol_table():
