@@ -27,7 +27,7 @@ def write_tokens():
         for i, tokens_inline in enumerate(grouped):
             if len(tokens_inline) == 0: continue
 
-            line = f"{i+1}.\t"
+            line = f"{i + 1}.\t"
             line += "".join([f"({token[0]}, {token[1]}) " for token in tokens_inline])
             line += "\n"
             tokens_file.write(line)
@@ -45,7 +45,7 @@ def write_lexical_errors():
             for i, errors_inline in enumerate(grouped):
                 if len(errors_inline) == 0: continue
 
-                line = f"{i+1}.\t"
+                line = f"{i + 1}.\t"
                 line += "".join([f"({error[0]}, {error[1]}) " for error in errors_inline])
                 line += "\n"
                 error_file.write(line)
@@ -146,20 +146,24 @@ def get_next_token():
         text_pointer += 1
         return [line_counter, 'ID', word]
     if detected_type == 'COMMENT':
-        text_pointer+=1
+        text_pointer += 1
+        comment = read_char
         if input_text[text_pointer] == '*':
-            while text_pointer+2<len(input_text):
-                text_pointer +=1
-                if input_text[text_pointer]=='*' and input_text[text_pointer+1] =='/':
+            while text_pointer + 2 < len(input_text):
+                if len(comment) < 7 and input_text[text_pointer] != '\n':
+                    comment += input_text[text_pointer]
+                text_pointer += 1
+                if input_text[text_pointer] == '*' and input_text[text_pointer + 1] == '/':
                     return ['COMMENT']
-            #has work
+                errors.append([line_counter, comment + '...', error_masseges.unclosed_comment])
+                return ['ERROR']
         elif input_text[text_pointer] == '/':
-            while text_pointer+1<len(input_text):
+            while text_pointer + 1 < len(input_text):
                 text_pointer += 1
                 if input_text[text_pointer] == '\n':
                     return ['COMMENT']
         else:
-            return [line_counter,'SYMBOL',read_char]
+            return [line_counter, 'SYMBOL', read_char]
     errors.append([line_counter, read_char, error_masseges.bad_token])
     text_pointer += 1
     return ['ERROR']
