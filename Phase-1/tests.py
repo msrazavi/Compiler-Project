@@ -17,7 +17,7 @@ class Phase01Tests(unittest.TestCase):
         Scanner.symbols = []
 
     def test_all(self):
-        for i in range(ntests + 1)[5:]:
+        for i in range(ntests + 1)[4:]:
             with self.subTest(f"Testcase[{i:02d}]"):
                 print(f"running Testcase[{i:02d}]")
                 self.setUp()
@@ -46,7 +46,7 @@ class Phase01Tests(unittest.TestCase):
                 compiler.main()
                 print("compiling ended")
 
-                if i == 5:  # for debugging
+                if i == 4:  # for debugging
                     print("", end="")
 
                 symbol_table, lexical_errors, tokens = "", "", ""
@@ -73,7 +73,7 @@ class Phase01Tests(unittest.TestCase):
 
         for symbol in ["".join(s.split(".")[1:]).strip() for s in expected_symbol_table.split("\n")]:
             if symbol == "": continue
-            self.assertRegex(symbol_table, f".*\d+\.\t{symbol}\n.*?", f"{title} symbol={symbol} check exists")
+            self.assertRegex(symbol_table, f".*\d+\. *{symbol}\n.*?", f"{title} symbol={symbol} check exists")
 
     def assertEqualTrimWS(self, actual: str, expected: str, msg):
         self.assertEqual("\n".join([s.strip() for s in expected.split("\n")]), "\n".join([s.strip() for s in actual.split("\n")]), msg)
