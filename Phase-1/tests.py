@@ -69,14 +69,14 @@ class Phase01Tests(unittest.TestCase):
                 print("tokens assertion passed")
 
     def assertSymbolTableEquals(self, symbol_table, expected_symbol_table, title):
-        self.assertEqual(len(symbol_table.split("\n")), len(expected_symbol_table.split("\n")), f"{title} line count")
+        self.assertEqual(len(expected_symbol_table.split("\n")), len(symbol_table.split("\n")), f"{title} line count")
 
         for symbol in ["".join(s.split(".")[1:]).strip() for s in expected_symbol_table.split("\n")]:
             if symbol == "": continue
             self.assertRegex(symbol_table, f".*\d+\.\t{symbol}\n.*?", f"{title} symbol={symbol} check exists")
 
-    def assertEqualTrimWS(self, first: str, second: str, msg):
-        self.assertEqual("\n".join([s.strip() for s in first.split("\n")]), "\n".join([s.strip() for s in second.split("\n")]), msg)
+    def assertEqualTrimWS(self, actual: str, expected: str, msg):
+        self.assertEqual("\n".join([s.strip() for s in expected.split("\n")]), "\n".join([s.strip() for s in actual.split("\n")]), msg)
 
 
 if __name__ == "__main__":
