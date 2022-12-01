@@ -20,10 +20,17 @@ def create_symbol_table():
 
 def write_tokens():
     tokens_file = open('tokens.txt', 'w')
-    for i in range(len(tokens)):
-        tokens_file.write('(' + tokens[i][1] + ', ' + tokens[i][2] + ') ')
-        if i + 1 < len(tokens) and tokens[i + 1][0] > tokens[i][0]:
-            tokens_file.write('\n' + str(tokens[i + 1][0]))
+    grouped = []
+    for token in tokens:
+        while len(grouped) < token[0]: grouped.append([])
+        grouped[token[0] - 1].append(token[1:])
+    for i, tokens_inline in enumerate(grouped):
+        if len(tokens_inline) == 0: continue
+
+        line = f"{i+1}.\t"
+        line += " ".join([str(tuple(token)) for token in tokens_inline])
+        line += "\n"
+        tokens_file.write(line)
 
 
 def write_lexical_errors():
