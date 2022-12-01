@@ -17,7 +17,7 @@ class Phase01Tests(unittest.TestCase):
         Scanner.symbols = []
 
     def test_all(self):
-        for i in range(ntests + 1)[6:]:
+        for i in range(ntests + 1)[5:]:
             with self.subTest(f"Testcase[{i:02d}]"):
                 print(f"running Testcase[{i:02d}]")
                 self.setUp()
@@ -46,7 +46,7 @@ class Phase01Tests(unittest.TestCase):
                 compiler.main()
                 print("compiling ended")
 
-                if i == 9:  # for debugging
+                if i == 5:  # for debugging
                     print("", end="")
 
                 symbol_table, lexical_errors, tokens = "", "", ""
