@@ -42,12 +42,12 @@ class Phase01Tests(unittest.TestCase):
                     file.write(input)
                     print("wrote input file")
 
-                if i == 11:  # for debugging
-                    print("", end="")
                 print("compiling started")
                 compiler.main()
                 print("compiling ended")
 
+                if i == 4:  # for debugging
+                    print("", end="")
 
                 symbol_table, lexical_errors, tokens = "", "", ""
                 with open("symbol_table.txt") as file:

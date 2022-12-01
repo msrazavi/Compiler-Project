@@ -1,0 +1,3 @@
+3.	(3d, Invalid number) 
+5.	(*/, Unmatched comment) 
+13.	(/* uncl..., Unclosed comment) 

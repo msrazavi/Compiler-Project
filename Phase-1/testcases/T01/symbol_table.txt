@@ -9,10 +9,8 @@
 9.	case
 10.	return
 11.	endif
-12.	min
-13.	array
-14.	idx
-15.	a
-16.	b
-17.	c
-18.	d
+12.	main
+13.	a
+14.	b
+15.	c
+16.	d
