@@ -71,7 +71,7 @@ class Phase01Tests(unittest.TestCase):
 
         for symbol in ["".join(s.split(".")[1:]).strip() for s in expected_symbol_table.split("\n")]:
             if symbol == "": continue
-            self.assertRegexpMatches(symbol_table, f".*\d+\.\t{symbol}\n.*?", f"{title} symbol={symbol} check exists")
+            self.assertRegex(symbol_table, f".*\d+\.\t{symbol}\n.*?", f"{title} symbol={symbol} check exists")
 
 
 if __name__ == "__main__":
