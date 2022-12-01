@@ -19,39 +19,39 @@ def create_symbol_table():
 
 
 def write_tokens():
-    tokens_file = open('tokens.txt', 'w')
-    grouped = []
-    for token in tokens:
-        while len(grouped) < token[0]: grouped.append([])
-        grouped[token[0] - 1].append(token[1:])
-    for i, tokens_inline in enumerate(grouped):
-        if len(tokens_inline) == 0: continue
+    with open('tokens.txt', 'w') as tokens_file:
+        grouped = []
+        for token in tokens:
+            while len(grouped) < token[0]: grouped.append([])
+            grouped[token[0] - 1].append(token[1:])
+        for i, tokens_inline in enumerate(grouped):
+            if len(tokens_inline) == 0: continue
 
-        line = f"{i+1}.\t"
-        line += "".join([f"({token[0]}, {token[1]}) " for token in tokens_inline])
-        line += "\n"
-        tokens_file.write(line)
+            line = f"{i+1}.\t"
+            line += "".join([f"({token[0]}, {token[1]}) " for token in tokens_inline])
+            line += "\n"
+            tokens_file.write(line)
 
 
 def write_lexical_errors():
-    error_file = open('lexical_errors.txt', 'w')
-    if len(errors) == 0:
-        error_file.write(error_masseges.no_error)
-    else:
-        error_file.write(str(errors[0][0]) + ' ')
-        for i in range(len(errors)):
-            error_file.write('(' + errors[i][1] + ', ' + errors[i][2] + ') ')
-            if i + 1 < len(errors) and errors[i + 1][0] > errors[i][0]:
-                error_file.write('\n' + str(errors[i + 1][0]))
+    with open('lexical_errors.txt', 'w') as error_file:
+        if len(errors) == 0:
+            error_file.write(error_masseges.no_error)
+        else:
+            error_file.write(str(errors[0][0]) + ' ')
+            for i in range(len(errors)):
+                error_file.write('(' + errors[i][1] + ', ' + errors[i][2] + ') ')
+                if i + 1 < len(errors) and errors[i + 1][0] > errors[i][0]:
+                    error_file.write('\n' + str(errors[i + 1][0]))
 
 
 def write_symbol_table():
-    counter = 1
-    symbol_file = open('symbol_table.txt', 'w')
-    for symbol in symbols:
-        symbol_file.write(f"{counter}.\t{symbol}\n")
-        counter += 1
-    symbol_file.close()
+    with open('symbol_table.txt', 'w') as symbol_file:
+        counter = 1
+        for symbol in symbols:
+            symbol_file.write(f"{counter}.\t{symbol}\n")
+            counter += 1
+        symbol_file.close()
 
 
 def read_input(input_file_path):
