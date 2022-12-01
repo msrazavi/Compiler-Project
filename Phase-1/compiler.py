@@ -1,3 +1,9 @@
 import Scanner
 
-Scanner.scan_tokens("input.txt")
+
+def main():
+    Scanner.scan_tokens("input.txt")
+
+
+if __name__ == '__main__':
+    main()
