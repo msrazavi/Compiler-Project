@@ -1,4 +1,4 @@
-2.  (3f, Invalid number)
+3.  (3f, Invalid number)
 9.  (34d, Invalid number)
 10. (1g, Invalid number)
 11. (h$, Invalid input) ($, Invalid input) ($, Invalid input) ($, Invalid input) (o&, Invalid input)

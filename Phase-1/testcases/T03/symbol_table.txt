@@ -1,0 +1,15 @@
+1.  void
+2.  min
+3.  if
+4.  array
+5.  idx
+6.  return
+7.  b
+8.  break
+9.  else
+10. int
+11. while
+12. switch
+13. default
+14. case
+15. endif
