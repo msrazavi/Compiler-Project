@@ -93,11 +93,52 @@ def get_next_token():
         text_pointer += 1
         return [line_counter, 'SYMBOL', read_char]
     if detected_type == 'NUMBER':
-        pass
+        number = read_char
+        while text_pointer + 1 < len(input_text):
+            text_pointer += 1
+            if detect_type(input_text[text_pointer]) == 'NUMBER':
+                number += input_text[text_pointer]
+            elif detect_type(input_text[text_pointer]) == 'WHITESPACE' or detect_type(input_text[text_pointer]) == 'SYMBOL':
+                return [line_counter, 'NUMBER', number]
+            else:
+                errors.append([line_counter, number + input_text[text_pointer], error_masseges.bad_number])
+                text_pointer += 1
+                return ['ERROR']
+        text_pointer += 1
+        return [line_counter, 'NUMBER', number]
     if detected_type == 'ID_or_KEYWORD':
-        pass
+        word = read_char
+        while text_pointer + 1 < len(input_text):
+            text_pointer += 1
+            if detect_type(input_text[text_pointer]) == 'NUMBER' or detect_type(input_text[text_pointer]) == 'ID_or_KEYWORD':
+                word += input_text[text_pointer]
+            elif detect_type(input_text[text_pointer]) == 'WHITESPACE' or detect_type(input_text[text_pointer]) == 'SYMBOL':
+                if word in symbols[:10]:
+                    return [line_counter, 'KEYWORD', word]
+                if word not in symbols:
+                    symbols.append(word)
+                return [line_counter, 'ID', word]
+            else:
+                errors.append([line_counter, word + input_text[text_pointer], error_masseges.bad_token])
+                text_pointer += 1
+                return ['ERROR']
+        text_pointer += 1
+        return [line_counter, 'ID', word]
     if detected_type == 'COMMENT':
-        pass
+        text_pointer+=1
+        if input_text[text_pointer] == '*':
+            while text_pointer+2<len(input_text):
+                text_pointer +=1
+                if input_text[text_pointer]=='*' and input_text[text_pointer+1] =='/':
+                    return ['COMMENT']
+            #has work
+        elif input_text[text_pointer] == '/':
+            while text_pointer+1<len(input_text):
+                text_pointer += 1
+                if input_text[text_pointer] == '\n':
+                    return ['COMMENT']
+        else:
+            return [line_counter,'SYMBOL',read_char]
     errors.append([line_counter, read_char, error_masseges.bad_token])
     return ['ERROR']
 
@@ -107,7 +148,7 @@ def scan_tokens(input_file_path):
     create_symbol_table()
     while text_pointer < len(input_text):
         next_token = get_next_token()
-        if next_token[0] != 'ERROR':
+        if next_token[0] != 'ERROR' or next_token[0] != 'WHITESPACE' or next_token[0] != 'COMMENT':
             tokens.append(next_token)
     write_symbol_table()
     write_lexical_errors()
