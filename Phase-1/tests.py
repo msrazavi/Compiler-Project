@@ -37,7 +37,9 @@ class Phase01Tests(unittest.TestCase):
                 with open("symbol_table.txt") as file:
                     symbol_table = file.read()
                     print("read symbol_table file for actual value")
-                self.assertEqual(symbol_table, expected_symbol_table, f"symbol_table[{i:02d}]")
+
+                self.assertSymbolTableEquals(symbol_table, expected_symbol_table, f"symbol_table[{i:02d}]")
+
                 print("symbol_table assertion passed")
                 with open("lexical_errors.txt") as file:
                     lexical_errors = file.read()
@@ -49,6 +51,12 @@ class Phase01Tests(unittest.TestCase):
                     print("read tokens file for actual value")
                 self.assertEqual(tokens, expected_tokens, f"tokens[{i:02d}]")
                 print("tokens assertion passed")
+
+    def assertSymbolTableEquals(self, symbol_table, expected_symbol_table, title):
+        self.assertCountEqual(symbol_table.split("\n"), expected_symbol_table.split("\n"), f"{title} line count")
+
+        for symbol in [s.split("\t")[1] for s in expected_symbol_table]:
+            self.assertRegexpMatches(symbol_table, f".*\d+\.\t{symbol}\n.*?", f"{title} symbol={symbol} check exists")
 
 
 if __name__ == "__main__":
