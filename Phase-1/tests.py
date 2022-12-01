@@ -76,7 +76,8 @@ class Phase01Tests(unittest.TestCase):
             self.assertRegex(symbol_table, f".*\d+\.[( *)|\t]{symbol}\n.*?", f"{title} symbol={symbol} check exists")
 
     def assertEqualTrimWS(self, actual: str, expected: str, msg):
-        self.assertEqual("\n".join([s.strip() for s in expected.split("\n")]), "\n".join([s.strip() for s in actual.split("\n")]), msg)
+        self.assertEqual("\n".join([f"{s.split('.')[0]}.\t" + "".join(s.split(".")[1:]).strip() for s in expected.split("\n")]),
+                         "\n".join([f"{s.split('.')[0]}.\t" + "".join(s.split(".")[1:]).strip() for s in actual.split("\n")]), msg)
 
 
 if __name__ == "__main__":
