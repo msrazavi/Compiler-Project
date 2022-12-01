@@ -28,7 +28,7 @@ def write_tokens():
         if len(tokens_inline) == 0: continue
 
         line = f"{i+1}.\t"
-        line += " ".join([str(tuple(token)) for token in tokens_inline])
+        line += "".join([f"({token[0]}, {token[1]}) " for token in tokens_inline])
         line += "\n"
         tokens_file.write(line)
 
@@ -73,7 +73,7 @@ def detect_type(read_char):
             read_char == '=' or read_char == '*' or read_char == '/':
         return 'SYMBOL'
     if read_char.isdigit():
-        return 'NUMBER'
+        return 'NUM'
     if read_char.isalpha():
         return 'ID_or_KEYWORD'
 
@@ -98,25 +98,25 @@ def get_next_token():
             return ['ERROR']
         text_pointer += 1
         return [line_counter, 'SYMBOL', read_char]
-    if detected_type == 'NUMBER':
+    if detected_type == 'NUM':
         number = read_char
         while text_pointer + 1 < len(input_text):
             text_pointer += 1
-            if detect_type(input_text[text_pointer]) == 'NUMBER':
+            if detect_type(input_text[text_pointer]) == 'NUM':
                 number += input_text[text_pointer]
             elif detect_type(input_text[text_pointer]) == 'WHITESPACE' or detect_type(input_text[text_pointer]) == 'SYMBOL':
-                return [line_counter, 'NUMBER', number]
+                return [line_counter, 'NUM', number]
             else:
                 errors.append([line_counter, number + input_text[text_pointer], error_masseges.bad_number])
                 text_pointer += 1
                 return ['ERROR']
         text_pointer += 1
-        return [line_counter, 'NUMBER', number]
+        return [line_counter, 'NUM', number]
     if detected_type == 'ID_or_KEYWORD':
         word = read_char
         while text_pointer + 1 < len(input_text):
             text_pointer += 1
-            if detect_type(input_text[text_pointer]) == 'NUMBER' or detect_type(input_text[text_pointer]) == 'ID_or_KEYWORD':
+            if detect_type(input_text[text_pointer]) == 'NUM' or detect_type(input_text[text_pointer]) == 'ID_or_KEYWORD':
                 word += input_text[text_pointer]
             elif detect_type(input_text[text_pointer]) == 'WHITESPACE' or detect_type(input_text[text_pointer]) == 'SYMBOL':
                 if word in symbols[:10]:
