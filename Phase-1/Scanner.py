@@ -165,16 +165,16 @@ def get_next_token():
                     comment += input_text[text_pointer]
                 text_pointer += 1
                 if input_text[text_pointer] == '*' and input_text[text_pointer + 1] == '/':
+                    text_pointer += 2
                     return ['COMMENT']
-                errors.append([line_counter, comment + '...', ErrorMessages.unclosed_comment])
-                return ['ERROR']
+            text_pointer += 1
+            errors.append([line_counter, comment + '...', ErrorMessages.unclosed_comment])
+            return ['ERROR']
         elif input_text[text_pointer] == '/':
             while text_pointer + 1 < len(input_text):
                 text_pointer += 1
                 if input_text[text_pointer] == '\n':
                     return ['COMMENT']
-        else:
-            return [line_counter, 'SYMBOL', read_char]
     errors.append([line_counter, read_char, ErrorMessages.bad_token])
     text_pointer += 1
     return ['ERROR']

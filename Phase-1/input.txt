@@ -1,12 +1,16 @@
-/* text */
+int f(int a){
+return a * a * a;
+}
+void main(void){
+int a;
+int b;
+a = 8;
+if (b < 5) {
+a = f(a);
+}
+else{
+a = 4;
+}
 
-void main (void){
-	int i = 0;
-	while (i < 10){
-		i = i + 1;
-	}
-	int j  = i + 100; // comment
-	int out = i + j;
-	output(out);
-
+break;
 }
