@@ -186,17 +186,3 @@ def get_next_token():
     errors.append([line_counter, read_char, ErrorMessages.bad_token])
     text_pointer += 1
     return ['ERROR']
-
-
-def scan_tokens(input_file_path):
-    read_input(input_file_path)
-    create_symbol_table()
-
-    while text_pointer < len(input_text):
-        next_token = get_next_token()
-        if next_token[0] != 'ERROR' and next_token[0] != 'WHITESPACE' and next_token[0] != 'COMMENT':
-            tokens.append(next_token)
-
-    write_symbol_table()
-    write_lexical_errors()
-    write_tokens()
