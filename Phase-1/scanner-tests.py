@@ -5,7 +5,7 @@ import Scanner
 ntests = 15
 
 
-class Phase01Tests(unittest.TestCase):
+class ScannerTests(unittest.TestCase):
     maxDiff = None
 
     def setUp(self) -> None:
@@ -23,18 +23,18 @@ class Phase01Tests(unittest.TestCase):
                 self.setUp()
 
                 input = ""
-                with open(f"testcases/T{i:02d}/input.txt") as file:
+                with open(f"testcases/scanner/T{i:02d}/input.txt") as file:
                     input = file.read()
                     print("read input file")
 
                 expected_symbol_table, expected_lexical_errors, expected_tokens = "", "", ""
-                with open(f"testcases/T{i:02d}/symbol_table.txt") as file:
+                with open(f"testcases/scanner/T{i:02d}/symbol_table.txt") as file:
                     expected_symbol_table = file.read()
                     print("read symbol_table file for expected value")
-                with open(f"testcases/T{i:02d}/lexical_errors.txt") as file:
+                with open(f"testcases/scanner/T{i:02d}/lexical_errors.txt") as file:
                     expected_lexical_errors = file.read()
                     print("read lexical_errors file for expected value")
-                with open(f"testcases/T{i:02d}/tokens.txt") as file:
+                with open(f"testcases/scanner/T{i:02d}/tokens.txt") as file:
                     expected_tokens = file.read()
                     print("read tokens file for expected value")
 
