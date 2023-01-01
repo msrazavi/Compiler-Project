@@ -17,7 +17,8 @@ def main():
     Scanner.write_symbol_table()
     Scanner.write_lexical_errors()
     Scanner.write_tokens()
-    Parser.create_parse_tree_file()
+    Parser.write_parse_tree()
+    Parser.write_syntax_errors()
 
 
 if __name__ == '__main__':

@@ -2,7 +2,6 @@ import Scanner
 from stack import Stack
 import json
 from anytree import Node, RenderTree
-from anytree.exporter import DotExporter
 
 stack = Stack()
 next_token_type, next_token, next_token_nt = '', '', ''
@@ -11,6 +10,15 @@ non_terminals = []
 follow = {}
 grammar = {}
 parse_table = {}
+syntax_errors = []  # (message, args as tuple)
+
+
+class ErrorMessages:
+    illegal_terminal_in_input = "#%d : syntax error, illegal %s"
+    discarded_terminal_from_input = "#%d : syntax error, discarded %s from input"
+    discarded_element_from_stack = "syntax error, discarded %s from stack"
+    missing_nonterminal_push_to_stack = "#%d : syntax error, missing %s"
+    unexpected_eof = "#%d : syntax error, Unexpected EOF"
 
 
 class State:
@@ -59,11 +67,19 @@ def get_goto_state(last_state: State, non_terminal):
 
 
 def panic_mode_recovery():
+    print("panic!!")
     global next_token, next_token_type, next_token_nt
+    syntax_errors.append((
+        ErrorMessages.illegal_terminal_in_input,
+        (Scanner.line_counter, next_token)
+    ))
     while True:
         if any(v.startswith('goto_') for s, v in parse_table[stack.elements[-1].state_num].items()): break
         stack.pop()
-        stack.pop()
+        syntax_errors.append((
+            ErrorMessages.discarded_element_from_stack,
+            (stack.pop(),)
+        ))
     nts_with_goto = {k: v for k, v in parse_table[stack.elements[-1].state_num].items() if v.startswith('goto_')}
 
     while True:
@@ -73,13 +89,23 @@ def panic_mode_recovery():
                 found = True
                 last_state = stack.top()
                 stack.push(Node(nt))
+                syntax_errors.append((
+                    ErrorMessages.missing_nonterminal_push_to_stack,
+                    (Scanner.line_counter, nt)
+                ))
                 stack.push(State(get_goto_state(last_state, nt)))
                 break
         if found: break
+        syntax_errors.append((
+            ErrorMessages.discarded_terminal_from_input,
+            (Scanner.line_counter, next_token)
+        ))
+        if next_token_nt == '$':
+            break
         next_token_type, next_token, next_token_nt = get_next_token_from_scanner()
 
 
-def create_parse_tree_file():
+def write_parse_tree():
     with open('parse_tree.txt', 'w') as file:
         for pre, fill, node in RenderTree(stack.elements[1]):
             if isinstance(node.name, tuple):
@@ -90,6 +116,12 @@ def create_parse_tree_file():
             else:
                 node_name = node.name
             file.write("%s%s\n" % (pre, node_name))
+
+
+def write_syntax_errors():
+    with open('syntax_errors.txt', 'w') as file:
+        for e, args in syntax_errors:
+            file.write(f"{e}\n" % args)
 
 
 def start_parsing():
@@ -106,6 +138,13 @@ def start_parsing():
         except KeyError:
             # todo add syntax error
             panic_mode_recovery()
+            print(next_token_nt)
+            if next_token_nt == '$':
+                syntax_errors.append((
+                    ErrorMessages.unexpected_eof,
+                    (Scanner.line_counter,)
+                ))
+                break
             continue
         if action[0] == "shift":
             stack.push(Node((next_token_type, next_token, next_token_nt)))
