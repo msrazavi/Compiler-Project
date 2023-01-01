@@ -1,6 +1,8 @@
 import Scanner
 from stack import Stack
 import json
+from anytree import Node, RenderTree
+from anytree.exporter import DotExporter
 
 stack = Stack()
 next_token = ''
@@ -19,13 +21,13 @@ class State:
         return f"({self.state_num})"
 
 
-class Node:
-    def __init__(self, content='', children=None, parent=None):
-        self.content = content
-        self.children = children
-        self.parent = parent
-    def __str__(self):
-        return f"[{self.content}]"
+# class Node:
+#     def __init__(self, content='', children=None, parent=None):
+#         self.content = content
+#         self.children = children
+#         self.parent = parent
+#     def __str__(self):
+#         return f"[{self.content}]"
 
 
 def get_next_token_from_scanner():
@@ -39,6 +41,8 @@ def get_next_token_from_scanner():
     print(token)
     if token[1] == 'ID':
         return 'ID'
+    if token[1] == 'NUM':
+        return 'NUM'
     return token[2]
 
 
@@ -71,13 +75,13 @@ def panic_mode_recovery():
         stack.pop()
     nts_with_goto = {k: v for k, v in parse_table[stack.elements[-1].state_num].items() if v.startswith('goto_')}
 
-    while next_token != '$':
+    while True:
         found = False
         for nt, goto in sorted(nts_with_goto.items()):
             if next_token in follow[nt]:
                 found = True
                 last_state = stack.top()
-                stack.push(nt)
+                stack.push(Node(nt))
                 stack.push(State(get_goto_state(last_state, nt)))
                 break
         if found: break
@@ -90,7 +94,7 @@ def start_parsing():
     stack.push(State("0"))
     next_token = get_next_token_from_scanner()
 
-    while next_token != '$':
+    while True:
         try:
             print(str(stack), next_token)
             action = get_next_action()
@@ -100,7 +104,7 @@ def start_parsing():
             panic_mode_recovery()
             continue
         if action[0] == "shift":
-            stack.push(next_token)
+            stack.push(Node(next_token))
             stack.push(State(action[1]))
             next_token = get_next_token_from_scanner()
         elif action[0] == "reduce":
@@ -109,12 +113,17 @@ def start_parsing():
             if rule[2] != "epsilon":
                 for _ in rule[2:]:
                     stack.pop()
+
                     children.append(stack.pop())
             last_state: State = stack.top()
             parent_node = Node(rule[0], children=children)
             stack.push(parent_node)
             stack.push(State(get_goto_state(last_state, rule[0])))
         elif action[0] == "accept":
+            stack.elements[1].children += (stack.elements[3],)
             break
         else:
             raise NameError()
+
+    for pre, fill, node in RenderTree(stack.elements[1]):
+        print("%s%s" % (pre, node.name))
