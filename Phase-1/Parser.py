@@ -118,6 +118,10 @@ def start_parsing():
                 for _ in rule[2:]:
                     stack.pop()
                     children.insert(0, stack.pop())
+            else:
+                print("epsilon!!")
+                print(str(stack))
+                children.append(Node('epsilon'))
             last_state: State = stack.top()
             parent_node = Node(rule[0], children=children)
             stack.push(parent_node)
