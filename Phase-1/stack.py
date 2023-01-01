@@ -6,7 +6,7 @@ class Stack:
         self.elements.append(x)
 
     def pop(self):
-        self.elements.pop()
+        return self.elements.pop()
 
     def top(self):
         return self.elements[-1]

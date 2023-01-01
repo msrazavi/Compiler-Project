@@ -19,19 +19,27 @@ class State:
         return f"({self.state_num})"
 
 
+class Node:
+    def __init__(self, content='', children=None, parent=None):
+        self.content = content
+        self.children = children
+        self.parent = parent
+    def __str__(self):
+        return f"[{self.content}]"
+
+
 def get_next_token_from_scanner():
     while True:
         if Scanner.text_pointer >= len(Scanner.input_text):
-            next_token = '$'
+            return '$'
+        token = Scanner.get_next_token()
+        if token[0] != 'ERROR' and token[0] != 'WHITESPACE' and token[0] != 'COMMENT':
+            Scanner.tokens.append(token)
             break
-        next_token = Scanner.get_next_token()
-        if next_token[0] != 'ERROR' and next_token[0] != 'WHITESPACE' and next_token[0] != 'COMMENT':
-            Scanner.tokens.append(next_token)
-            break
-    print(next_token)
-    if next_token[1] == 'ID':
+    print(token)
+    if token[1] == 'ID':
         return 'ID'
-    return next_token[2]
+    return token[2]
 
 
 def read_parse_table():
@@ -63,7 +71,7 @@ def panic_mode_recovery():
         stack.pop()
     nts_with_goto = {k: v for k, v in parse_table[stack.elements[-1].state_num].items() if v.startswith('goto_')}
 
-    while True:
+    while next_token != '$':
         found = False
         for nt, goto in sorted(nts_with_goto.items()):
             if next_token in follow[nt]:
@@ -97,12 +105,14 @@ def start_parsing():
             next_token = get_next_token_from_scanner()
         elif action[0] == "reduce":
             rule = grammar[action[1]]
+            children = []
             if rule[2] != "epsilon":
                 for _ in rule[2:]:
                     stack.pop()
-                    stack.pop()
+                    children.append(stack.pop())
             last_state: State = stack.top()
-            stack.push(rule[0])
+            parent_node = Node(rule[0], children=children)
+            stack.push(parent_node)
             stack.push(State(get_goto_state(last_state, rule[0])))
         elif action[0] == "accept":
             break

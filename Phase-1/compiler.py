@@ -1,6 +1,6 @@
 '''
 Dorrin Sotoudeh         98170851
-Maryam Sadat Ramezani   98101639
+Maryam Sadat Razavi     98101639
 '''
 
 import Scanner
