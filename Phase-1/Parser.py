@@ -14,11 +14,11 @@ syntax_errors = []  # (message, args as tuple)
 
 
 class ErrorMessages:
-    illegal_terminal_in_input = "#%d : syntax error, illegal %s"
-    discarded_terminal_from_input = "#%d : syntax error, discarded %s from input"
-    discarded_element_from_stack = "syntax error, discarded %s from stack"
-    missing_nonterminal_push_to_stack = "#%d : syntax error, missing %s"
-    unexpected_eof = "#%d : syntax error, Unexpected EOF"
+    illegal_terminal_in_input = "#%d : syntax error , illegal %s"
+    discarded_terminal_from_input = "#%d : syntax error , discarded %s from input"
+    discarded_element_from_stack = "syntax error , discarded %s from stack"
+    missing_nonterminal_push_to_stack = "#%d : syntax error , missing %s"
+    unexpected_eof = "#%d : syntax error , Unexpected EOF"
 
 
 class State:
@@ -76,12 +76,20 @@ def panic_mode_recovery():
     while True:
         if any(v.startswith('goto_') for s, v in parse_table[stack.elements[-1].state_num].items()): break
         stack.pop()
-        syntax_errors.append((
-            ErrorMessages.discarded_element_from_stack,
-            (stack.pop(),)
-        ))
+        if isinstance(stack.top().name, tuple):
+            syntax_errors.append((
+                ErrorMessages.discarded_element_from_stack,
+                f"({stack.top().name[0]}, {stack.top().name[1]})"
+            ))
+        else:
+            syntax_errors.append((
+                ErrorMessages.discarded_element_from_stack,
+                (stack.top().name,)
+            ))
+        stack.pop()
     nts_with_goto = {k: v for k, v in parse_table[stack.elements[-1].state_num].items() if v.startswith('goto_')}
 
+    next_token_type, next_token, next_token_nt = get_next_token_from_scanner()
     while True:
         found = False
         for nt, goto in sorted(nts_with_goto.items()):
@@ -95,11 +103,13 @@ def panic_mode_recovery():
                 ))
                 stack.push(State(get_goto_state(last_state, nt)))
                 break
-        if found: break
-        syntax_errors.append((
-            ErrorMessages.discarded_terminal_from_input,
-            (Scanner.line_counter, next_token)
-        ))
+        if not found and next_token_nt != '$':
+            syntax_errors.append((
+                ErrorMessages.discarded_terminal_from_input,
+                (Scanner.line_counter, next_token)
+            ))
+        else:
+            break
         if next_token_nt == '$':
             break
         next_token_type, next_token, next_token_nt = get_next_token_from_scanner()
@@ -122,6 +132,8 @@ def write_syntax_errors():
     with open('syntax_errors.txt', 'w') as file:
         for e, args in syntax_errors:
             file.write(f"{e}\n" % args)
+        if len(syntax_errors) == 0:
+            file.write(f"There is no syntax error.\n")
 
 
 def start_parsing():
