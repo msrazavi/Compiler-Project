@@ -1,3 +1,6 @@
+from anytree import Node
+
+
 class Stack:
     def __init__(self):
         self.elements = []
@@ -12,4 +15,4 @@ class Stack:
         return self.elements[-1]
 
     def __str__(self):
-        return str([str(e) for e in self.elements])
+        return str([(str(e.name[2]) if isinstance(e.name, tuple) else str(e.name)) if isinstance(e, Node) else str(e) for e in self.elements])

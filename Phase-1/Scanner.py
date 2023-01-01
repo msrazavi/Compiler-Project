@@ -146,7 +146,7 @@ def get_next_token():
                 word += input_text[text_pointer]
             elif detect_type(input_text[text_pointer]) == 'WHITESPACE' or \
                     detect_type(input_text[text_pointer]) == 'SYMBOL':
-                if word in symbols[:10]:
+                if word in symbols[:11]:
                     return [line_counter, 'KEYWORD', word]
                 if word not in symbols:
                     symbols.append(word)

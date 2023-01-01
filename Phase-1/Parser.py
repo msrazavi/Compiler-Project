@@ -37,7 +37,7 @@ def get_next_token_from_scanner():
         if token[0] != 'ERROR' and token[0] != 'WHITESPACE' and token[0] != 'COMMENT':
             Scanner.tokens.append(token)
             break
-    print(token)
+    # print(token)
     if token[1] == 'ID':
         return 'ID', token[2], token[1]
     if token[1] == 'NUM':
@@ -146,11 +146,9 @@ def start_parsing():
         try:
             print(str(stack), next_token_nt)
             action = get_next_action()
-            print(action)
+            print(str(stack), next_token_nt, action)
         except KeyError:
-            # todo add syntax error
             panic_mode_recovery()
-            print(next_token_nt)
             if next_token_nt == '$':
                 syntax_errors.append((
                     ErrorMessages.unexpected_eof,
