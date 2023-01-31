@@ -32,13 +32,13 @@
 
 17. return_stmt -> return ; | return expression ;
 
-18. switch_stmt -> switch ( expression ) { case_stmts default_stmt }
+18. switch_stmt -> switch ( expression ) { case_stmts default_stmt } #switch
 
 19. case_stmts -> case_stmts case_stmt | Epsilon
 
-20. case_stmt -> case NUM : statement_list
+20. case_stmt -> case #save_const NUM : #label statement_list #case
 
-21. default_stmt -> default : statement_list | Epsilon
+21. default_stmt -> default : #label statement_list #case | #label #case
 
 22. expression -> var = expression | simple_expression
 

@@ -4,6 +4,7 @@ CS: scope stack
 SC: scope_counter
 PC: program counter
 PB: program block
+CC: case count in switch
 
 #start_scope:
     CS.push(SC)
@@ -45,6 +46,8 @@ PB: program block
     PC++
 #label:
     SS.push(PC)
+#save_const:
+    SS.push(next_token())
 
 #if:
     PB[SS(top)] = (JPF, SS(top-1), PC, )
@@ -57,3 +60,21 @@ PB: program block
 #while:
     PB[SS(top)] = (JPF, SS(top-1), PC, )
     SS.pop(2)
+
+#case:
+    SS.push(PC)
+    PC++
+    CC++
+
+#switch:
+    switch_val = SS(top-2*CC-1)
+
+    PB[PC+CC] = (JP, SS(top-1), , )
+    PB[SS(top)] = (JP, PC+CC+1, , )
+    SS.pop(2)
+
+    while(CC > 0):
+        PB[PC+CC] = (EQ, switch_val, SS(top-2), SS(top-1))
+        PB[SS(top)] = (JP, PC+CC+1, , )
+        SS.pop(3)
+        CC--
