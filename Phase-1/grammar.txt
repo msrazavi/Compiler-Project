@@ -28,7 +28,7 @@
 
 15. selection_stmt -> if ( expression ) #save statement endif #if | if ( expression ) #save statement else #save statement endif #ifelse
 
-16. iteration_stmt -> while ( expression ) statement
+16. iteration_stmt -> while ( expression ) #save statement #while
 
 17. return_stmt -> return ; | return expression ;
 
