@@ -2,6 +2,8 @@ ST: symbol table
 SS: semantic stack
 CS: scope stack
 SC: scope_counter
+PC: program counter
+PB: program block
 
 #start_scope:
     CS.push(SC)
@@ -37,3 +39,17 @@ SC: scope_counter
     name=next_token()
     arg_addr = SS.pop()
     ST.add(name=name, type=type, scope=SC, size='@' + (arg_addr + 1), value='@' + arg_addr)
+
+#save:
+    SS.push(PC)
+    PC++
+#label:
+    SS.push(PC)
+
+#if:
+    PB[SS(top)] = (JPF, SS(top-1), PC, )
+    SS.pop(2)
+#ifelse:
+    PB[SS(top-1)] = (JPF, SS(top-2), SS(top), )
+    PB[SS(top)] = (JPT, SS(top-2), PC, )
+    SS.pop(3)
