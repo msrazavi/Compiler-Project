@@ -53,9 +53,9 @@ CC: case count in switch
     PB[SS(top)] = (JPF, SS(top-1), PC, )
     SS.pop(2)
 #ifelse:
-    PB[SS(top-1)] = (JPF, SS(top-2), SS(top), )
-    PB[SS(top)] = (JPT, SS(top-2), PC, )
-    SS.pop(3)
+    PB[SS(top-2)] = (JPF, SS(top-3), SS(top), )
+    PB[SS(top-1)] = (JP, PC, , )
+    SS.pop(4)
 
 #while:
     PB[SS(top)] = (JPF, SS(top-1), PC, )
