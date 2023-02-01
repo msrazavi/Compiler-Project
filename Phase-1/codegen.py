@@ -81,3 +81,10 @@ class CodeGenerator:
             self.program_block.append(code)
         elif index < len(self.program_block):
             self.program_block[index] = code
+
+    def output(self, lookahead: str):
+        self.add_code(('PRINT', lookahead))
+
+    def write_program_block(self):
+        with open('output.txt') as file:
+            file.writelines("\n".join(self.program_block))
