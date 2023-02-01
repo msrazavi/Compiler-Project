@@ -1,5 +1,6 @@
 import Scanner
 from stack import Stack
+from codegen import CodeGenerator
 import json
 from anytree import Node, RenderTree
 
@@ -143,6 +144,7 @@ def start_parsing():
 
     stack.push(State("0"))
     next_token_type, next_token, next_token_nt = get_next_token_from_scanner()
+    codegen = CodeGenerator()
 
     while True:
         try:
@@ -169,6 +171,8 @@ def start_parsing():
                 for _ in rule[2:]:
                     stack.pop()
                     children.insert(0, stack.pop())
+                has_action_symbol = str(rule[-1]).startswith('action_')
+                if has_action_symbol: codegen.call_action_routine(str(rule[-1])[7:], next_token)
             else:
                 print("epsilon!!")
                 print(str(stack))
