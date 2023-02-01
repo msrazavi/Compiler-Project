@@ -50,7 +50,7 @@ BS: break stack
 #label:
     SS.push(PC)
 #save_const:
-    SS.push(next_token())
+    SS.push(# + next_token())
 
 #if:
     PB[SS(top)] = (JPF, SS(top-1), PC, )
@@ -70,12 +70,13 @@ BS: break stack
 #arith:
     t = get_temp_addr()
     switch(SS(top-1)):
-        case '+': (ADD, SS(top-2), SS(top), t)
-        case '-': (SUB, SS(top-2), SS(top), t)
-        case '*': (MULT, SS(top-2), SS(top), t)
-        case '/': (DIV, SS(top-2), SS(top), t)
-        case '<': (LT, SS(top-2), SS(top), t)
-        case '==':(EQ, SS(top-2), SS(top), t)
+        case '+': PB[PC] = (ADD, SS(top-2), SS(top), t)
+        case '-': PB[PC] = (SUB, SS(top-2), SS(top), t)
+        case '*': PB[PC] = (MULT, SS(top-2), SS(top), t)
+        case '/': PB[PC] = (DIV, SS(top-2), SS(top), t)
+        case '<': PB[PC] = (LT, SS(top-2), SS(top), t)
+        case '==':PB[PC] = (EQ, SS(top-2), SS(top), t)
     SS.pop(3)
     SS.push(t)
+    PC++
 

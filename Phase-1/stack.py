@@ -11,6 +11,14 @@ class Stack:
     def pop(self):
         return self.elements.pop()
 
+    def multipop(self, n: int):
+        for i in range(n):
+            self.pop()
+
+    def __getitem__(self, item):
+        if item <= 0: return self.elements[item-1]
+        return self.elements[item]
+
     def top(self):
         return self.elements[-1]
 
