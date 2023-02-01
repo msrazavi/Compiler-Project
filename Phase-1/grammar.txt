@@ -19,7 +19,7 @@
 19. case_stmts -> case_stmts case_stmt | Epsilon
 20. case_stmt -> case save_const NUM : statement_list
 21. default_stmt -> default : statement_list | Epsilon
-22. expression -> var = expression | simple_expression
+22. expression -> var = expression action_assign | simple_expression
 23. var -> push_id ID | push_id ID [ index_addr expression ]
 24. simple_expression -> additive_expression < additive_expression action_lt | additive_expression == additive_expression action_eq | additive_expression
 25. additive_expression -> additive_expression + term action_add | additive_expression - term action_sub | term

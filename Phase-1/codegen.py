@@ -69,6 +69,9 @@ class CodeGenerator:
         addr = self.semantic_stack.pop() + index
         self.semantic_stack.push(addr)
 
+    def assign(self):
+        self.add_code(('ASSIGN', self.semantic_stack[-1], self.semantic_stack.top()))
+
     def add_code(self, code, index: int = program_counter):
         if index > len(self.program_block):
             add_count = index + 1 - len(self.program_block)
