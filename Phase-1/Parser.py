@@ -12,6 +12,7 @@ follow = {}
 grammar = {}
 parse_table = {}
 syntax_errors = []  # (message, args as tuple)
+codegen = CodeGenerator()
 
 
 class ErrorMessages:
@@ -144,7 +145,6 @@ def start_parsing():
 
     stack.push(State("0"))
     next_token_type, next_token, next_token_nt = get_next_token_from_scanner()
-    codegen = CodeGenerator()
 
     while True:
         try:
