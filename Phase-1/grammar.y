@@ -27,7 +27,7 @@ param_list: param_list ',' param
 param: type_specifier ID
 | type_specifier ID '[' ']'
 ;
-compound_stmt: '{' local_declarations statement_list '}'
+compound_stmt: '{' start_scope local_declarations statement_list end_scope '}'
 ;
 local_declarations: local_declarations var_declaration
 | /* epsilon */
@@ -46,10 +46,10 @@ expression_stmt: expression ';'
 | "break" ';'
 | ';'
 ;
-selection_stmt: "if" '(' expression ')' statement "endif"
-| "if" '(' expression ')' statement "else" statement "endif"
+selection_stmt: "if" '(' expression ')' save statement "endif" "action_if"
+| "if" '(' expression ')' save statement save "else" label statement "endif" "action_ifelse"
 ;
-iteration_stmt: "while" '(' expression ')' statement
+iteration_stmt: "while" '(' expression ')' statement "action_while"
 ;
 return_stmt: "return" ';'
 | "return" expression ';'
@@ -59,46 +59,57 @@ switch_stmt: "switch" '(' expression ')' '{' case_stmts default_stmt '}'
 case_stmts: case_stmts case_stmt
 | /* epsilon */
 ;
-case_stmt: "case" NUM ':' statement_list
+case_stmt: "case" save_const NUM ':' statement_list
 ;
 default_stmt: "default" ':' statement_list
 | /* epsilon */
 ;
-expression: var '=' expression
+expression: var '=' expression "action_assign"
 | simple_expression
 ;
-var: ID
-| ID '[' expression ']'
+var: push_id ID
+| push_id ID '[' index_addr expression ']'
 ;
-simple_expression: additive_expression relop additive_expression
+simple_expression: additive_expression '<' additive_expression "action_lt"
+| additive_expression "==" additive_expression "action_eq"
 | additive_expression
 ;
-relop: '<'
-| "=="
-;
-additive_expression: additive_expression addop term
+additive_expression: additive_expression '+' term "action_add"
+| additive_expression '-' term "action_sub"
 | term
 ;
-addop: '+'
-| '-'
-;
-term: term mulop factor
-| factor
-;
-mulop: '*'
-| '/'
+term: term '*' factor "action_mult"
+| term '/' factor "action_div"
+|factor
 ;
 factor: '(' expression ')'
 | var
 | call
 | NUM
 ;
-call: ID '(' args ')'
+call: "output" '(' output expression ')'
+| ID '(' args ')'
 ;
 args: arg_list
 | /* epsilon */
 ;
 arg_list: arg_list ',' expression
 | expression
+;
+start_scope: "action_start_scope"
+;
+end_scope: "action_end_scope"
+;
+push_id: "action_push_id"
+;
+save_const: "action_save_const"
+;
+save: "action_save"
+;
+label: "action_label"
+;
+index_addr: "action_index_addr"
+;
+output: "action_output"
 ;
 %%

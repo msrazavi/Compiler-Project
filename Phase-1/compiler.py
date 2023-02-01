@@ -20,7 +20,7 @@ def main():
     Scanner.write_tokens()
     Parser.write_parse_tree()
     Parser.write_syntax_errors()
-    codegen.CodeGenerator.write_program_block()
+    Parser.codegen.write_program_block()
 
 
 if __name__ == '__main__':

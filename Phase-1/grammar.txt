@@ -25,7 +25,7 @@
 25. additive_expression -> additive_expression + term action_add | additive_expression - term action_sub | term
 26. term -> term * factor action_mult | term / factor action_div | factor
 27. factor -> ( expression ) | var | call | NUM
-28. call -> output ( #output expression ) | ID ( args )
+28. call -> output ( output expression ) | ID ( args )
 29. args -> arg_list | Epsilon
 30. arg_list -> arg_list , expression | expression
 

@@ -1,0 +1,57 @@
+#4 : syntax error , illegal int
+#4 : syntax error , missing start_scope
+#4 : syntax error , illegal ;
+syntax error , discarded (ID, a) from stack
+#5 : syntax error , missing compound_stmt
+#5 : syntax error , illegal int
+syntax error , discarded compound_stmt from stack
+#5 : syntax error , missing compound_stmt
+#5 : syntax error , illegal ;
+syntax error , discarded (ID, b) from stack
+#6 : syntax error , missing compound_stmt
+#6 : syntax error , illegal int
+syntax error , discarded compound_stmt from stack
+#6 : syntax error , missing compound_stmt
+#6 : syntax error , illegal ;
+syntax error , discarded (ID, c) from stack
+#7 : syntax error , missing compound_stmt
+#7 : syntax error , illegal =
+syntax error , discarded (ID, a) from stack
+#7 : syntax error , missing compound_stmt
+#8 : syntax error , illegal =
+syntax error , discarded (ID, b) from stack
+#8 : syntax error , missing compound_stmt
+#9 : syntax error , illegal =
+syntax error , discarded (ID, c) from stack
+#9 : syntax error , missing compound_stmt
+#9 : syntax error , illegal +
+syntax error , discarded (ID, a) from stack
+#9 : syntax error , missing compound_stmt
+#9 : syntax error , illegal ;
+syntax error , discarded (ID, b) from stack
+#10 : syntax error , missing compound_stmt
+#10 : syntax error , illegal <
+syntax error , discarded (ID, c) from stack
+#10 : syntax error , discarded 5 from input
+#10 : syntax error , missing additive_expression
+#10 : syntax error , illegal {
+#11 : syntax error , missing save
+#11 : syntax error , illegal -
+syntax error , discarded (ID, b) from stack
+#11 : syntax error , missing push_id
+#12 : syntax error , illegal }
+#12 : syntax error , missing save
+#12 : syntax error , illegal {
+#13 : syntax error , missing label
+#13 : syntax error , illegal /
+syntax error , discarded (ID, c) from stack
+#13 : syntax error , discarded 2 from input
+#13 : syntax error , missing additive_expression
+#14 : syntax error , illegal }
+syntax error , discarded statement from stack
+#14 : syntax error , missing compound_stmt
+#15 : syntax error , illegal }
+syntax error , discarded (KEYWORD, endif) from stack
+syntax error , discarded statement from stack
+#15 : syntax error , missing compound_stmt
+#15 : syntax error , Unexpected EOF

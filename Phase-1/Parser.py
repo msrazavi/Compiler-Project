@@ -48,7 +48,8 @@ def get_next_token_from_scanner():
 
 def read_parse_table():
     global parse_table, grammar, follow, terminals, non_terminals
-    with open('parse-table.json') as pt:
+    # with open('parse-table.json') as pt:
+    with open('table.json') as pt:
         json_file = json.load(pt)
         parse_table = json_file["parse_table"]
         grammar = json_file["grammar"]
