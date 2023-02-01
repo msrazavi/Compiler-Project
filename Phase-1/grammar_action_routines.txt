@@ -63,3 +63,19 @@ BS: break stack
 #while:
     PB[SS(top)] = (JPF, SS(top-1), PC, )
     SS.pop(2)
+
+
+#push_op:
+    SS.push(lookahead)
+#arith:
+    t = get_temp_addr()
+    switch(SS(top-1)):
+        case '+': (ADD, SS(top-2), SS(top), t)
+        case '-': (SUB, SS(top-2), SS(top), t)
+        case '*': (MULT, SS(top-2), SS(top), t)
+        case '/': (DIV, SS(top-2), SS(top), t)
+        case '<': (LT, SS(top-2), SS(top), t)
+        case '==':(EQ, SS(top-2), SS(top), t)
+    SS.pop(3)
+    SS.push(t)
+

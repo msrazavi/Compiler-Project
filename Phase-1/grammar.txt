@@ -42,19 +42,19 @@
 
 22. expression -> var = expression | simple_expression
 
-23. var -> ID | ID [ expression ]
+23. var -> #push_id ID | #push_id ID [ expression ]
 
-24. simple_expression -> additive_expression relop additive_expression | additive_expression
+24. simple_expression -> additive_expression relop additive_expression #arith | additive_expression
 
-25. relop -> < | ==
+25. relop -> #push_op < | #push_op ==
 
-26. additive_expression -> additive_expression addop term | term
+26. additive_expression -> additive_expression addop term #arith | term
 
-27. addop -> + | -
+27. addop -> #push_op + | #push_op -
 
-28. term -> term mulop factor | factor
+28. term -> term mulop factor #arith | factor
 
-29. mulop -> * | /
+29. mulop -> #push_op * | #push_op /
 
 30. factor -> ( expression ) | var | call | NUM
 
