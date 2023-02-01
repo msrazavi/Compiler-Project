@@ -5,12 +5,15 @@ SC: scope_counter
 PC: program counter
 PB: program block
 CC: case count in switch
+BS: break stack
 
 #start_scope:
     CS.push(SC)
     SC++
 
 #end_scope:
+    if (BS.top == CS.top): // break
+        // todo
     CS.pop()
 
 #declare_var:
