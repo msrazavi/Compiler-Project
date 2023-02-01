@@ -42,7 +42,7 @@
 
 22. expression -> var = expression | simple_expression
 
-23. var -> push_id ID | push_id ID [ expression ]
+23. var -> push_id ID | push_id ID [ index_addr expression ]
 
 24. simple_expression -> additive_expression relop additive_expression action_arith | additive_expression
 
@@ -71,6 +71,7 @@
 38. save_const -> action_save_const
 39. save -> action_save
 40. label -> action_label
+41. index_addr -> action_index_addr
 
 Keywords: else if int return void while switch case default break endif
 

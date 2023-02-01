@@ -1,6 +1,5 @@
-from typing import Tuple
+from symbol_table import SymbolTable
 
-import Parser
 from stack import Stack
 
 
@@ -8,6 +7,8 @@ class CodeGenerator:
     program_block = []
     program_counter = 0
     semantic_stack = Stack()
+    scope_stack = Stack()
+    symbol_table = SymbolTable()
     temp_addr = 500
 
     arith_operators = {'+': 'ADD', '-': 'SUB', '*': 'MULT', '/': 'DIV', '<': 'LT', '==': 'EQ'}
@@ -42,6 +43,14 @@ class CodeGenerator:
         self.semantic_stack.multipop(3)
         self.semantic_stack.push(temp)
         self.program_counter += 1
+
+    def push_id(self, lookahead: str):
+        self.semantic_stack.push(self.symbol_table.index_of(lookahead, self.scope_stack.top()))
+
+    def index_addr(self, lookahead: str):
+        index = int(lookahead)
+        addr = self.semantic_stack.pop() + index
+        self.semantic_stack.push(addr)
 
     def add_code(self, code, index: int = program_counter):
         if index > len(self.program_block):
