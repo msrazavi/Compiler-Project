@@ -58,7 +58,7 @@
 
 30. factor -> ( expression ) | var | call | NUM
 
-31. call -> ID ( args )
+31. call -> output ( expression ) | ID ( args )
 
 32. args -> arg_list | Epsilon
 
