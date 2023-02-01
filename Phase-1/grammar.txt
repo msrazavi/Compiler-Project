@@ -1,77 +1,41 @@
 1. program -> declaration_list
-
 2. declaration_list -> declaration_list declaration | declaration
-
 3. declaration -> var_declaration | fun_declaration
-
 4. var_declaration -> type_specifier ID ; | type_specifier ID [ NUM ] ;
-
 5. type_specifier -> int | void
-
 6. fun_declaration -> type_specifier ID ( params ) compound_stmt
-
 7. params -> param_list | void
-
 8. param_list -> param_list , param | param
-
 9. param -> type_specifier ID | type_specifier ID [ ]
-
 10. compound_stmt -> { start_scope local_declarations statement_list end_scope }
-
 11. local_declarations -> local_declarations var_declaration | Epsilon
-
 12. statement_list -> statement_list statement | Epsilon
-
 13. statement -> expression_stmt | compound_stmt | selection_stmt | iteration_stmt | return_stmt | switch_stmt
-
 14. expression_stmt -> expression ; | break ; | ;
-
 15. selection_stmt -> if ( expression ) save statement endif action_if | if ( expression ) save statement save else label statement endif action_ifelse
-
 16. iteration_stmt -> while ( expression ) save statement action_while
-
 17. return_stmt -> return ; | return expression ;
-
 18. switch_stmt -> switch ( expression ) { case_stmts default_stmt }
-
 19. case_stmts -> case_stmts case_stmt | Epsilon
-
 20. case_stmt -> case save_const NUM : statement_list
-
 21. default_stmt -> default : statement_list | Epsilon
-
 22. expression -> var = expression | simple_expression
-
 23. var -> push_id ID | push_id ID [ index_addr expression ]
+24. simple_expression -> additive_expression < additive_expression action_lt | additive_expression == additive_expression action_eq | additive_expression
+25. additive_expression -> additive_expression + term action_add | additive_expression - term action_sub | term
+26. term -> term * factor action_mult | term / factor action_div | factor
+27. factor -> ( expression ) | var | call | NUM
+28. call -> output ( expression ) | ID ( args )
+29. args -> arg_list | Epsilon
+30. arg_list -> arg_list , expression | expression
 
-24. simple_expression -> additive_expression relop additive_expression action_arith | additive_expression
-
-25. relop -> push_op < | push_op ==
-
-26. additive_expression -> additive_expression addop term action_arith | term
-
-27. addop -> push_op + | push_op -
-
-28. term -> term mulop factor action_arith | factor
-
-29. mulop -> push_op * | push_op /
-
-30. factor -> ( expression ) | var | call | NUM
-
-31. call -> output ( expression ) | ID ( args )
-
-32. args -> arg_list | Epsilon
-
-33. arg_list -> arg_list , expression | expression
-
-34. push_op -> action_push_op
-35. start_scope -> action_start_scope
-36. end_scope -> action_end_scope
-37. push_id -> action_push_id
-38. save_const -> action_save_const
-39. save -> action_save
-40. label -> action_label
-41. index_addr -> action_index_addr
+31. start_scope -> action_start_scope
+32. end_scope -> action_end_scope
+33. push_id -> action_push_id
+34. save_const -> action_save_const
+35. save -> action_save
+36. label -> action_label
+37. index_addr -> action_index_addr
 
 Keywords: else if int return void while switch case default break endif
 

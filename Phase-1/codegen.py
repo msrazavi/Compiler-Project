@@ -34,15 +34,32 @@ class CodeGenerator:
     def push_op(self, lookahead: str):
         self.semantic_stack.push(lookahead)
 
-    def arith(self):
+    def arith(self, operator: str):
         temp = self.get_temp_addr()
         operand1 = self.semantic_stack[0]
-        operand2 = self.semantic_stack[-2]
-        operator = self.semantic_stack[-1]
+        operand2 = self.semantic_stack[-1]
         self.add_code((self.arith_operators[operator], operand1, operand2, temp))
-        self.semantic_stack.multipop(3)
+        self.semantic_stack.multipop(2)
         self.semantic_stack.push(temp)
         self.program_counter += 1
+
+    def add(self):
+        self.arith('+')
+
+    def sub(self):
+        self.arith('-')
+
+    def mult(self):
+        self.arith('*')
+
+    def div(self):
+        self.arith('/')
+
+    def lt(self):
+        self.arith('<')
+
+    def eq(self):
+        self.arith('==')
 
     def push_id(self, lookahead: str):
         self.semantic_stack.push(self.symbol_table.index_of(lookahead, self.scope_stack.top()))
