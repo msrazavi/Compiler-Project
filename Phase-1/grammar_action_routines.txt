@@ -1,0 +1,80 @@
+ST: symbol table
+SS: semantic stack
+CS: scope stack
+SC: scope_counter
+PC: program counter
+PB: program block
+CC: case count in switch
+
+#start_scope:
+    CS.push(SC)
+    SC++
+
+#end_scope:
+    CS.pop()
+
+#declare_var:
+    type=next_token()
+    name=next_token()
+    ST.add(name=name, type=type, scope=CS.top, size=None, value=None)
+#declare_array:
+    type=next_token()
+    name=next_token()
+    next_token()
+    size=next_token()
+    ST.add(name=name, type=type + '[]', scope=CS.top, size=size, value=None)
+
+#declare_fun:
+    type=next_token()
+    name=next_token()
+    next_token()
+    ST.add(name=name, type=type + ' fun', scope=None, size=None, value=None)
+
+#define_fun_var:
+    type=next_token()
+    name=next_token()
+    arg_addr = SS.pop()
+    ST.add(name=name, type=type, scope=SC, size=None, value='@' + arg_addr)
+#define_fun_array:
+    type=next_token()
+    name=next_token()
+    arg_addr = SS.pop()
+    ST.add(name=name, type=type, scope=SC, size='@' + (arg_addr + 1), value='@' + arg_addr)
+
+#save:
+    SS.push(PC)
+    PC++
+#label:
+    SS.push(PC)
+#save_const:
+    SS.push(next_token())
+
+#if:
+    PB[SS(top)] = (JPF, SS(top-1), PC, )
+    SS.pop(2)
+#ifelse:
+    PB[SS(top-1)] = (JPF, SS(top-2), SS(top), )
+    PB[SS(top)] = (JPT, SS(top-2), PC, )
+    SS.pop(3)
+
+#while:
+    PB[SS(top)] = (JPF, SS(top-1), PC, )
+    SS.pop(2)
+
+#case:
+    SS.push(PC)
+    PC++
+    CC++
+
+#switch:
+    switch_val = SS(top-2*CC-1)
+
+    PB[PC+CC] = (JP, SS(top-1), , )
+    PB[SS(top)] = (JP, PC+CC+1, , )
+    SS.pop(2)
+
+    while(CC > 0):
+        PB[PC+CC] = (EQ, switch_val, SS(top-2), SS(top-1))
+        PB[SS(top)] = (JP, PC+CC+1, , )
+        SS.pop(3)
+        CC--
