@@ -75,7 +75,7 @@ class CodeGenerator:
         self.semantic_stack.push(addr)
 
     def assign(self, lookahead: str = None):
-        self.add_code(('ASSIGN', self.semantic_stack[-1], self.semantic_stack.top()), index=self.pc)
+        self.add_code(('ASSIGN', self.semantic_stack.top(), self.semantic_stack[-1]), index=self.pc)
         self.semantic_stack.multipop(2)
         self.pc += 1
 
