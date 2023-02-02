@@ -39,20 +39,20 @@ statement_list: statement_list statement
 | /* epsilon */
 ;
 statement: expression_stmt
-| compound_stmt
-| selection_stmt
-| iteration_stmt
+| compound_stmt break_error
+| selection_stmt break_accept
+| iteration_stmt break_accept
 | return_stmt
 | switch_stmt
 ;
 expression_stmt: expression ';'
-| "break" ';'
+| "break" ';' break_stmt
 | ';'
 ;
 selection_stmt: "if" '(' expression ')' save statement "endif" if_block
 | "if" '(' expression ')' save statement save "else" label statement "endif" ifelse
 ;
-iteration_stmt: "while" '(' expression ')' statement while_loop
+iteration_stmt: "while" '(' expression ')' save statement while_loop
 ;
 return_stmt: "return" ';'
 | "return" expression ';'
@@ -116,6 +116,9 @@ end_scope: /* epsilon */;
 ifelse: /* epsilon */;
 if_block: /* epsilon */;
 while_loop: /* epsilon */;
+break_stmt: /* epsilon */;
+break_accept: /* epsilon */;
+break_error: /* epsilon */;
 index_addr: /* epsilon */;
 call_fun: /* epsilon */;
 declare_id: /* epsilon */;

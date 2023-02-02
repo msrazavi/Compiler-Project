@@ -9,6 +9,7 @@ class CodeGenerator:
     program_block = {}
     pc = 0
     semantic_stack = Stack()
+    break_stack = Stack()
     scope_stack = Stack()
     scope_counter = 0
     symbol_table = SymbolTable()
@@ -117,8 +118,23 @@ class CodeGenerator:
         self.semantic_stack.multipop(4)
 
     def while_loop(self, lookahead: str = None):
-        # todo
-        pass
+        self.add_code(('JPF', self.semantic_stack[-1], self.pc), index=self.semantic_stack.top())
+        self.semantic_stack.multipop(2)
+
+    def break_stmt(self, lookahead: str = None):
+        self.break_stack.push(self.scope_stack.top())
+        self.save()
+
+    def break_accept(self, lookahead: str = None):
+        for scope in self.break_stack.elements[::-1]:
+            if scope != self.scope_stack.top(): break
+            self.add_code(('JP', self.pc), index=self.semantic_stack.pop())
+
+    def break_error(self, lookahead: str = None):
+        for scope in self.break_stack.elements[::-1]:
+            if scope != self.scope_stack.top(): break
+            # todo error: "invalid break in {semantic_stack.top()}"
+            self.semantic_stack.pop()
 
     def call_fun(self, lookahead: str = None):
         # todo
