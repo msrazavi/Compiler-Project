@@ -39,8 +39,8 @@ class CodeGenerator:
 
     def arith(self, operator: str):
         temp = self.get_temp_addr()
-        operand1 = self.semantic_stack[0]
-        operand2 = self.semantic_stack[-1]
+        operand1 = self.semantic_stack[-1]
+        operand2 = self.semantic_stack[0]
         self.add_code((self.arith_operators[operator], operand1, operand2, temp), index=self.pc)
         self.semantic_stack.multipop(2)
         self.semantic_stack.push(temp)
