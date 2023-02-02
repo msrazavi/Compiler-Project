@@ -3,9 +3,9 @@ from typing import List, Optional
 
 class Element:
     def __init__(self,
-                 name: str,
-                 type: str,
-                 scope: int,
+                 name: str = '',
+                 type: str = '',
+                 scope: int = '',
                  is_func: bool = False,
                  is_arr: bool = False,
                  size: int = 1):
@@ -20,6 +20,23 @@ class Element:
 
 class SymbolTable:
     elements: List[Element] = []
+
+    def declare(self, type: str, scope: int):
+        self.elements.append(Element(type=type, scope=scope))
+
+    def declare_name(self, name: str):
+        self.elements[-1].name = name
+
+    def declare_size(self, size: int):
+        self.elements[-1].size = size
+
+    def declare_func(self):
+        self.elements[-1].is_func = True
+        self.elements[-1].is_var = False
+
+    def declare_arr(self):
+        self.elements[-1].is_arr = True
+        self.elements[-1].is_var = False
 
     def add_var(self, name: str, type: str, scope: int):
         self.elements.append(Element(name, type, scope))

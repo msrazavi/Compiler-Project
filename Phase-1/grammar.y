@@ -2,7 +2,7 @@
 %token ID
 %start program
 %%
-program: declaration_list
+program: start_scope declaration_list "action_end_scope"
 ;
 declaration_list: declaration_list declaration
 | declaration
@@ -10,22 +10,22 @@ declaration_list: declaration_list declaration
 declaration: var_declaration 
 | fun_declaration 
 ;
-var_declaration: type_specifier ID ';' 
-| type_specifier ID '[' NUM ']' ';'
+var_declaration: declare type_specifier declare_id ID ';'
+| declare type_specifier declare_id ID declare_arr '[' declare_size NUM ']' ';'
 ;
 type_specifier: "int" 
 | "void"
 ;
-fun_declaration: type_specifier ID '(' params ')' compound_stmt
+fun_declaration: declare type_specifier declare_id ID declare_func '(' params ')' compound_stmt
 ;
 params: param_list
 | "void"
 ;
-param_list: param_list ',' param
-| param
+param_list: param_list ',' param declare_scope_increment "action_declare_size_increment"
+| param declare_scope_increment "action_declare_size_increment"
 ;
-param: type_specifier ID
-| type_specifier ID '[' ']'
+param: declare type_specifier declare_id ID
+| declare type_specifier declare_id ID declare_arr '[' ']'
 ;
 compound_stmt: '{' start_scope local_declarations statement_list end_scope '}'
 ;
@@ -87,8 +87,8 @@ factor: '(' expression ')'
 | call
 | save_const NUM
 ;
-call: "output" '(' output expression ')'
-| ID '(' args ')'
+call: "output" '(' expression ')' "action_output"
+| push_id ID '(' args ')' "action_call_fun"
 ;
 args: arg_list
 | /* epsilon */
@@ -108,6 +108,16 @@ save: "action_save"
 ;
 label: "action_label"
 ;
-output: "action_output"
+declare: "action_declare"
+;
+declare_id: "action_declare_id"
+;
+declare_arr: "action_declare_arr"
+;
+declare_func: "action_declare_func"
+;
+declare_size: "action_declare_size"
+;
+declare_scope_increment: "action_declare_scope_increment"
 ;
 %%

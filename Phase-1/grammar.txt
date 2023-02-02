@@ -1,7 +1,7 @@
 1. program -> declaration_list
 2. declaration_list -> declaration_list declaration | declaration
 3. declaration -> var_declaration | fun_declaration
-4. var_declaration -> type_specifier ID ; | type_specifier ID [ NUM ] ;
+4. var_declaration -> declare type_specifier declare_id ID ; | declare_arr type_specifier declare_id ID [ declare_size NUM ] ;
 5. type_specifier -> int | void
 6. fun_declaration -> type_specifier ID ( params ) compound_stmt
 7. params -> param_list | void
@@ -25,7 +25,7 @@
 25. additive_expression -> additive_expression + term action_add | additive_expression - term action_sub | term
 26. term -> term * factor action_mult | term / factor action_div | factor
 27. factor -> ( expression ) | var | call | save_const NUM
-28. call -> output ( output expression ) | ID ( args )
+28. call -> output ( expression ) action_output | push_id ID ( args ) action_call_fun
 29. args -> arg_list | Epsilon
 30. arg_list -> arg_list , expression | expression
 
@@ -36,7 +36,9 @@
 35. save -> action_save
 36. label -> action_label
 37. index_addr -> action_index_addr
-38. output -> action_output
+38. declare -> action_declare
+39. declare_id -> action_declare_id
+40. declare_arr_size -> action_declare_arr_size
 
 Keywords: else if int return void while switch case default break endif
 

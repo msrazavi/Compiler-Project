@@ -18,7 +18,7 @@ def correct_form(token):
 
 f = open("grammar.output", "r")
 content = f.read()
-content = content.replace('ε', 'epsilon')
+content = content.replace('/* empty */', 'epsilon')
 f.close()
 x = content.split('\n\n\n')
 
@@ -79,7 +79,7 @@ while True:
 
         # first
         for symbol in expression:
-            if expression == '/* empty */'.split():
+            if symbol == 'epsilon':
                 updated |= union(epsilon, {nt})
                 break
             updated |= union(first[nt], first[symbol])
@@ -89,7 +89,7 @@ while True:
         # follow
         aux = follow[nt]
         for symbol in reversed(expression):
-            if expression == '/* empty */'.split():
+            if symbol == 'epsilon':
                 break
             if symbol in follow:
                 updated |= union(follow[symbol], aux)

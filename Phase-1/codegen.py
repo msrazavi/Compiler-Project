@@ -82,6 +82,21 @@ class CodeGenerator:
     def end_scope(self, lookahead: str = None):
         self.scope_stack.pop()
 
+    def declare(self, lookahead: str = None):
+        self.symbol_table.declare(lookahead, self.scope_stack.top())
+
+    def declare_arr(self, lookahead: str = None):
+        self.symbol_table.declare_arr()
+
+    def declare_func(self, lookahead: str = None):
+        self.symbol_table.declare_func()
+
+    def declare_id(self, lookahead: str = None):
+        self.symbol_table.declare_name(lookahead)
+
+    def declare_size(self, lookahead: str = None):
+        self.symbol_table.declare_size(int(lookahead))
+
     def ifelse(self, lookahead: str = None):
         # todo
         pass

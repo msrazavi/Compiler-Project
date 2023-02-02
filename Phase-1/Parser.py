@@ -188,7 +188,7 @@ def start_parsing():
         elif action[0] == "reduce":
             rule = grammar[action[1]]
             children = []
-            if rule[2:] != "/* empty */".split():
+            if rule[2] != "epsilon":
                 for _ in rule[2:]:
                     stack.pop()
                     children.insert(0, stack.pop())

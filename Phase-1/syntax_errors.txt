@@ -1,36 +1,62 @@
-#7 : syntax error , illegal =
-syntax error , discarded (ID, a) from stack
-#7 : syntax error , missing save_const
-#8 : syntax error , illegal =
-syntax error , discarded (ID, b) from stack
-#8 : syntax error , missing save_const
-#9 : syntax error , illegal =
-syntax error , discarded (ID, c) from stack
-#9 : syntax error , missing compound_stmt
-#9 : syntax error , illegal +
-syntax error , discarded (ID, a) from stack
-#9 : syntax error , missing compound_stmt
-#9 : syntax error , illegal ;
-syntax error , discarded (ID, b) from stack
-#10 : syntax error , missing compound_stmt
-#10 : syntax error , illegal <
-syntax error , discarded (ID, c) from stack
-#10 : syntax error , missing save_const
-#11 : syntax error , illegal -
-syntax error , discarded (ID, b) from stack
-#11 : syntax error , missing push_id
-#12 : syntax error , illegal else
-syntax error , discarded action_while_loop from stack
-syntax error , discarded (SYMBOL, }) from stack
-syntax error , discarded end_scope from stack
-#12 : syntax error , missing compound_stmt
-#13 : syntax error , illegal /
-syntax error , discarded (ID, c) from stack
-#13 : syntax error , missing save_const
-#14 : syntax error , illegal endif
-syntax error , discarded action_save_const from stack
-syntax error , discarded statement from stack
-#15 : syntax error , missing compound_stmt
-#15 : syntax error , illegal $
-#15 : syntax error , missing compound_stmt
+#3 : syntax error , illegal void
+syntax error , discarded action_start_scope from stack
+#3 : syntax error , discarded main from input
+#3 : syntax error , missing start_scope
+#3 : syntax error , illegal (
+syntax error , discarded action_declare from stack
+#3 : syntax error , missing declare
+#3 : syntax error , illegal )
+syntax error , discarded action_declare_id from stack
+syntax error , discarded (KEYWORD, void) from stack
+#3 : syntax error , discarded { from input
+#4 : syntax error , discarded int from input
+#4 : syntax error , discarded a from input
+#4 : syntax error , discarded ; from input
+#5 : syntax error , discarded int from input
+#5 : syntax error , discarded b from input
+#5 : syntax error , discarded ; from input
+#6 : syntax error , discarded int from input
+#6 : syntax error , discarded c from input
+#6 : syntax error , discarded ; from input
+#7 : syntax error , discarded a from input
+#7 : syntax error , discarded = from input
+#7 : syntax error , discarded 5 from input
+#7 : syntax error , discarded ; from input
+#8 : syntax error , discarded b from input
+#8 : syntax error , discarded = from input
+#8 : syntax error , discarded 3 from input
+#8 : syntax error , discarded ; from input
+#9 : syntax error , discarded c from input
+#9 : syntax error , discarded = from input
+#9 : syntax error , discarded a from input
+#9 : syntax error , discarded + from input
+#9 : syntax error , discarded b from input
+#9 : syntax error , discarded ; from input
+#10 : syntax error , discarded if from input
+#10 : syntax error , discarded ( from input
+#10 : syntax error , discarded c from input
+#10 : syntax error , discarded < from input
+#10 : syntax error , discarded 5 from input
+#10 : syntax error , discarded ) from input
+#10 : syntax error , discarded { from input
+#11 : syntax error , discarded output from input
+#11 : syntax error , discarded ( from input
+#11 : syntax error , discarded b from input
+#11 : syntax error , discarded - from input
+#11 : syntax error , discarded a from input
+#11 : syntax error , discarded ) from input
+#11 : syntax error , discarded ; from input
+#12 : syntax error , discarded } from input
+#12 : syntax error , discarded else from input
+#12 : syntax error , discarded { from input
+#13 : syntax error , discarded output from input
+#13 : syntax error , discarded ( from input
+#13 : syntax error , discarded c from input
+#13 : syntax error , discarded / from input
+#13 : syntax error , discarded 2 from input
+#13 : syntax error , discarded ) from input
+#13 : syntax error , discarded ; from input
+#14 : syntax error , discarded } from input
+#14 : syntax error , discarded endif from input
+#15 : syntax error , discarded } from input
 #15 : syntax error , Unexpected EOF
