@@ -41,14 +41,17 @@ class SymbolTable:
         self.elements[-1].size = size
         self.declare_address()
 
-    def declare_address(self):
-        if len(self.elements) == 0:
-            raise EOFError
-        elif not self.elements[-1].is_func:
-            if len(self.elements) == 1:
-                self.elements[-1].address = 1
-            else:
-                self.elements[-1].address = self.elements[-2].address + self.elements[-1].size
+    def declare_address(self, address: int = None):
+        if address is None:
+            if len(self.elements) == 0:
+                raise EOFError
+            elif not self.elements[-1].is_func:
+                if len(self.elements) == 1:
+                    self.elements[-1].address = 1
+                else:
+                    self.elements[-1].address = self.elements[-2].address + self.elements[-1].size
+        else:
+            self.elements[-1].address = address
 
     def declare_func(self):
         self.elements[-1].is_func = True

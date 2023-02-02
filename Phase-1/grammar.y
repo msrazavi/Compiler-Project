@@ -18,7 +18,7 @@ arr_declaration: declare_type type_specifier declare_id ID '[' declare_size NUM 
 type_specifier: "int" 
 | "void"
 ;
-fun_declaration: declare_type type_specifier declare_id ID start_scope '(' params ')' declare_func compound_stmt end_scope
+fun_declaration: declare_type type_specifier declare_id ID declare_address start_scope '(' params ')' declare_func compound_stmt end_scope
 ;
 params: param_list
 | "void"
@@ -126,4 +126,5 @@ declare_type: /* epsilon */;
 declare_size: /* epsilon */;
 declare_arr: /* epsilon */;
 declare_func: /* epsilon */;
+declare_address: /* epsilon */;
 %%

@@ -110,6 +110,9 @@ class CodeGenerator:
     def declare_size(self, lookahead: str = None):
         self.symbol_table.declare_size(int(lookahead))
 
+    def declare_address(self, lookahead: str = None):
+        self.symbol_table.declare_address(self.pc)
+
     def if_block(self, lookahead: str = None):
         self.add_code(('JPF', self.semantic_stack[-1], self.pc), index=self.semantic_stack.top())
         self.semantic_stack.multipop(2)
