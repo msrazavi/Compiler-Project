@@ -16,6 +16,7 @@ def main():
     Parser.start_parsing()
 
     Parser.codegen.write_program_block()
+    Parser.codegen.write_errors()
 
 
 if __name__ == '__main__':

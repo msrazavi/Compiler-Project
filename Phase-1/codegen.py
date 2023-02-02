@@ -15,6 +15,8 @@ class CodeGenerator:
     symbol_table = SymbolTable()
     temp_addr = 500
 
+    errors = []
+
     arith_operators = {'+': 'ADD', '-': 'SUB', '*': 'MULT', '/': 'DIV', '<': 'LT', '==': 'EQ'}
 
     def call_action_routine(self, action_symbol: str, lookahead: str):
@@ -153,3 +155,11 @@ class CodeGenerator:
                 file.write(
                     f'{i}.\t({code[0]}, {code[1]}, {code[2] if len(code) > 2 else ""}, {code[3] if len(code) > 3 else ""})\n'
                 )
+
+    def write_errors(self):
+        with open('semanatic_errors.txt', 'w') as file:
+            if len(self.errors) == 0: file.write('The input program is semantically correct.\n')
+            for err in self.errors:
+                # todo write errors
+                pass
+

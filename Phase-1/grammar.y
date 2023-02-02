@@ -18,7 +18,7 @@ arr_declaration: declare_type type_specifier declare_id ID '[' declare_size NUM 
 type_specifier: "int" 
 | "void"
 ;
-fun_declaration: declare_type type_specifier declare_id ID '(' params ')' declare_func compound_stmt
+fun_declaration: declare_type type_specifier declare_id ID start_scope '(' params ')' declare_func compound_stmt end_scope
 ;
 params: param_list
 | "void"
@@ -29,7 +29,7 @@ param_list: param_list ',' param
 param: type_specifier ID
 | type_specifier ID '[' ']'
 ;
-compound_stmt: '{' start_scope local_declarations statement_list end_scope '}'
+compound_stmt: '{' local_declarations statement_list '}'
 ;
 local_declarations: local_declarations var_declaration
 | local_declarations arr_declaration
@@ -38,12 +38,12 @@ local_declarations: local_declarations var_declaration
 statement_list: statement_list statement
 | /* epsilon */
 ;
-statement: expression_stmt
-| compound_stmt break_error
-| selection_stmt break_accept
-| iteration_stmt break_accept
-| return_stmt
-| switch_stmt
+statement: start_scope expression_stmt end_scope
+| start_scope compound_stmt break_error end_scope
+| start_scope selection_stmt break_accept end_scope
+| start_scope iteration_stmt break_accept end_scope
+| start_scope return_stmt end_scope
+| start_scope switch_stmt end_scope
 ;
 expression_stmt: expression ';'
 | "break" ';' break_stmt
