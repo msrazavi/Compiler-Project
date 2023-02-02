@@ -8,7 +8,8 @@ class Element:
                  scope: int = '',
                  is_func: bool = False,
                  is_arr: bool = False,
-                 size: int = 1):
+                 size: int = 1,
+                 address: int = 1):
         self.name = name
         self.type = type
         self.scope = scope
@@ -16,6 +17,7 @@ class Element:
         self.is_arr = is_arr
         self.is_var = not (is_func or is_arr)
         self.size = size
+        self.address = address
 
     def __str__(self):
         return f"{self.name}, " \
@@ -30,12 +32,23 @@ class SymbolTable:
 
     def declare(self, type: str, scope: int):
         self.elements.append(Element(type=type, scope=scope))
+        self.declare_address()
 
     def declare_name(self, name: str):
         self.elements[-1].name = name
 
     def declare_size(self, size: int):
         self.elements[-1].size = size
+        self.declare_address()
+
+    def declare_address(self):
+        if len(self.elements) == 0:
+            raise EOFError
+        elif not self.elements[-1].is_func:
+            if len(self.elements) == 1:
+                self.elements[-1].address = 1
+            else:
+                self.elements[-1].address = self.elements[-2].address + self.elements[-1].size
 
     def declare_func(self):
         self.elements[-1].is_func = True
@@ -45,10 +58,10 @@ class SymbolTable:
         self.elements[-1].is_arr = True
         self.elements[-1].is_var = False
 
-    def index_of(self, name: str, scope: int) -> Optional[int]:
+    def get_addr(self, name: str, scope: int) -> Optional[int]:
         for i, e in enumerate(self.elements):
             if e.name == name and e.scope == scope:
-                return i
+                return e.address
         return None
 
     def __str__(self):

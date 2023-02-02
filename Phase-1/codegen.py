@@ -66,12 +66,14 @@ class CodeGenerator:
 
     def push_id(self, lookahead: str = None):
         for scope in self.scope_stack.elements[::-1]:
-            id = self.symbol_table.index_of(lookahead, scope)
+            id = self.symbol_table.get_addr(lookahead, scope)
             if id is not None:
                 self.semantic_stack.push(id)
 
     def index_addr(self, lookahead: str = None):
-        addr = self.semantic_stack.pop() + self.semantic_stack.pop()
+        index = str(self.semantic_stack.pop()).replace('#', '')
+        start_addr = str(self.semantic_stack.pop()).replace('#', '')
+        addr = int(index) + int(start_addr)
         self.semantic_stack.push(addr)
 
     def assign(self, lookahead: str = None):

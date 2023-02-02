@@ -32,6 +32,7 @@ param: type_specifier ID
 compound_stmt: '{' start_scope local_declarations statement_list end_scope '}'
 ;
 local_declarations: local_declarations var_declaration
+| local_declarations arr_declaration
 | /* epsilon */
 ;
 statement_list: statement_list statement
@@ -61,7 +62,7 @@ switch_stmt: "switch" '(' expression ')' '{' case_stmts default_stmt '}'
 case_stmts: case_stmts case_stmt
 | /* epsilon */
 ;
-case_stmt: "case" save_const NUM ':' statement_list
+case_stmt: "case" save_const NUM ':' save statement_list
 ;
 default_stmt: "default" ':' statement_list
 | /* epsilon */
