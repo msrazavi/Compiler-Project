@@ -2,7 +2,7 @@
 %token ID
 %start program
 %%
-program: start_scope declaration_list "action_end_scope"
+program: start_scope declaration_list end_scope
 ;
 declaration_list: declaration_list declaration
 | declaration
@@ -21,8 +21,8 @@ fun_declaration: declare type_specifier declare_id ID declare_func '(' params ')
 params: param_list
 | "void"
 ;
-param_list: param_list ',' param declare_scope_increment "action_declare_size_increment"
-| param declare_scope_increment "action_declare_size_increment"
+param_list: param_list ',' param declare_scope_increment declare_size_increment
+| param declare_scope_increment declare_size_increment
 ;
 param: declare type_specifier declare_id ID
 | declare type_specifier declare_id ID declare_arr '[' ']'
@@ -46,10 +46,10 @@ expression_stmt: expression ';'
 | "break" ';'
 | ';'
 ;
-selection_stmt: "if" '(' expression ')' save statement "endif" "action_if"
-| "if" '(' expression ')' save statement save "else" label statement "endif" "action_ifelse"
+selection_stmt: "if" '(' expression ')' save statement "endif" if
+| "if" '(' expression ')' save statement save "else" label statement "endif" ifelse
 ;
-iteration_stmt: "while" '(' expression ')' statement "action_while_loop"
+iteration_stmt: "while" '(' expression ')' statement while_loop
 ;
 return_stmt: "return" ';'
 | "return" expression ';'
@@ -68,18 +68,18 @@ expression: var '=' expression
 | simple_expression
 ;
 var: push_id ID
-| push_id ID '[' expression ']' "action_index_addr"
+| push_id ID '[' expression ']' index_addr
 ;
-simple_expression: additive_expression '<' additive_expression "action_lt"
-| additive_expression "==" additive_expression "action_eq"
+simple_expression: additive_expression '<' additive_expression lt
+| additive_expression "==" additive_expression eq
 | additive_expression
 ;
-additive_expression: additive_expression '+' term "action_add"
-| additive_expression '-' term "action_sub"
+additive_expression: additive_expression '+' term add
+| additive_expression '-' term sub
 | term
 ;
-term: term '*' factor "action_mult"
-| term '/' factor "action_div"
+term: term '*' factor mult
+| term '/' factor div
 |factor
 ;
 factor: '(' expression ')'
@@ -87,8 +87,8 @@ factor: '(' expression ')'
 | call
 | save_const NUM
 ;
-call: "output" '(' expression ')' "action_output"
-| push_id ID '(' args ')' "action_call_fun"
+call: "output" '(' expression ')' output
+| push_id ID '(' args ')' call_fun
 ;
 args: arg_list
 | /* epsilon */
@@ -96,28 +96,29 @@ args: arg_list
 arg_list: arg_list ',' expression
 | expression
 ;
-start_scope: "action_start_scope"
-;
-end_scope: "action_end_scope"
-;
-push_id: "action_push_id"
-;
-save_const: "action_save_const"
-;
-save: "action_save"
-;
-label: "action_label"
-;
-declare: "action_declare"
-;
-declare_id: "action_declare_id"
-;
-declare_arr: "action_declare_arr"
-;
-declare_func: "action_declare_func"
-;
-declare_size: "action_declare_size"
-;
-declare_scope_increment: "action_declare_scope_increment"
-;
+start_scope: /* epsilon */;
+end_scope: /* epsilon */;
+push_id: /* epsilon */;
+save_const: /* epsilon */;
+save: /* epsilon */;
+label: /* epsilon */;
+declare: /* epsilon */;
+declare_id: /* epsilon */;
+declare_arr: /* epsilon */;
+declare_func: /* epsilon */;
+declare_size: /* epsilon */;
+declare_scope_increment: /* epsilon */;
+ifelse: /* epsilon */;
+lt: /* epsilon */;
+call_fun: /* epsilon */;
+output: /* epsilon */;
+add: /* epsilon */;
+while_loop: /* epsilon */;
+div: /* epsilon */;
+eq: /* epsilon */;
+index_addr: /* epsilon */;
+if: /* epsilon */;
+mult: /* epsilon */;
+declare_size_increment: /* epsilon */;
+sub: /* epsilon */;
 %%

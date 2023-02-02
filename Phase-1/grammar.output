@@ -1,8 +1,11 @@
+State 20 conflicts: 1 shift/reduce
+
+
 Grammar
 
     0 $accept: program $end
 
-    1 program: start_scope declaration_list "action_end_scope"
+    1 program: start_scope declaration_list end_scope
 
     2 declaration_list: declaration_list declaration
     3                 | declaration
@@ -21,8 +24,8 @@ Grammar
    11 params: param_list
    12       | "void"
 
-   13 param_list: param_list ',' param declare_scope_increment "action_declare_size_increment"
-   14           | param declare_scope_increment "action_declare_size_increment"
+   13 param_list: param_list ',' param declare_scope_increment declare_size_increment
+   14           | param declare_scope_increment declare_size_increment
 
    15 param: declare type_specifier declare_id ID
    16      | declare type_specifier declare_id ID declare_arr '[' ']'
@@ -46,10 +49,10 @@ Grammar
    29                | "break" ';'
    30                | ';'
 
-   31 selection_stmt: "if" '(' expression ')' save statement "endif" "action_if"
-   32               | "if" '(' expression ')' save statement save "else" label statement "endif" "action_ifelse"
+   31 selection_stmt: "if" '(' expression ')' save statement "endif" if
+   32               | "if" '(' expression ')' save statement save "else" label statement "endif" ifelse
 
-   33 iteration_stmt: "while" '(' expression ')' statement "action_while_loop"
+   33 iteration_stmt: "while" '(' expression ')' statement while_loop
 
    34 return_stmt: "return" ';'
    35            | "return" expression ';'
@@ -68,18 +71,18 @@ Grammar
    43           | simple_expression
 
    44 var: push_id ID
-   45    | push_id ID '[' expression ']' "action_index_addr"
+   45    | push_id ID '[' expression ']' index_addr
 
-   46 simple_expression: additive_expression '<' additive_expression "action_lt"
-   47                  | additive_expression "==" additive_expression "action_eq"
+   46 simple_expression: additive_expression '<' additive_expression lt
+   47                  | additive_expression "==" additive_expression eq
    48                  | additive_expression
 
-   49 additive_expression: additive_expression '+' term "action_add"
-   50                    | additive_expression '-' term "action_sub"
+   49 additive_expression: additive_expression '+' term add
+   50                    | additive_expression '-' term sub
    51                    | term
 
-   52 term: term '*' factor "action_mult"
-   53     | term '/' factor "action_div"
+   52 term: term '*' factor mult
+   53     | term '/' factor div
    54     | factor
 
    55 factor: '(' expression ')'
@@ -87,8 +90,8 @@ Grammar
    57       | call
    58       | save_const NUM
 
-   59 call: "output" '(' expression ')' "action_output"
-   60     | push_id ID '(' args ')' "action_call_fun"
+   59 call: "output" '(' expression ')' output
+   60     | push_id ID '(' args ')' call_fun
 
    61 args: arg_list
    62     | /* empty */
@@ -96,29 +99,55 @@ Grammar
    63 arg_list: arg_list ',' expression
    64         | expression
 
-   65 start_scope: "action_start_scope"
+   65 start_scope: /* empty */
 
-   66 end_scope: "action_end_scope"
+   66 end_scope: /* empty */
 
-   67 push_id: "action_push_id"
+   67 push_id: /* empty */
 
-   68 save_const: "action_save_const"
+   68 save_const: /* empty */
 
-   69 save: "action_save"
+   69 save: /* empty */
 
-   70 label: "action_label"
+   70 label: /* empty */
 
-   71 declare: "action_declare"
+   71 declare: /* empty */
 
-   72 declare_id: "action_declare_id"
+   72 declare_id: /* empty */
 
-   73 declare_arr: "action_declare_arr"
+   73 declare_arr: /* empty */
 
-   74 declare_func: "action_declare_func"
+   74 declare_func: /* empty */
 
-   75 declare_size: "action_declare_size"
+   75 declare_size: /* empty */
 
-   76 declare_scope_increment: "action_declare_scope_increment"
+   76 declare_scope_increment: /* empty */
+
+   77 ifelse: /* empty */
+
+   78 lt: /* empty */
+
+   79 call_fun: /* empty */
+
+   80 output: /* empty */
+
+   81 add: /* empty */
+
+   82 while_loop: /* empty */
+
+   83 div: /* empty */
+
+   84 eq: /* empty */
+
+   85 index_addr: /* empty */
+
+   86 if: /* empty */
+
+   87 mult: /* empty */
+
+   88 declare_size_increment: /* empty */
+
+   89 sub: /* empty */
 
 
 Terminals, with rules where they appear
@@ -142,165 +171,159 @@ $end (0) 0
 error (256)
 NUM (258) 7 39 58
 ID (259) 6 7 10 15 16 44 45 60
-"action_end_scope" (260) 1 66
-"int" (261) 8
-"void" (262) 9 12
-"action_declare_size_increment" (263) 13 14
-"break" (264) 29
-"if" (265) 31 32
-"endif" (266) 31 32
-"action_if" (267) 31
-"else" (268) 32
-"action_ifelse" (269) 32
-"while" (270) 33
-"action_while_loop" (271) 33
-"return" (272) 34 35
-"switch" (273) 36
-"case" (274) 39
-"default" (275) 40
-"action_index_addr" (276) 45
-"action_lt" (277) 46
-"==" (278) 47
-"action_eq" (279) 47
-"action_add" (280) 49
-"action_sub" (281) 50
-"action_mult" (282) 52
-"action_div" (283) 53
-"output" (284) 59
-"action_output" (285) 59
-"action_call_fun" (286) 60
-"action_start_scope" (287) 65
-"action_push_id" (288) 67
-"action_save_const" (289) 68
-"action_save" (290) 69
-"action_label" (291) 70
-"action_declare" (292) 71
-"action_declare_id" (293) 72
-"action_declare_arr" (294) 73
-"action_declare_func" (295) 74
-"action_declare_size" (296) 75
-"action_declare_scope_increment" (297) 76
+"int" (260) 8
+"void" (261) 9 12
+"break" (262) 29
+"if" (263) 31 32
+"endif" (264) 31 32
+"else" (265) 32
+"while" (266) 33
+"return" (267) 34 35
+"switch" (268) 36
+"case" (269) 39
+"default" (270) 40
+"==" (271) 47
+"output" (272) 59
 
 
 Nonterminals, with rules where they appear
 
-$accept (58)
+$accept (33)
     on left: 0
-program (59)
+program (34)
     on left: 1, on right: 0
-declaration_list (60)
+declaration_list (35)
     on left: 2 3, on right: 1 2
-declaration (61)
+declaration (36)
     on left: 4 5, on right: 2 3
-var_declaration (62)
+var_declaration (37)
     on left: 6 7, on right: 4 18
-type_specifier (63)
+type_specifier (38)
     on left: 8 9, on right: 6 7 10 15 16
-fun_declaration (64)
+fun_declaration (39)
     on left: 10, on right: 5
-params (65)
+params (40)
     on left: 11 12, on right: 10
-param_list (66)
+param_list (41)
     on left: 13 14, on right: 11 13
-param (67)
+param (42)
     on left: 15 16, on right: 13 14
-compound_stmt (68)
+compound_stmt (43)
     on left: 17, on right: 10 23
-local_declarations (69)
+local_declarations (44)
     on left: 18 19, on right: 17 18
-statement_list (70)
+statement_list (45)
     on left: 20 21, on right: 17 20 39 40
-statement (71)
+statement (46)
     on left: 22 23 24 25 26 27, on right: 20 31 32 33
-expression_stmt (72)
+expression_stmt (47)
     on left: 28 29 30, on right: 22
-selection_stmt (73)
+selection_stmt (48)
     on left: 31 32, on right: 24
-iteration_stmt (74)
+iteration_stmt (49)
     on left: 33, on right: 25
-return_stmt (75)
+return_stmt (50)
     on left: 34 35, on right: 26
-switch_stmt (76)
+switch_stmt (51)
     on left: 36, on right: 27
-case_stmts (77)
+case_stmts (52)
     on left: 37 38, on right: 36 37
-case_stmt (78)
+case_stmt (53)
     on left: 39, on right: 37
-default_stmt (79)
+default_stmt (54)
     on left: 40 41, on right: 36
-expression (80)
+expression (55)
     on left: 42 43, on right: 28 31 32 33 35 36 42 45 55 59 63 64
-var (81)
+var (56)
     on left: 44 45, on right: 42 56
-simple_expression (82)
+simple_expression (57)
     on left: 46 47 48, on right: 43
-additive_expression (83)
+additive_expression (58)
     on left: 49 50 51, on right: 46 47 48 49 50
-term (84)
+term (59)
     on left: 52 53 54, on right: 49 50 51 52 53
-factor (85)
+factor (60)
     on left: 55 56 57 58, on right: 52 53 54
-call (86)
+call (61)
     on left: 59 60, on right: 57
-args (87)
+args (62)
     on left: 61 62, on right: 60
-arg_list (88)
+arg_list (63)
     on left: 63 64, on right: 61 63
-start_scope (89)
+start_scope (64)
     on left: 65, on right: 1 17
-end_scope (90)
-    on left: 66, on right: 17
-push_id (91)
+end_scope (65)
+    on left: 66, on right: 1 17
+push_id (66)
     on left: 67, on right: 44 45 60
-save_const (92)
+save_const (67)
     on left: 68, on right: 39 58
-save (93)
+save (68)
     on left: 69, on right: 31 32
-label (94)
+label (69)
     on left: 70, on right: 32
-declare (95)
+declare (70)
     on left: 71, on right: 6 7 10 15 16
-declare_id (96)
+declare_id (71)
     on left: 72, on right: 6 7 10 15 16
-declare_arr (97)
+declare_arr (72)
     on left: 73, on right: 7 16
-declare_func (98)
+declare_func (73)
     on left: 74, on right: 10
-declare_size (99)
+declare_size (74)
     on left: 75, on right: 7
-declare_scope_increment (100)
+declare_scope_increment (75)
     on left: 76, on right: 13 14
+ifelse (76)
+    on left: 77, on right: 32
+lt (77)
+    on left: 78, on right: 46
+call_fun (78)
+    on left: 79, on right: 60
+output (79)
+    on left: 80, on right: 59
+add (80)
+    on left: 81, on right: 49
+while_loop (81)
+    on left: 82, on right: 33
+div (82)
+    on left: 83, on right: 53
+eq (83)
+    on left: 84, on right: 47
+index_addr (84)
+    on left: 85, on right: 45
+if (85)
+    on left: 86, on right: 31
+mult (86)
+    on left: 87, on right: 52
+declare_size_increment (87)
+    on left: 88, on right: 13 14
+sub (88)
+    on left: 89, on right: 50
 
 
 state 0
 
     0 $accept: . program $end
-    1 program: . start_scope declaration_list "action_end_scope"
-   65 start_scope: . "action_start_scope"
+    1 program: . start_scope declaration_list end_scope
+   65 start_scope: .
 
-    "action_start_scope"  shift, and go to state 1
+    $default  reduce using rule 65 (start_scope)
 
-    program      go to state 2
-    start_scope  go to state 3
+    program      go to state 1
+    start_scope  go to state 2
 
 
 state 1
 
-   65 start_scope: "action_start_scope" .
+    0 $accept: program . $end
 
-    $default  reduce using rule 65 (start_scope)
+    $end  shift, and go to state 3
 
 
 state 2
 
-    0 $accept: program . $end
-
-    $end  shift, and go to state 4
-
-
-state 3
-
-    1 program: start_scope . declaration_list "action_end_scope"
+    1 program: start_scope . declaration_list end_scope
     2 declaration_list: . declaration_list declaration
     3                 | . declaration
     4 declaration: . var_declaration
@@ -308,73 +331,68 @@ state 3
     6 var_declaration: . declare type_specifier declare_id ID ';'
     7                | . declare type_specifier declare_id ID declare_arr '[' declare_size NUM ']' ';'
    10 fun_declaration: . declare type_specifier declare_id ID declare_func '(' params ')' compound_stmt
-   71 declare: . "action_declare"
+   71 declare: .
 
-    "action_declare"  shift, and go to state 5
+    $default  reduce using rule 71 (declare)
 
-    declaration_list  go to state 6
-    declaration       go to state 7
-    var_declaration   go to state 8
-    fun_declaration   go to state 9
-    declare           go to state 10
+    declaration_list  go to state 4
+    declaration       go to state 5
+    var_declaration   go to state 6
+    fun_declaration   go to state 7
+    declare           go to state 8
 
 
-state 4
+state 3
 
     0 $accept: program $end .
 
     $default  accept
 
 
-state 5
+state 4
 
-   71 declare: "action_declare" .
-
-    $default  reduce using rule 71 (declare)
-
-
-state 6
-
-    1 program: start_scope declaration_list . "action_end_scope"
+    1 program: start_scope declaration_list . end_scope
     2 declaration_list: declaration_list . declaration
     4 declaration: . var_declaration
     5            | . fun_declaration
     6 var_declaration: . declare type_specifier declare_id ID ';'
     7                | . declare type_specifier declare_id ID declare_arr '[' declare_size NUM ']' ';'
    10 fun_declaration: . declare type_specifier declare_id ID declare_func '(' params ')' compound_stmt
-   71 declare: . "action_declare"
+   66 end_scope: .  [$end]
+   71 declare: .  ["int", "void"]
 
-    "action_end_scope"  shift, and go to state 11
-    "action_declare"    shift, and go to state 5
+    $end      reduce using rule 66 (end_scope)
+    $default  reduce using rule 71 (declare)
 
-    declaration      go to state 12
-    var_declaration  go to state 8
-    fun_declaration  go to state 9
-    declare          go to state 10
+    declaration      go to state 9
+    var_declaration  go to state 6
+    fun_declaration  go to state 7
+    end_scope        go to state 10
+    declare          go to state 8
 
 
-state 7
+state 5
 
     3 declaration_list: declaration .
 
     $default  reduce using rule 3 (declaration_list)
 
 
-state 8
+state 6
 
     4 declaration: var_declaration .
 
     $default  reduce using rule 4 (declaration)
 
 
-state 9
+state 7
 
     5 declaration: fun_declaration .
 
     $default  reduce using rule 5 (declaration)
 
 
-state 10
+state 8
 
     6 var_declaration: declare . type_specifier declare_id ID ';'
     7                | declare . type_specifier declare_id ID declare_arr '[' declare_size NUM ']' ';'
@@ -382,322 +400,293 @@ state 10
     9               | . "void"
    10 fun_declaration: declare . type_specifier declare_id ID declare_func '(' params ')' compound_stmt
 
-    "int"   shift, and go to state 13
-    "void"  shift, and go to state 14
+    "int"   shift, and go to state 11
+    "void"  shift, and go to state 12
 
-    type_specifier  go to state 15
-
-
-state 11
-
-    1 program: start_scope declaration_list "action_end_scope" .
-
-    $default  reduce using rule 1 (program)
+    type_specifier  go to state 13
 
 
-state 12
+state 9
 
     2 declaration_list: declaration_list declaration .
 
     $default  reduce using rule 2 (declaration_list)
 
 
-state 13
+state 10
+
+    1 program: start_scope declaration_list end_scope .
+
+    $default  reduce using rule 1 (program)
+
+
+state 11
 
     8 type_specifier: "int" .
 
     $default  reduce using rule 8 (type_specifier)
 
 
-state 14
+state 12
 
     9 type_specifier: "void" .
 
     $default  reduce using rule 9 (type_specifier)
 
 
-state 15
+state 13
 
     6 var_declaration: declare type_specifier . declare_id ID ';'
     7                | declare type_specifier . declare_id ID declare_arr '[' declare_size NUM ']' ';'
    10 fun_declaration: declare type_specifier . declare_id ID declare_func '(' params ')' compound_stmt
-   72 declare_id: . "action_declare_id"
-
-    "action_declare_id"  shift, and go to state 16
-
-    declare_id  go to state 17
-
-
-state 16
-
-   72 declare_id: "action_declare_id" .
+   72 declare_id: .
 
     $default  reduce using rule 72 (declare_id)
 
+    declare_id  go to state 14
 
-state 17
+
+state 14
 
     6 var_declaration: declare type_specifier declare_id . ID ';'
     7                | declare type_specifier declare_id . ID declare_arr '[' declare_size NUM ']' ';'
    10 fun_declaration: declare type_specifier declare_id . ID declare_func '(' params ')' compound_stmt
 
-    ID  shift, and go to state 18
+    ID  shift, and go to state 15
 
 
-state 18
+state 15
 
     6 var_declaration: declare type_specifier declare_id ID . ';'
     7                | declare type_specifier declare_id ID . declare_arr '[' declare_size NUM ']' ';'
    10 fun_declaration: declare type_specifier declare_id ID . declare_func '(' params ')' compound_stmt
-   73 declare_arr: . "action_declare_arr"
-   74 declare_func: . "action_declare_func"
+   73 declare_arr: .  ['[']
+   74 declare_func: .  ['(']
 
-    ';'                    shift, and go to state 19
-    "action_declare_arr"   shift, and go to state 20
-    "action_declare_func"  shift, and go to state 21
+    ';'  shift, and go to state 16
 
-    declare_arr   go to state 22
-    declare_func  go to state 23
+    '('       reduce using rule 74 (declare_func)
+    $default  reduce using rule 73 (declare_arr)
+
+    declare_arr   go to state 17
+    declare_func  go to state 18
 
 
-state 19
+state 16
 
     6 var_declaration: declare type_specifier declare_id ID ';' .
 
     $default  reduce using rule 6 (var_declaration)
 
 
-state 20
-
-   73 declare_arr: "action_declare_arr" .
-
-    $default  reduce using rule 73 (declare_arr)
-
-
-state 21
-
-   74 declare_func: "action_declare_func" .
-
-    $default  reduce using rule 74 (declare_func)
-
-
-state 22
+state 17
 
     7 var_declaration: declare type_specifier declare_id ID declare_arr . '[' declare_size NUM ']' ';'
 
-    '['  shift, and go to state 24
+    '['  shift, and go to state 19
 
 
-state 23
+state 18
 
    10 fun_declaration: declare type_specifier declare_id ID declare_func . '(' params ')' compound_stmt
 
-    '('  shift, and go to state 25
+    '('  shift, and go to state 20
 
 
-state 24
+state 19
 
     7 var_declaration: declare type_specifier declare_id ID declare_arr '[' . declare_size NUM ']' ';'
-   75 declare_size: . "action_declare_size"
+   75 declare_size: .
 
-    "action_declare_size"  shift, and go to state 26
+    $default  reduce using rule 75 (declare_size)
 
-    declare_size  go to state 27
+    declare_size  go to state 21
 
 
-state 25
+state 20
 
    10 fun_declaration: declare type_specifier declare_id ID declare_func '(' . params ')' compound_stmt
    11 params: . param_list
    12       | . "void"
-   13 param_list: . param_list ',' param declare_scope_increment "action_declare_size_increment"
-   14           | . param declare_scope_increment "action_declare_size_increment"
+   13 param_list: . param_list ',' param declare_scope_increment declare_size_increment
+   14           | . param declare_scope_increment declare_size_increment
    15 param: . declare type_specifier declare_id ID
    16      | . declare type_specifier declare_id ID declare_arr '[' ']'
-   71 declare: . "action_declare"
+   71 declare: .  ["int", "void"]
 
-    "void"            shift, and go to state 28
-    "action_declare"  shift, and go to state 5
+    "void"  shift, and go to state 22
 
-    params      go to state 29
-    param_list  go to state 30
-    param       go to state 31
-    declare     go to state 32
+    "void"    [reduce using rule 71 (declare)]
+    $default  reduce using rule 71 (declare)
 
-
-state 26
-
-   75 declare_size: "action_declare_size" .
-
-    $default  reduce using rule 75 (declare_size)
+    params      go to state 23
+    param_list  go to state 24
+    param       go to state 25
+    declare     go to state 26
 
 
-state 27
+state 21
 
     7 var_declaration: declare type_specifier declare_id ID declare_arr '[' declare_size . NUM ']' ';'
 
-    NUM  shift, and go to state 33
+    NUM  shift, and go to state 27
 
 
-state 28
+state 22
 
    12 params: "void" .
 
     $default  reduce using rule 12 (params)
 
 
-state 29
+state 23
 
    10 fun_declaration: declare type_specifier declare_id ID declare_func '(' params . ')' compound_stmt
 
-    ')'  shift, and go to state 34
+    ')'  shift, and go to state 28
 
 
-state 30
+state 24
 
    11 params: param_list .  [')']
-   13 param_list: param_list . ',' param declare_scope_increment "action_declare_size_increment"
+   13 param_list: param_list . ',' param declare_scope_increment declare_size_increment
 
-    ','  shift, and go to state 35
+    ','  shift, and go to state 29
 
     $default  reduce using rule 11 (params)
 
 
-state 31
+state 25
 
-   14 param_list: param . declare_scope_increment "action_declare_size_increment"
-   76 declare_scope_increment: . "action_declare_scope_increment"
+   14 param_list: param . declare_scope_increment declare_size_increment
+   76 declare_scope_increment: .
 
-    "action_declare_scope_increment"  shift, and go to state 36
+    $default  reduce using rule 76 (declare_scope_increment)
 
-    declare_scope_increment  go to state 37
+    declare_scope_increment  go to state 30
 
 
-state 32
+state 26
 
     8 type_specifier: . "int"
     9               | . "void"
    15 param: declare . type_specifier declare_id ID
    16      | declare . type_specifier declare_id ID declare_arr '[' ']'
 
-    "int"   shift, and go to state 13
-    "void"  shift, and go to state 14
+    "int"   shift, and go to state 11
+    "void"  shift, and go to state 12
 
-    type_specifier  go to state 38
+    type_specifier  go to state 31
 
 
-state 33
+state 27
 
     7 var_declaration: declare type_specifier declare_id ID declare_arr '[' declare_size NUM . ']' ';'
 
-    ']'  shift, and go to state 39
+    ']'  shift, and go to state 32
 
 
-state 34
+state 28
 
    10 fun_declaration: declare type_specifier declare_id ID declare_func '(' params ')' . compound_stmt
    17 compound_stmt: . '{' start_scope local_declarations statement_list end_scope '}'
 
-    '{'  shift, and go to state 40
+    '{'  shift, and go to state 33
 
-    compound_stmt  go to state 41
+    compound_stmt  go to state 34
 
 
-state 35
+state 29
 
-   13 param_list: param_list ',' . param declare_scope_increment "action_declare_size_increment"
+   13 param_list: param_list ',' . param declare_scope_increment declare_size_increment
    15 param: . declare type_specifier declare_id ID
    16      | . declare type_specifier declare_id ID declare_arr '[' ']'
-   71 declare: . "action_declare"
+   71 declare: .
 
-    "action_declare"  shift, and go to state 5
+    $default  reduce using rule 71 (declare)
 
-    param    go to state 42
-    declare  go to state 32
-
-
-state 36
-
-   76 declare_scope_increment: "action_declare_scope_increment" .
-
-    $default  reduce using rule 76 (declare_scope_increment)
+    param    go to state 35
+    declare  go to state 26
 
 
-state 37
+state 30
 
-   14 param_list: param declare_scope_increment . "action_declare_size_increment"
+   14 param_list: param declare_scope_increment . declare_size_increment
+   88 declare_size_increment: .
 
-    "action_declare_size_increment"  shift, and go to state 43
+    $default  reduce using rule 88 (declare_size_increment)
+
+    declare_size_increment  go to state 36
 
 
-state 38
+state 31
 
    15 param: declare type_specifier . declare_id ID
    16      | declare type_specifier . declare_id ID declare_arr '[' ']'
-   72 declare_id: . "action_declare_id"
+   72 declare_id: .
 
-    "action_declare_id"  shift, and go to state 16
+    $default  reduce using rule 72 (declare_id)
 
-    declare_id  go to state 44
+    declare_id  go to state 37
 
 
-state 39
+state 32
 
     7 var_declaration: declare type_specifier declare_id ID declare_arr '[' declare_size NUM ']' . ';'
 
-    ';'  shift, and go to state 45
+    ';'  shift, and go to state 38
 
 
-state 40
+state 33
 
    17 compound_stmt: '{' . start_scope local_declarations statement_list end_scope '}'
-   65 start_scope: . "action_start_scope"
+   65 start_scope: .
 
-    "action_start_scope"  shift, and go to state 1
+    $default  reduce using rule 65 (start_scope)
 
-    start_scope  go to state 46
+    start_scope  go to state 39
 
 
-state 41
+state 34
 
    10 fun_declaration: declare type_specifier declare_id ID declare_func '(' params ')' compound_stmt .
 
     $default  reduce using rule 10 (fun_declaration)
 
 
-state 42
+state 35
 
-   13 param_list: param_list ',' param . declare_scope_increment "action_declare_size_increment"
-   76 declare_scope_increment: . "action_declare_scope_increment"
+   13 param_list: param_list ',' param . declare_scope_increment declare_size_increment
+   76 declare_scope_increment: .
 
-    "action_declare_scope_increment"  shift, and go to state 36
+    $default  reduce using rule 76 (declare_scope_increment)
 
-    declare_scope_increment  go to state 47
+    declare_scope_increment  go to state 40
 
 
-state 43
+state 36
 
-   14 param_list: param declare_scope_increment "action_declare_size_increment" .
+   14 param_list: param declare_scope_increment declare_size_increment .
 
     $default  reduce using rule 14 (param_list)
 
 
-state 44
+state 37
 
    15 param: declare type_specifier declare_id . ID
    16      | declare type_specifier declare_id . ID declare_arr '[' ']'
 
-    ID  shift, and go to state 48
+    ID  shift, and go to state 41
 
 
-state 45
+state 38
 
     7 var_declaration: declare type_specifier declare_id ID declare_arr '[' declare_size NUM ']' ';' .
 
     $default  reduce using rule 7 (var_declaration)
 
 
-state 46
+state 39
 
    17 compound_stmt: '{' start_scope . local_declarations statement_list end_scope '}'
    18 local_declarations: . local_declarations var_declaration
@@ -705,70 +694,72 @@ state 46
 
     $default  reduce using rule 19 (local_declarations)
 
-    local_declarations  go to state 49
+    local_declarations  go to state 42
 
 
-state 47
+state 40
 
-   13 param_list: param_list ',' param declare_scope_increment . "action_declare_size_increment"
+   13 param_list: param_list ',' param declare_scope_increment . declare_size_increment
+   88 declare_size_increment: .
 
-    "action_declare_size_increment"  shift, and go to state 50
+    $default  reduce using rule 88 (declare_size_increment)
+
+    declare_size_increment  go to state 43
 
 
-state 48
+state 41
 
-   15 param: declare type_specifier declare_id ID .  ["action_declare_scope_increment"]
+   15 param: declare type_specifier declare_id ID .  [')', ',']
    16      | declare type_specifier declare_id ID . declare_arr '[' ']'
-   73 declare_arr: . "action_declare_arr"
+   73 declare_arr: .  ['[']
 
-    "action_declare_arr"  shift, and go to state 20
-
+    '['       reduce using rule 73 (declare_arr)
     $default  reduce using rule 15 (param)
 
-    declare_arr  go to state 51
+    declare_arr  go to state 44
 
 
-state 49
+state 42
 
     6 var_declaration: . declare type_specifier declare_id ID ';'
     7                | . declare type_specifier declare_id ID declare_arr '[' declare_size NUM ']' ';'
    17 compound_stmt: '{' start_scope local_declarations . statement_list end_scope '}'
    18 local_declarations: local_declarations . var_declaration
    20 statement_list: . statement_list statement
-   21               | .  ["action_end_scope", ';', '(', '{', "break", "if", "while", "return", "switch", "output", "action_push_id", "action_save_const"]
-   71 declare: . "action_declare"
+   21               | .  [NUM, ID, ';', '(', '{', '}', "break", "if", "while", "return", "switch", "output"]
+   71 declare: .  ["int", "void"]
 
-    "action_declare"  shift, and go to state 5
-
+    "int"     reduce using rule 71 (declare)
+    "void"    reduce using rule 71 (declare)
     $default  reduce using rule 21 (statement_list)
 
-    var_declaration  go to state 52
-    statement_list   go to state 53
-    declare          go to state 54
+    var_declaration  go to state 45
+    statement_list   go to state 46
+    declare          go to state 47
 
 
-state 50
+state 43
 
-   13 param_list: param_list ',' param declare_scope_increment "action_declare_size_increment" .
+   13 param_list: param_list ',' param declare_scope_increment declare_size_increment .
 
     $default  reduce using rule 13 (param_list)
 
 
-state 51
+state 44
 
    16 param: declare type_specifier declare_id ID declare_arr . '[' ']'
 
-    '['  shift, and go to state 55
+    '['  shift, and go to state 48
 
 
-state 52
+state 45
 
    18 local_declarations: local_declarations var_declaration .
 
     $default  reduce using rule 18 (local_declarations)
 
 
-state 53
+state 46
 
    17 compound_stmt: . '{' start_scope local_declarations statement_list end_scope '}'
    17              | '{' start_scope local_declarations statement_list . end_scope '}'
@@ -782,1075 +773,1092 @@ state 53
    28 expression_stmt: . expression ';'
    29                | . "break" ';'
    30                | . ';'
-   31 selection_stmt: . "if" '(' expression ')' save statement "endif" "action_if"
-   32               | . "if" '(' expression ')' save statement save "else" label statement "endif" "action_ifelse"
-   33 iteration_stmt: . "while" '(' expression ')' statement "action_while_loop"
+   31 selection_stmt: . "if" '(' expression ')' save statement "endif" if
+   32               | . "if" '(' expression ')' save statement save "else" label statement "endif" ifelse
+   33 iteration_stmt: . "while" '(' expression ')' statement while_loop
    34 return_stmt: . "return" ';'
    35            | . "return" expression ';'
    36 switch_stmt: . "switch" '(' expression ')' '{' case_stmts default_stmt '}'
    42 expression: . var '=' expression
    43           | . simple_expression
    44 var: . push_id ID
-   45    | . push_id ID '[' expression ']' "action_index_addr"
-   46 simple_expression: . additive_expression '<' additive_expression "action_lt"
-   47                  | . additive_expression "==" additive_expression "action_eq"
+   45    | . push_id ID '[' expression ']' index_addr
+   46 simple_expression: . additive_expression '<' additive_expression lt
+   47                  | . additive_expression "==" additive_expression eq
    48                  | . additive_expression
-   49 additive_expression: . additive_expression '+' term "action_add"
-   50                    | . additive_expression '-' term "action_sub"
+   49 additive_expression: . additive_expression '+' term add
+   50                    | . additive_expression '-' term sub
    51                    | . term
-   52 term: . term '*' factor "action_mult"
-   53     | . term '/' factor "action_div"
+   52 term: . term '*' factor mult
+   53     | . term '/' factor div
    54     | . factor
    55 factor: . '(' expression ')'
    56       | . var
    57       | . call
    58       | . save_const NUM
-   59 call: . "output" '(' expression ')' "action_output"
-   60     | . push_id ID '(' args ')' "action_call_fun"
-   66 end_scope: . "action_end_scope"
-   67 push_id: . "action_push_id"
-   68 save_const: . "action_save_const"
+   59 call: . "output" '(' expression ')' output
+   60     | . push_id ID '(' args ')' call_fun
+   66 end_scope: .  ['}']
+   67 push_id: .  [ID]
+   68 save_const: .  [NUM]
 
-    "action_end_scope"   shift, and go to state 56
-    ';'                  shift, and go to state 57
-    '('                  shift, and go to state 58
-    '{'                  shift, and go to state 40
-    "break"              shift, and go to state 59
-    "if"                 shift, and go to state 60
-    "while"              shift, and go to state 61
-    "return"             shift, and go to state 62
-    "switch"             shift, and go to state 63
-    "output"             shift, and go to state 64
-    "action_push_id"     shift, and go to state 65
-    "action_save_const"  shift, and go to state 66
+    ';'       shift, and go to state 49
+    '('       shift, and go to state 50
+    '{'       shift, and go to state 33
+    "break"   shift, and go to state 51
+    "if"      shift, and go to state 52
+    "while"   shift, and go to state 53
+    "return"  shift, and go to state 54
+    "switch"  shift, and go to state 55
+    "output"  shift, and go to state 56
 
-    compound_stmt        go to state 67
-    statement            go to state 68
-    expression_stmt      go to state 69
-    selection_stmt       go to state 70
-    iteration_stmt       go to state 71
-    return_stmt          go to state 72
-    switch_stmt          go to state 73
-    expression           go to state 74
-    var                  go to state 75
-    simple_expression    go to state 76
-    additive_expression  go to state 77
-    term                 go to state 78
-    factor               go to state 79
-    call                 go to state 80
-    end_scope            go to state 81
-    push_id              go to state 82
-    save_const           go to state 83
+    NUM       reduce using rule 68 (save_const)
+    ID        reduce using rule 67 (push_id)
+    $default  reduce using rule 66 (end_scope)
+
+    compound_stmt        go to state 57
+    statement            go to state 58
+    expression_stmt      go to state 59
+    selection_stmt       go to state 60
+    iteration_stmt       go to state 61
+    return_stmt          go to state 62
+    switch_stmt          go to state 63
+    expression           go to state 64
+    var                  go to state 65
+    simple_expression    go to state 66
+    additive_expression  go to state 67
+    term                 go to state 68
+    factor               go to state 69
+    call                 go to state 70
+    end_scope            go to state 71
+    push_id              go to state 72
+    save_const           go to state 73
 
 
-state 54
+state 47
 
     6 var_declaration: declare . type_specifier declare_id ID ';'
     7                | declare . type_specifier declare_id ID declare_arr '[' declare_size NUM ']' ';'
     8 type_specifier: . "int"
     9               | . "void"
 
-    "int"   shift, and go to state 13
-    "void"  shift, and go to state 14
+    "int"   shift, and go to state 11
+    "void"  shift, and go to state 12
 
-    type_specifier  go to state 84
+    type_specifier  go to state 74
 
 
-state 55
+state 48
 
    16 param: declare type_specifier declare_id ID declare_arr '[' . ']'
 
-    ']'  shift, and go to state 85
+    ']'  shift, and go to state 75
 
 
-state 56
-
-   66 end_scope: "action_end_scope" .
-
-    $default  reduce using rule 66 (end_scope)
-
-
-state 57
+state 49
 
    30 expression_stmt: ';' .
 
     $default  reduce using rule 30 (expression_stmt)
 
 
-state 58
+state 50
 
    42 expression: . var '=' expression
    43           | . simple_expression
    44 var: . push_id ID
-   45    | . push_id ID '[' expression ']' "action_index_addr"
-   46 simple_expression: . additive_expression '<' additive_expression "action_lt"
-   47                  | . additive_expression "==" additive_expression "action_eq"
+   45    | . push_id ID '[' expression ']' index_addr
+   46 simple_expression: . additive_expression '<' additive_expression lt
+   47                  | . additive_expression "==" additive_expression eq
    48                  | . additive_expression
-   49 additive_expression: . additive_expression '+' term "action_add"
-   50                    | . additive_expression '-' term "action_sub"
+   49 additive_expression: . additive_expression '+' term add
+   50                    | . additive_expression '-' term sub
    51                    | . term
-   52 term: . term '*' factor "action_mult"
-   53     | . term '/' factor "action_div"
+   52 term: . term '*' factor mult
+   53     | . term '/' factor div
    54     | . factor
    55 factor: . '(' expression ')'
    55       | '(' . expression ')'
    56       | . var
    57       | . call
    58       | . save_const NUM
-   59 call: . "output" '(' expression ')' "action_output"
-   60     | . push_id ID '(' args ')' "action_call_fun"
-   67 push_id: . "action_push_id"
-   68 save_const: . "action_save_const"
+   59 call: . "output" '(' expression ')' output
+   60     | . push_id ID '(' args ')' call_fun
+   67 push_id: .  [ID]
+   68 save_const: .  [NUM]
 
-    '('                  shift, and go to state 58
-    "output"             shift, and go to state 64
-    "action_push_id"     shift, and go to state 65
-    "action_save_const"  shift, and go to state 66
+    '('       shift, and go to state 50
+    "output"  shift, and go to state 56
 
-    expression           go to state 86
-    var                  go to state 75
-    simple_expression    go to state 76
-    additive_expression  go to state 77
-    term                 go to state 78
-    factor               go to state 79
-    call                 go to state 80
-    push_id              go to state 82
-    save_const           go to state 83
+    NUM       reduce using rule 68 (save_const)
+    $default  reduce using rule 67 (push_id)
+
+    expression           go to state 76
+    var                  go to state 65
+    simple_expression    go to state 66
+    additive_expression  go to state 67
+    term                 go to state 68
+    factor               go to state 69
+    call                 go to state 70
+    push_id              go to state 72
+    save_const           go to state 73
 
 
-state 59
+state 51
 
    29 expression_stmt: "break" . ';'
 
-    ';'  shift, and go to state 87
+    ';'  shift, and go to state 77
 
 
-state 60
+state 52
 
-   31 selection_stmt: "if" . '(' expression ')' save statement "endif" "action_if"
-   32               | "if" . '(' expression ')' save statement save "else" label statement "endif" "action_ifelse"
+   31 selection_stmt: "if" . '(' expression ')' save statement "endif" if
+   32               | "if" . '(' expression ')' save statement save "else" label statement "endif" ifelse
 
-    '('  shift, and go to state 88
-
-
-state 61
-
-   33 iteration_stmt: "while" . '(' expression ')' statement "action_while_loop"
-
-    '('  shift, and go to state 89
+    '('  shift, and go to state 78
 
 
-state 62
+state 53
+
+   33 iteration_stmt: "while" . '(' expression ')' statement while_loop
+
+    '('  shift, and go to state 79
+
+
+state 54
 
    34 return_stmt: "return" . ';'
    35            | "return" . expression ';'
    42 expression: . var '=' expression
    43           | . simple_expression
    44 var: . push_id ID
-   45    | . push_id ID '[' expression ']' "action_index_addr"
-   46 simple_expression: . additive_expression '<' additive_expression "action_lt"
-   47                  | . additive_expression "==" additive_expression "action_eq"
+   45    | . push_id ID '[' expression ']' index_addr
+   46 simple_expression: . additive_expression '<' additive_expression lt
+   47                  | . additive_expression "==" additive_expression eq
    48                  | . additive_expression
-   49 additive_expression: . additive_expression '+' term "action_add"
-   50                    | . additive_expression '-' term "action_sub"
+   49 additive_expression: . additive_expression '+' term add
+   50                    | . additive_expression '-' term sub
    51                    | . term
-   52 term: . term '*' factor "action_mult"
-   53     | . term '/' factor "action_div"
+   52 term: . term '*' factor mult
+   53     | . term '/' factor div
    54     | . factor
    55 factor: . '(' expression ')'
    56       | . var
    57       | . call
    58       | . save_const NUM
-   59 call: . "output" '(' expression ')' "action_output"
-   60     | . push_id ID '(' args ')' "action_call_fun"
-   67 push_id: . "action_push_id"
-   68 save_const: . "action_save_const"
+   59 call: . "output" '(' expression ')' output
+   60     | . push_id ID '(' args ')' call_fun
+   67 push_id: .  [ID]
+   68 save_const: .  [NUM]
 
-    ';'                  shift, and go to state 90
-    '('                  shift, and go to state 58
-    "output"             shift, and go to state 64
-    "action_push_id"     shift, and go to state 65
-    "action_save_const"  shift, and go to state 66
+    ';'       shift, and go to state 80
+    '('       shift, and go to state 50
+    "output"  shift, and go to state 56
 
-    expression           go to state 91
-    var                  go to state 75
-    simple_expression    go to state 76
-    additive_expression  go to state 77
-    term                 go to state 78
-    factor               go to state 79
-    call                 go to state 80
-    push_id              go to state 82
-    save_const           go to state 83
+    NUM       reduce using rule 68 (save_const)
+    $default  reduce using rule 67 (push_id)
+
+    expression           go to state 81
+    var                  go to state 65
+    simple_expression    go to state 66
+    additive_expression  go to state 67
+    term                 go to state 68
+    factor               go to state 69
+    call                 go to state 70
+    push_id              go to state 72
+    save_const           go to state 73
 
 
-state 63
+state 55
 
    36 switch_stmt: "switch" . '(' expression ')' '{' case_stmts default_stmt '}'
 
-    '('  shift, and go to state 92
+    '('  shift, and go to state 82
 
 
-state 64
+state 56
 
-   59 call: "output" . '(' expression ')' "action_output"
+   59 call: "output" . '(' expression ')' output
 
-    '('  shift, and go to state 93
-
-
-state 65
-
-   67 push_id: "action_push_id" .
-
-    $default  reduce using rule 67 (push_id)
+    '('  shift, and go to state 83
 
 
-state 66
-
-   68 save_const: "action_save_const" .
-
-    $default  reduce using rule 68 (save_const)
-
-
-state 67
+state 57
 
    23 statement: compound_stmt .
 
     $default  reduce using rule 23 (statement)
 
 
-state 68
+state 58
 
    20 statement_list: statement_list statement .
 
     $default  reduce using rule 20 (statement_list)
 
 
-state 69
+state 59
 
    22 statement: expression_stmt .
 
     $default  reduce using rule 22 (statement)
 
 
-state 70
+state 60
 
    24 statement: selection_stmt .
 
     $default  reduce using rule 24 (statement)
 
 
-state 71
+state 61
 
    25 statement: iteration_stmt .
 
     $default  reduce using rule 25 (statement)
 
 
-state 72
+state 62
 
    26 statement: return_stmt .
 
     $default  reduce using rule 26 (statement)
 
 
-state 73
+state 63
 
    27 statement: switch_stmt .
 
     $default  reduce using rule 27 (statement)
 
 
-state 74
+state 64
 
    28 expression_stmt: expression . ';'
 
-    ';'  shift, and go to state 94
+    ';'  shift, and go to state 84
 
 
-state 75
+state 65
 
    42 expression: var . '=' expression
    56 factor: var .  [';', ']', ')', ',', '<', "==", '+', '-', '*', '/']
 
-    '='  shift, and go to state 95
+    '='  shift, and go to state 85
 
     $default  reduce using rule 56 (factor)
 
 
-state 76
+state 66
 
    43 expression: simple_expression .
 
     $default  reduce using rule 43 (expression)
 
 
-state 77
+state 67
 
-   46 simple_expression: additive_expression . '<' additive_expression "action_lt"
-   47                  | additive_expression . "==" additive_expression "action_eq"
+   46 simple_expression: additive_expression . '<' additive_expression lt
+   47                  | additive_expression . "==" additive_expression eq
    48                  | additive_expression .  [';', ']', ')', ',']
-   49 additive_expression: additive_expression . '+' term "action_add"
-   50                    | additive_expression . '-' term "action_sub"
+   49 additive_expression: additive_expression . '+' term add
+   50                    | additive_expression . '-' term sub
 
-    '<'   shift, and go to state 96
-    "=="  shift, and go to state 97
-    '+'   shift, and go to state 98
-    '-'   shift, and go to state 99
+    '<'   shift, and go to state 86
+    "=="  shift, and go to state 87
+    '+'   shift, and go to state 88
+    '-'   shift, and go to state 89
 
     $default  reduce using rule 48 (simple_expression)
 
 
-state 78
+state 68
 
-   51 additive_expression: term .  [';', ']', ')', ',', '<', "action_lt", "==", "action_eq", '+', '-']
-   52 term: term . '*' factor "action_mult"
-   53     | term . '/' factor "action_div"
+   51 additive_expression: term .  [';', ']', ')', ',', '<', "==", '+', '-']
+   52 term: term . '*' factor mult
+   53     | term . '/' factor div
 
-    '*'  shift, and go to state 100
-    '/'  shift, and go to state 101
+    '*'  shift, and go to state 90
+    '/'  shift, and go to state 91
 
     $default  reduce using rule 51 (additive_expression)
 
 
-state 79
+state 69
 
    54 term: factor .
 
     $default  reduce using rule 54 (term)
 
 
-state 80
+state 70
 
    57 factor: call .
 
     $default  reduce using rule 57 (factor)
 
 
-state 81
+state 71
 
    17 compound_stmt: '{' start_scope local_declarations statement_list end_scope . '}'
 
-    '}'  shift, and go to state 102
+    '}'  shift, and go to state 92
 
 
-state 82
+state 72
 
    44 var: push_id . ID
-   45    | push_id . ID '[' expression ']' "action_index_addr"
-   60 call: push_id . ID '(' args ')' "action_call_fun"
+   45    | push_id . ID '[' expression ']' index_addr
+   60 call: push_id . ID '(' args ')' call_fun
 
-    ID  shift, and go to state 103
+    ID  shift, and go to state 93
 
 
-state 83
+state 73
 
    58 factor: save_const . NUM
 
-    NUM  shift, and go to state 104
+    NUM  shift, and go to state 94
 
 
-state 84
+state 74
 
     6 var_declaration: declare type_specifier . declare_id ID ';'
     7                | declare type_specifier . declare_id ID declare_arr '[' declare_size NUM ']' ';'
-   72 declare_id: . "action_declare_id"
+   72 declare_id: .
 
-    "action_declare_id"  shift, and go to state 16
+    $default  reduce using rule 72 (declare_id)
 
-    declare_id  go to state 105
+    declare_id  go to state 95
 
 
-state 85
+state 75
 
    16 param: declare type_specifier declare_id ID declare_arr '[' ']' .
 
     $default  reduce using rule 16 (param)
 
 
-state 86
+state 76
 
    55 factor: '(' expression . ')'
 
-    ')'  shift, and go to state 106
+    ')'  shift, and go to state 96
 
 
-state 87
+state 77
 
    29 expression_stmt: "break" ';' .
 
     $default  reduce using rule 29 (expression_stmt)
 
 
-state 88
+state 78
 
-   31 selection_stmt: "if" '(' . expression ')' save statement "endif" "action_if"
-   32               | "if" '(' . expression ')' save statement save "else" label statement "endif" "action_ifelse"
+   31 selection_stmt: "if" '(' . expression ')' save statement "endif" if
+   32               | "if" '(' . expression ')' save statement save "else" label statement "endif" ifelse
    42 expression: . var '=' expression
    43           | . simple_expression
    44 var: . push_id ID
-   45    | . push_id ID '[' expression ']' "action_index_addr"
-   46 simple_expression: . additive_expression '<' additive_expression "action_lt"
-   47                  | . additive_expression "==" additive_expression "action_eq"
+   45    | . push_id ID '[' expression ']' index_addr
+   46 simple_expression: . additive_expression '<' additive_expression lt
+   47                  | . additive_expression "==" additive_expression eq
    48                  | . additive_expression
-   49 additive_expression: . additive_expression '+' term "action_add"
-   50                    | . additive_expression '-' term "action_sub"
+   49 additive_expression: . additive_expression '+' term add
+   50                    | . additive_expression '-' term sub
    51                    | . term
-   52 term: . term '*' factor "action_mult"
-   53     | . term '/' factor "action_div"
+   52 term: . term '*' factor mult
+   53     | . term '/' factor div
    54     | . factor
    55 factor: . '(' expression ')'
    56       | . var
    57       | . call
    58       | . save_const NUM
-   59 call: . "output" '(' expression ')' "action_output"
-   60     | . push_id ID '(' args ')' "action_call_fun"
-   67 push_id: . "action_push_id"
-   68 save_const: . "action_save_const"
+   59 call: . "output" '(' expression ')' output
+   60     | . push_id ID '(' args ')' call_fun
+   67 push_id: .  [ID]
+   68 save_const: .  [NUM]
 
-    '('                  shift, and go to state 58
-    "output"             shift, and go to state 64
-    "action_push_id"     shift, and go to state 65
-    "action_save_const"  shift, and go to state 66
+    '('       shift, and go to state 50
+    "output"  shift, and go to state 56
 
-    expression           go to state 107
-    var                  go to state 75
-    simple_expression    go to state 76
-    additive_expression  go to state 77
-    term                 go to state 78
-    factor               go to state 79
-    call                 go to state 80
-    push_id              go to state 82
-    save_const           go to state 83
+    NUM       reduce using rule 68 (save_const)
+    $default  reduce using rule 67 (push_id)
+
+    expression           go to state 97
+    var                  go to state 65
+    simple_expression    go to state 66
+    additive_expression  go to state 67
+    term                 go to state 68
+    factor               go to state 69
+    call                 go to state 70
+    push_id              go to state 72
+    save_const           go to state 73
 
 
-state 89
+state 79
 
-   33 iteration_stmt: "while" '(' . expression ')' statement "action_while_loop"
+   33 iteration_stmt: "while" '(' . expression ')' statement while_loop
    42 expression: . var '=' expression
    43           | . simple_expression
    44 var: . push_id ID
-   45    | . push_id ID '[' expression ']' "action_index_addr"
-   46 simple_expression: . additive_expression '<' additive_expression "action_lt"
-   47                  | . additive_expression "==" additive_expression "action_eq"
+   45    | . push_id ID '[' expression ']' index_addr
+   46 simple_expression: . additive_expression '<' additive_expression lt
+   47                  | . additive_expression "==" additive_expression eq
    48                  | . additive_expression
-   49 additive_expression: . additive_expression '+' term "action_add"
-   50                    | . additive_expression '-' term "action_sub"
+   49 additive_expression: . additive_expression '+' term add
+   50                    | . additive_expression '-' term sub
    51                    | . term
-   52 term: . term '*' factor "action_mult"
-   53     | . term '/' factor "action_div"
+   52 term: . term '*' factor mult
+   53     | . term '/' factor div
    54     | . factor
    55 factor: . '(' expression ')'
    56       | . var
    57       | . call
    58       | . save_const NUM
-   59 call: . "output" '(' expression ')' "action_output"
-   60     | . push_id ID '(' args ')' "action_call_fun"
-   67 push_id: . "action_push_id"
-   68 save_const: . "action_save_const"
+   59 call: . "output" '(' expression ')' output
+   60     | . push_id ID '(' args ')' call_fun
+   67 push_id: .  [ID]
+   68 save_const: .  [NUM]
 
-    '('                  shift, and go to state 58
-    "output"             shift, and go to state 64
-    "action_push_id"     shift, and go to state 65
-    "action_save_const"  shift, and go to state 66
+    '('       shift, and go to state 50
+    "output"  shift, and go to state 56
 
-    expression           go to state 108
-    var                  go to state 75
-    simple_expression    go to state 76
-    additive_expression  go to state 77
-    term                 go to state 78
-    factor               go to state 79
-    call                 go to state 80
-    push_id              go to state 82
-    save_const           go to state 83
+    NUM       reduce using rule 68 (save_const)
+    $default  reduce using rule 67 (push_id)
+
+    expression           go to state 98
+    var                  go to state 65
+    simple_expression    go to state 66
+    additive_expression  go to state 67
+    term                 go to state 68
+    factor               go to state 69
+    call                 go to state 70
+    push_id              go to state 72
+    save_const           go to state 73
 
 
-state 90
+state 80
 
    34 return_stmt: "return" ';' .
 
     $default  reduce using rule 34 (return_stmt)
 
 
-state 91
+state 81
 
    35 return_stmt: "return" expression . ';'
 
-    ';'  shift, and go to state 109
+    ';'  shift, and go to state 99
 
 
-state 92
+state 82
 
    36 switch_stmt: "switch" '(' . expression ')' '{' case_stmts default_stmt '}'
    42 expression: . var '=' expression
    43           | . simple_expression
    44 var: . push_id ID
-   45    | . push_id ID '[' expression ']' "action_index_addr"
-   46 simple_expression: . additive_expression '<' additive_expression "action_lt"
-   47                  | . additive_expression "==" additive_expression "action_eq"
+   45    | . push_id ID '[' expression ']' index_addr
+   46 simple_expression: . additive_expression '<' additive_expression lt
+   47                  | . additive_expression "==" additive_expression eq
    48                  | . additive_expression
-   49 additive_expression: . additive_expression '+' term "action_add"
-   50                    | . additive_expression '-' term "action_sub"
+   49 additive_expression: . additive_expression '+' term add
+   50                    | . additive_expression '-' term sub
    51                    | . term
-   52 term: . term '*' factor "action_mult"
-   53     | . term '/' factor "action_div"
+   52 term: . term '*' factor mult
+   53     | . term '/' factor div
    54     | . factor
    55 factor: . '(' expression ')'
    56       | . var
    57       | . call
    58       | . save_const NUM
-   59 call: . "output" '(' expression ')' "action_output"
-   60     | . push_id ID '(' args ')' "action_call_fun"
-   67 push_id: . "action_push_id"
-   68 save_const: . "action_save_const"
+   59 call: . "output" '(' expression ')' output
+   60     | . push_id ID '(' args ')' call_fun
+   67 push_id: .  [ID]
+   68 save_const: .  [NUM]
 
-    '('                  shift, and go to state 58
-    "output"             shift, and go to state 64
-    "action_push_id"     shift, and go to state 65
-    "action_save_const"  shift, and go to state 66
+    '('       shift, and go to state 50
+    "output"  shift, and go to state 56
 
-    expression           go to state 110
-    var                  go to state 75
-    simple_expression    go to state 76
-    additive_expression  go to state 77
-    term                 go to state 78
-    factor               go to state 79
-    call                 go to state 80
-    push_id              go to state 82
-    save_const           go to state 83
+    NUM       reduce using rule 68 (save_const)
+    $default  reduce using rule 67 (push_id)
+
+    expression           go to state 100
+    var                  go to state 65
+    simple_expression    go to state 66
+    additive_expression  go to state 67
+    term                 go to state 68
+    factor               go to state 69
+    call                 go to state 70
+    push_id              go to state 72
+    save_const           go to state 73
 
 
-state 93
+state 83
 
    42 expression: . var '=' expression
    43           | . simple_expression
    44 var: . push_id ID
-   45    | . push_id ID '[' expression ']' "action_index_addr"
-   46 simple_expression: . additive_expression '<' additive_expression "action_lt"
-   47                  | . additive_expression "==" additive_expression "action_eq"
+   45    | . push_id ID '[' expression ']' index_addr
+   46 simple_expression: . additive_expression '<' additive_expression lt
+   47                  | . additive_expression "==" additive_expression eq
    48                  | . additive_expression
-   49 additive_expression: . additive_expression '+' term "action_add"
-   50                    | . additive_expression '-' term "action_sub"
+   49 additive_expression: . additive_expression '+' term add
+   50                    | . additive_expression '-' term sub
    51                    | . term
-   52 term: . term '*' factor "action_mult"
-   53     | . term '/' factor "action_div"
+   52 term: . term '*' factor mult
+   53     | . term '/' factor div
    54     | . factor
    55 factor: . '(' expression ')'
    56       | . var
    57       | . call
    58       | . save_const NUM
-   59 call: . "output" '(' expression ')' "action_output"
-   59     | "output" '(' . expression ')' "action_output"
-   60     | . push_id ID '(' args ')' "action_call_fun"
-   67 push_id: . "action_push_id"
-   68 save_const: . "action_save_const"
+   59 call: . "output" '(' expression ')' output
+   59     | "output" '(' . expression ')' output
+   60     | . push_id ID '(' args ')' call_fun
+   67 push_id: .  [ID]
+   68 save_const: .  [NUM]
 
-    '('                  shift, and go to state 58
-    "output"             shift, and go to state 64
-    "action_push_id"     shift, and go to state 65
-    "action_save_const"  shift, and go to state 66
+    '('       shift, and go to state 50
+    "output"  shift, and go to state 56
 
-    expression           go to state 111
-    var                  go to state 75
-    simple_expression    go to state 76
-    additive_expression  go to state 77
-    term                 go to state 78
-    factor               go to state 79
-    call                 go to state 80
-    push_id              go to state 82
-    save_const           go to state 83
+    NUM       reduce using rule 68 (save_const)
+    $default  reduce using rule 67 (push_id)
+
+    expression           go to state 101
+    var                  go to state 65
+    simple_expression    go to state 66
+    additive_expression  go to state 67
+    term                 go to state 68
+    factor               go to state 69
+    call                 go to state 70
+    push_id              go to state 72
+    save_const           go to state 73
 
 
-state 94
+state 84
 
    28 expression_stmt: expression ';' .
 
     $default  reduce using rule 28 (expression_stmt)
 
 
-state 95
+state 85
 
    42 expression: . var '=' expression
    42           | var '=' . expression
    43           | . simple_expression
    44 var: . push_id ID
-   45    | . push_id ID '[' expression ']' "action_index_addr"
-   46 simple_expression: . additive_expression '<' additive_expression "action_lt"
-   47                  | . additive_expression "==" additive_expression "action_eq"
+   45    | . push_id ID '[' expression ']' index_addr
+   46 simple_expression: . additive_expression '<' additive_expression lt
+   47                  | . additive_expression "==" additive_expression eq
    48                  | . additive_expression
-   49 additive_expression: . additive_expression '+' term "action_add"
-   50                    | . additive_expression '-' term "action_sub"
+   49 additive_expression: . additive_expression '+' term add
+   50                    | . additive_expression '-' term sub
    51                    | . term
-   52 term: . term '*' factor "action_mult"
-   53     | . term '/' factor "action_div"
+   52 term: . term '*' factor mult
+   53     | . term '/' factor div
    54     | . factor
    55 factor: . '(' expression ')'
    56       | . var
    57       | . call
    58       | . save_const NUM
-   59 call: . "output" '(' expression ')' "action_output"
-   60     | . push_id ID '(' args ')' "action_call_fun"
-   67 push_id: . "action_push_id"
-   68 save_const: . "action_save_const"
+   59 call: . "output" '(' expression ')' output
+   60     | . push_id ID '(' args ')' call_fun
+   67 push_id: .  [ID]
+   68 save_const: .  [NUM]
 
-    '('                  shift, and go to state 58
-    "output"             shift, and go to state 64
-    "action_push_id"     shift, and go to state 65
-    "action_save_const"  shift, and go to state 66
+    '('       shift, and go to state 50
+    "output"  shift, and go to state 56
 
-    expression           go to state 112
-    var                  go to state 75
-    simple_expression    go to state 76
-    additive_expression  go to state 77
-    term                 go to state 78
-    factor               go to state 79
-    call                 go to state 80
-    push_id              go to state 82
-    save_const           go to state 83
+    NUM       reduce using rule 68 (save_const)
+    $default  reduce using rule 67 (push_id)
+
+    expression           go to state 102
+    var                  go to state 65
+    simple_expression    go to state 66
+    additive_expression  go to state 67
+    term                 go to state 68
+    factor               go to state 69
+    call                 go to state 70
+    push_id              go to state 72
+    save_const           go to state 73
 
 
-state 96
+state 86
 
    44 var: . push_id ID
-   45    | . push_id ID '[' expression ']' "action_index_addr"
-   46 simple_expression: additive_expression '<' . additive_expression "action_lt"
-   49 additive_expression: . additive_expression '+' term "action_add"
-   50                    | . additive_expression '-' term "action_sub"
+   45    | . push_id ID '[' expression ']' index_addr
+   46 simple_expression: additive_expression '<' . additive_expression lt
+   49 additive_expression: . additive_expression '+' term add
+   50                    | . additive_expression '-' term sub
    51                    | . term
-   52 term: . term '*' factor "action_mult"
-   53     | . term '/' factor "action_div"
+   52 term: . term '*' factor mult
+   53     | . term '/' factor div
    54     | . factor
    55 factor: . '(' expression ')'
    56       | . var
    57       | . call
    58       | . save_const NUM
-   59 call: . "output" '(' expression ')' "action_output"
-   60     | . push_id ID '(' args ')' "action_call_fun"
-   67 push_id: . "action_push_id"
-   68 save_const: . "action_save_const"
+   59 call: . "output" '(' expression ')' output
+   60     | . push_id ID '(' args ')' call_fun
+   67 push_id: .  [ID]
+   68 save_const: .  [NUM]
 
-    '('                  shift, and go to state 58
-    "output"             shift, and go to state 64
-    "action_push_id"     shift, and go to state 65
-    "action_save_const"  shift, and go to state 66
+    '('       shift, and go to state 50
+    "output"  shift, and go to state 56
 
-    var                  go to state 113
-    additive_expression  go to state 114
-    term                 go to state 78
-    factor               go to state 79
-    call                 go to state 80
-    push_id              go to state 82
-    save_const           go to state 83
+    NUM       reduce using rule 68 (save_const)
+    $default  reduce using rule 67 (push_id)
+
+    var                  go to state 103
+    additive_expression  go to state 104
+    term                 go to state 68
+    factor               go to state 69
+    call                 go to state 70
+    push_id              go to state 72
+    save_const           go to state 73
 
 
-state 97
+state 87
 
    44 var: . push_id ID
-   45    | . push_id ID '[' expression ']' "action_index_addr"
-   47 simple_expression: additive_expression "==" . additive_expression "action_eq"
-   49 additive_expression: . additive_expression '+' term "action_add"
-   50                    | . additive_expression '-' term "action_sub"
+   45    | . push_id ID '[' expression ']' index_addr
+   47 simple_expression: additive_expression "==" . additive_expression eq
+   49 additive_expression: . additive_expression '+' term add
+   50                    | . additive_expression '-' term sub
    51                    | . term
-   52 term: . term '*' factor "action_mult"
-   53     | . term '/' factor "action_div"
+   52 term: . term '*' factor mult
+   53     | . term '/' factor div
    54     | . factor
    55 factor: . '(' expression ')'
    56       | . var
    57       | . call
    58       | . save_const NUM
-   59 call: . "output" '(' expression ')' "action_output"
-   60     | . push_id ID '(' args ')' "action_call_fun"
-   67 push_id: . "action_push_id"
-   68 save_const: . "action_save_const"
+   59 call: . "output" '(' expression ')' output
+   60     | . push_id ID '(' args ')' call_fun
+   67 push_id: .  [ID]
+   68 save_const: .  [NUM]
 
-    '('                  shift, and go to state 58
-    "output"             shift, and go to state 64
-    "action_push_id"     shift, and go to state 65
-    "action_save_const"  shift, and go to state 66
+    '('       shift, and go to state 50
+    "output"  shift, and go to state 56
 
-    var                  go to state 113
-    additive_expression  go to state 115
-    term                 go to state 78
-    factor               go to state 79
-    call                 go to state 80
-    push_id              go to state 82
-    save_const           go to state 83
+    NUM       reduce using rule 68 (save_const)
+    $default  reduce using rule 67 (push_id)
+
+    var                  go to state 103
+    additive_expression  go to state 105
+    term                 go to state 68
+    factor               go to state 69
+    call                 go to state 70
+    push_id              go to state 72
+    save_const           go to state 73
 
 
-state 98
+state 88
 
    44 var: . push_id ID
-   45    | . push_id ID '[' expression ']' "action_index_addr"
-   49 additive_expression: additive_expression '+' . term "action_add"
-   52 term: . term '*' factor "action_mult"
-   53     | . term '/' factor "action_div"
+   45    | . push_id ID '[' expression ']' index_addr
+   49 additive_expression: additive_expression '+' . term add
+   52 term: . term '*' factor mult
+   53     | . term '/' factor div
    54     | . factor
    55 factor: . '(' expression ')'
    56       | . var
    57       | . call
    58       | . save_const NUM
-   59 call: . "output" '(' expression ')' "action_output"
-   60     | . push_id ID '(' args ')' "action_call_fun"
-   67 push_id: . "action_push_id"
-   68 save_const: . "action_save_const"
+   59 call: . "output" '(' expression ')' output
+   60     | . push_id ID '(' args ')' call_fun
+   67 push_id: .  [ID]
+   68 save_const: .  [NUM]
 
-    '('                  shift, and go to state 58
-    "output"             shift, and go to state 64
-    "action_push_id"     shift, and go to state 65
-    "action_save_const"  shift, and go to state 66
+    '('       shift, and go to state 50
+    "output"  shift, and go to state 56
 
-    var         go to state 113
-    term        go to state 116
-    factor      go to state 79
-    call        go to state 80
-    push_id     go to state 82
-    save_const  go to state 83
+    NUM       reduce using rule 68 (save_const)
+    $default  reduce using rule 67 (push_id)
+
+    var         go to state 103
+    term        go to state 106
+    factor      go to state 69
+    call        go to state 70
+    push_id     go to state 72
+    save_const  go to state 73
 
 
-state 99
+state 89
 
    44 var: . push_id ID
-   45    | . push_id ID '[' expression ']' "action_index_addr"
-   50 additive_expression: additive_expression '-' . term "action_sub"
-   52 term: . term '*' factor "action_mult"
-   53     | . term '/' factor "action_div"
+   45    | . push_id ID '[' expression ']' index_addr
+   50 additive_expression: additive_expression '-' . term sub
+   52 term: . term '*' factor mult
+   53     | . term '/' factor div
    54     | . factor
    55 factor: . '(' expression ')'
    56       | . var
    57       | . call
    58       | . save_const NUM
-   59 call: . "output" '(' expression ')' "action_output"
-   60     | . push_id ID '(' args ')' "action_call_fun"
-   67 push_id: . "action_push_id"
-   68 save_const: . "action_save_const"
+   59 call: . "output" '(' expression ')' output
+   60     | . push_id ID '(' args ')' call_fun
+   67 push_id: .  [ID]
+   68 save_const: .  [NUM]
 
-    '('                  shift, and go to state 58
-    "output"             shift, and go to state 64
-    "action_push_id"     shift, and go to state 65
-    "action_save_const"  shift, and go to state 66
+    '('       shift, and go to state 50
+    "output"  shift, and go to state 56
 
-    var         go to state 113
-    term        go to state 117
-    factor      go to state 79
-    call        go to state 80
-    push_id     go to state 82
-    save_const  go to state 83
+    NUM       reduce using rule 68 (save_const)
+    $default  reduce using rule 67 (push_id)
+
+    var         go to state 103
+    term        go to state 107
+    factor      go to state 69
+    call        go to state 70
+    push_id     go to state 72
+    save_const  go to state 73
 
 
-state 100
+state 90
 
    44 var: . push_id ID
-   45    | . push_id ID '[' expression ']' "action_index_addr"
-   52 term: term '*' . factor "action_mult"
+   45    | . push_id ID '[' expression ']' index_addr
+   52 term: term '*' . factor mult
    55 factor: . '(' expression ')'
    56       | . var
    57       | . call
    58       | . save_const NUM
-   59 call: . "output" '(' expression ')' "action_output"
-   60     | . push_id ID '(' args ')' "action_call_fun"
-   67 push_id: . "action_push_id"
-   68 save_const: . "action_save_const"
+   59 call: . "output" '(' expression ')' output
+   60     | . push_id ID '(' args ')' call_fun
+   67 push_id: .  [ID]
+   68 save_const: .  [NUM]
 
-    '('                  shift, and go to state 58
-    "output"             shift, and go to state 64
-    "action_push_id"     shift, and go to state 65
-    "action_save_const"  shift, and go to state 66
+    '('       shift, and go to state 50
+    "output"  shift, and go to state 56
 
-    var         go to state 113
-    factor      go to state 118
-    call        go to state 80
-    push_id     go to state 82
-    save_const  go to state 83
+    NUM       reduce using rule 68 (save_const)
+    $default  reduce using rule 67 (push_id)
+
+    var         go to state 103
+    factor      go to state 108
+    call        go to state 70
+    push_id     go to state 72
+    save_const  go to state 73
 
 
-state 101
+state 91
 
    44 var: . push_id ID
-   45    | . push_id ID '[' expression ']' "action_index_addr"
-   53 term: term '/' . factor "action_div"
+   45    | . push_id ID '[' expression ']' index_addr
+   53 term: term '/' . factor div
    55 factor: . '(' expression ')'
    56       | . var
    57       | . call
    58       | . save_const NUM
-   59 call: . "output" '(' expression ')' "action_output"
-   60     | . push_id ID '(' args ')' "action_call_fun"
-   67 push_id: . "action_push_id"
-   68 save_const: . "action_save_const"
+   59 call: . "output" '(' expression ')' output
+   60     | . push_id ID '(' args ')' call_fun
+   67 push_id: .  [ID]
+   68 save_const: .  [NUM]
 
-    '('                  shift, and go to state 58
-    "output"             shift, and go to state 64
-    "action_push_id"     shift, and go to state 65
-    "action_save_const"  shift, and go to state 66
+    '('       shift, and go to state 50
+    "output"  shift, and go to state 56
 
-    var         go to state 113
-    factor      go to state 119
-    call        go to state 80
-    push_id     go to state 82
-    save_const  go to state 83
+    NUM       reduce using rule 68 (save_const)
+    $default  reduce using rule 67 (push_id)
+
+    var         go to state 103
+    factor      go to state 109
+    call        go to state 70
+    push_id     go to state 72
+    save_const  go to state 73
 
 
-state 102
+state 92
 
    17 compound_stmt: '{' start_scope local_declarations statement_list end_scope '}' .
 
     $default  reduce using rule 17 (compound_stmt)
 
 
-state 103
+state 93
 
-   44 var: push_id ID .  [';', ']', ')', ',', '=', '<', "action_lt", "==", "action_eq", '+', "action_add", '-', "action_sub", '*', "action_mult", '/', "action_div"]
-   45    | push_id ID . '[' expression ']' "action_index_addr"
-   60 call: push_id ID . '(' args ')' "action_call_fun"
+   44 var: push_id ID .  [';', ']', ')', ',', '=', '<', "==", '+', '-', '*', '/']
+   45    | push_id ID . '[' expression ']' index_addr
+   60 call: push_id ID . '(' args ')' call_fun
 
-    '['  shift, and go to state 120
-    '('  shift, and go to state 121
+    '['  shift, and go to state 110
+    '('  shift, and go to state 111
 
     $default  reduce using rule 44 (var)
 
 
-state 104
+state 94
 
    58 factor: save_const NUM .
 
     $default  reduce using rule 58 (factor)
 
 
-state 105
+state 95
 
     6 var_declaration: declare type_specifier declare_id . ID ';'
     7                | declare type_specifier declare_id . ID declare_arr '[' declare_size NUM ']' ';'
 
-    ID  shift, and go to state 122
+    ID  shift, and go to state 112
 
 
-state 106
+state 96
 
    55 factor: '(' expression ')' .
 
     $default  reduce using rule 55 (factor)
 
 
-state 107
+state 97
 
-   31 selection_stmt: "if" '(' expression . ')' save statement "endif" "action_if"
-   32               | "if" '(' expression . ')' save statement save "else" label statement "endif" "action_ifelse"
+   31 selection_stmt: "if" '(' expression . ')' save statement "endif" if
+   32               | "if" '(' expression . ')' save statement save "else" label statement "endif" ifelse
 
-    ')'  shift, and go to state 123
-
-
-state 108
-
-   33 iteration_stmt: "while" '(' expression . ')' statement "action_while_loop"
-
-    ')'  shift, and go to state 124
+    ')'  shift, and go to state 113
 
 
-state 109
+state 98
+
+   33 iteration_stmt: "while" '(' expression . ')' statement while_loop
+
+    ')'  shift, and go to state 114
+
+
+state 99
 
    35 return_stmt: "return" expression ';' .
 
     $default  reduce using rule 35 (return_stmt)
 
 
-state 110
+state 100
 
    36 switch_stmt: "switch" '(' expression . ')' '{' case_stmts default_stmt '}'
 
-    ')'  shift, and go to state 125
+    ')'  shift, and go to state 115
 
 
-state 111
+state 101
 
-   59 call: "output" '(' expression . ')' "action_output"
+   59 call: "output" '(' expression . ')' output
 
-    ')'  shift, and go to state 126
+    ')'  shift, and go to state 116
 
 
-state 112
+state 102
 
    42 expression: var '=' expression .
 
     $default  reduce using rule 42 (expression)
 
 
-state 113
+state 103
 
    56 factor: var .
 
     $default  reduce using rule 56 (factor)
 
 
-state 114
+state 104
 
-   46 simple_expression: additive_expression '<' additive_expression . "action_lt"
-   49 additive_expression: additive_expression . '+' term "action_add"
-   50                    | additive_expression . '-' term "action_sub"
+   46 simple_expression: additive_expression '<' additive_expression . lt
+   49 additive_expression: additive_expression . '+' term add
+   50                    | additive_expression . '-' term sub
+   78 lt: .  [';', ']', ')', ',']
 
-    "action_lt"  shift, and go to state 127
-    '+'          shift, and go to state 98
-    '-'          shift, and go to state 99
+    '+'  shift, and go to state 88
+    '-'  shift, and go to state 89
 
+    $default  reduce using rule 78 (lt)
 
-state 115
-
-   47 simple_expression: additive_expression "==" additive_expression . "action_eq"
-   49 additive_expression: additive_expression . '+' term "action_add"
-   50                    | additive_expression . '-' term "action_sub"
-
-    "action_eq"  shift, and go to state 128
-    '+'          shift, and go to state 98
-    '-'          shift, and go to state 99
+    lt  go to state 117
 
 
-state 116
+state 105
 
-   49 additive_expression: additive_expression '+' term . "action_add"
-   52 term: term . '*' factor "action_mult"
-   53     | term . '/' factor "action_div"
+   47 simple_expression: additive_expression "==" additive_expression . eq
+   49 additive_expression: additive_expression . '+' term add
+   50                    | additive_expression . '-' term sub
+   84 eq: .  [';', ']', ')', ',']
 
-    "action_add"  shift, and go to state 129
-    '*'           shift, and go to state 100
-    '/'           shift, and go to state 101
+    '+'  shift, and go to state 88
+    '-'  shift, and go to state 89
 
+    $default  reduce using rule 84 (eq)
 
-state 117
-
-   50 additive_expression: additive_expression '-' term . "action_sub"
-   52 term: term . '*' factor "action_mult"
-   53     | term . '/' factor "action_div"
-
-    "action_sub"  shift, and go to state 130
-    '*'           shift, and go to state 100
-    '/'           shift, and go to state 101
+    eq  go to state 118
 
 
-state 118
+state 106
 
-   52 term: term '*' factor . "action_mult"
+   49 additive_expression: additive_expression '+' term . add
+   52 term: term . '*' factor mult
+   53     | term . '/' factor div
+   81 add: .  [';', ']', ')', ',', '<', "==", '+', '-']
 
-    "action_mult"  shift, and go to state 131
+    '*'  shift, and go to state 90
+    '/'  shift, and go to state 91
+
+    $default  reduce using rule 81 (add)
+
+    add  go to state 119
 
 
-state 119
+state 107
 
-   53 term: term '/' factor . "action_div"
+   50 additive_expression: additive_expression '-' term . sub
+   52 term: term . '*' factor mult
+   53     | term . '/' factor div
+   89 sub: .  [';', ']', ')', ',', '<', "==", '+', '-']
 
-    "action_div"  shift, and go to state 132
+    '*'  shift, and go to state 90
+    '/'  shift, and go to state 91
+
+    $default  reduce using rule 89 (sub)
+
+    sub  go to state 120
 
 
-state 120
+state 108
+
+   52 term: term '*' factor . mult
+   87 mult: .
+
+    $default  reduce using rule 87 (mult)
+
+    mult  go to state 121
+
+
+state 109
+
+   53 term: term '/' factor . div
+   83 div: .
+
+    $default  reduce using rule 83 (div)
+
+    div  go to state 122
+
+
+state 110
 
    42 expression: . var '=' expression
    43           | . simple_expression
    44 var: . push_id ID
-   45    | . push_id ID '[' expression ']' "action_index_addr"
-   45    | push_id ID '[' . expression ']' "action_index_addr"
-   46 simple_expression: . additive_expression '<' additive_expression "action_lt"
-   47                  | . additive_expression "==" additive_expression "action_eq"
+   45    | . push_id ID '[' expression ']' index_addr
+   45    | push_id ID '[' . expression ']' index_addr
+   46 simple_expression: . additive_expression '<' additive_expression lt
+   47                  | . additive_expression "==" additive_expression eq
    48                  | . additive_expression
-   49 additive_expression: . additive_expression '+' term "action_add"
-   50                    | . additive_expression '-' term "action_sub"
+   49 additive_expression: . additive_expression '+' term add
+   50                    | . additive_expression '-' term sub
    51                    | . term
-   52 term: . term '*' factor "action_mult"
-   53     | . term '/' factor "action_div"
+   52 term: . term '*' factor mult
+   53     | . term '/' factor div
    54     | . factor
    55 factor: . '(' expression ')'
    56       | . var
    57       | . call
    58       | . save_const NUM
-   59 call: . "output" '(' expression ')' "action_output"
-   60     | . push_id ID '(' args ')' "action_call_fun"
-   67 push_id: . "action_push_id"
-   68 save_const: . "action_save_const"
+   59 call: . "output" '(' expression ')' output
+   60     | . push_id ID '(' args ')' call_fun
+   67 push_id: .  [ID]
+   68 save_const: .  [NUM]
 
-    '('                  shift, and go to state 58
-    "output"             shift, and go to state 64
-    "action_push_id"     shift, and go to state 65
-    "action_save_const"  shift, and go to state 66
+    '('       shift, and go to state 50
+    "output"  shift, and go to state 56
 
-    expression           go to state 133
-    var                  go to state 75
-    simple_expression    go to state 76
-    additive_expression  go to state 77
-    term                 go to state 78
-    factor               go to state 79
-    call                 go to state 80
-    push_id              go to state 82
-    save_const           go to state 83
+    NUM       reduce using rule 68 (save_const)
+    $default  reduce using rule 67 (push_id)
+
+    expression           go to state 123
+    var                  go to state 65
+    simple_expression    go to state 66
+    additive_expression  go to state 67
+    term                 go to state 68
+    factor               go to state 69
+    call                 go to state 70
+    push_id              go to state 72
+    save_const           go to state 73
 
 
-state 121
+state 111
 
    42 expression: . var '=' expression
    43           | . simple_expression
    44 var: . push_id ID
-   45    | . push_id ID '[' expression ']' "action_index_addr"
-   46 simple_expression: . additive_expression '<' additive_expression "action_lt"
-   47                  | . additive_expression "==" additive_expression "action_eq"
+   45    | . push_id ID '[' expression ']' index_addr
+   46 simple_expression: . additive_expression '<' additive_expression lt
+   47                  | . additive_expression "==" additive_expression eq
    48                  | . additive_expression
-   49 additive_expression: . additive_expression '+' term "action_add"
-   50                    | . additive_expression '-' term "action_sub"
+   49 additive_expression: . additive_expression '+' term add
+   50                    | . additive_expression '-' term sub
    51                    | . term
-   52 term: . term '*' factor "action_mult"
-   53     | . term '/' factor "action_div"
+   52 term: . term '*' factor mult
+   53     | . term '/' factor div
    54     | . factor
    55 factor: . '(' expression ')'
    56       | . var
    57       | . call
    58       | . save_const NUM
-   59 call: . "output" '(' expression ')' "action_output"
-   60     | . push_id ID '(' args ')' "action_call_fun"
-   60     | push_id ID '(' . args ')' "action_call_fun"
+   59 call: . "output" '(' expression ')' output
+   60     | . push_id ID '(' args ')' call_fun
+   60     | push_id ID '(' . args ')' call_fun
    61 args: . arg_list
    62     | .  [')']
    63 arg_list: . arg_list ',' expression
    64         | . expression
-   67 push_id: . "action_push_id"
-   68 save_const: . "action_save_const"
+   67 push_id: .  [ID]
+   68 save_const: .  [NUM]
 
-    '('                  shift, and go to state 58
-    "output"             shift, and go to state 64
-    "action_push_id"     shift, and go to state 65
-    "action_save_const"  shift, and go to state 66
+    '('       shift, and go to state 50
+    "output"  shift, and go to state 56
 
+    NUM       reduce using rule 68 (save_const)
+    ID        reduce using rule 67 (push_id)
     $default  reduce using rule 62 (args)
 
-    expression           go to state 134
-    var                  go to state 75
-    simple_expression    go to state 76
-    additive_expression  go to state 77
-    term                 go to state 78
-    factor               go to state 79
-    call                 go to state 80
-    args                 go to state 135
-    arg_list             go to state 136
-    push_id              go to state 82
-    save_const           go to state 83
+    expression           go to state 124
+    var                  go to state 65
+    simple_expression    go to state 66
+    additive_expression  go to state 67
+    term                 go to state 68
+    factor               go to state 69
+    call                 go to state 70
+    args                 go to state 125
+    arg_list             go to state 126
+    push_id              go to state 72
+    save_const           go to state 73
 
 
-state 122
+state 112
 
     6 var_declaration: declare type_specifier declare_id ID . ';'
     7                | declare type_specifier declare_id ID . declare_arr '[' declare_size NUM ']' ';'
-   73 declare_arr: . "action_declare_arr"
+   73 declare_arr: .  ['[']
 
-    ';'                   shift, and go to state 19
-    "action_declare_arr"  shift, and go to state 20
+    ';'  shift, and go to state 16
 
-    declare_arr  go to state 22
+    $default  reduce using rule 73 (declare_arr)
 
-
-state 123
-
-   31 selection_stmt: "if" '(' expression ')' . save statement "endif" "action_if"
-   32               | "if" '(' expression ')' . save statement save "else" label statement "endif" "action_ifelse"
-   69 save: . "action_save"
-
-    "action_save"  shift, and go to state 137
-
-    save  go to state 138
+    declare_arr  go to state 17
 
 
-state 124
+state 113
+
+   31 selection_stmt: "if" '(' expression ')' . save statement "endif" if
+   32               | "if" '(' expression ')' . save statement save "else" label statement "endif" ifelse
+   69 save: .
+
+    $default  reduce using rule 69 (save)
+
+    save  go to state 127
+
+
+state 114
 
    17 compound_stmt: . '{' start_scope local_declarations statement_list end_scope '}'
    22 statement: . expression_stmt
@@ -1862,160 +1870,157 @@ state 124
    28 expression_stmt: . expression ';'
    29                | . "break" ';'
    30                | . ';'
-   31 selection_stmt: . "if" '(' expression ')' save statement "endif" "action_if"
-   32               | . "if" '(' expression ')' save statement save "else" label statement "endif" "action_ifelse"
-   33 iteration_stmt: . "while" '(' expression ')' statement "action_while_loop"
-   33               | "while" '(' expression ')' . statement "action_while_loop"
+   31 selection_stmt: . "if" '(' expression ')' save statement "endif" if
+   32               | . "if" '(' expression ')' save statement save "else" label statement "endif" ifelse
+   33 iteration_stmt: . "while" '(' expression ')' statement while_loop
+   33               | "while" '(' expression ')' . statement while_loop
    34 return_stmt: . "return" ';'
    35            | . "return" expression ';'
    36 switch_stmt: . "switch" '(' expression ')' '{' case_stmts default_stmt '}'
    42 expression: . var '=' expression
    43           | . simple_expression
    44 var: . push_id ID
-   45    | . push_id ID '[' expression ']' "action_index_addr"
-   46 simple_expression: . additive_expression '<' additive_expression "action_lt"
-   47                  | . additive_expression "==" additive_expression "action_eq"
+   45    | . push_id ID '[' expression ']' index_addr
+   46 simple_expression: . additive_expression '<' additive_expression lt
+   47                  | . additive_expression "==" additive_expression eq
    48                  | . additive_expression
-   49 additive_expression: . additive_expression '+' term "action_add"
-   50                    | . additive_expression '-' term "action_sub"
+   49 additive_expression: . additive_expression '+' term add
+   50                    | . additive_expression '-' term sub
    51                    | . term
-   52 term: . term '*' factor "action_mult"
-   53     | . term '/' factor "action_div"
+   52 term: . term '*' factor mult
+   53     | . term '/' factor div
    54     | . factor
    55 factor: . '(' expression ')'
    56       | . var
    57       | . call
    58       | . save_const NUM
-   59 call: . "output" '(' expression ')' "action_output"
-   60     | . push_id ID '(' args ')' "action_call_fun"
-   67 push_id: . "action_push_id"
-   68 save_const: . "action_save_const"
+   59 call: . "output" '(' expression ')' output
+   60     | . push_id ID '(' args ')' call_fun
+   67 push_id: .  [ID]
+   68 save_const: .  [NUM]
 
-    ';'                  shift, and go to state 57
-    '('                  shift, and go to state 58
-    '{'                  shift, and go to state 40
-    "break"              shift, and go to state 59
-    "if"                 shift, and go to state 60
-    "while"              shift, and go to state 61
-    "return"             shift, and go to state 62
-    "switch"             shift, and go to state 63
-    "output"             shift, and go to state 64
-    "action_push_id"     shift, and go to state 65
-    "action_save_const"  shift, and go to state 66
+    ';'       shift, and go to state 49
+    '('       shift, and go to state 50
+    '{'       shift, and go to state 33
+    "break"   shift, and go to state 51
+    "if"      shift, and go to state 52
+    "while"   shift, and go to state 53
+    "return"  shift, and go to state 54
+    "switch"  shift, and go to state 55
+    "output"  shift, and go to state 56
 
-    compound_stmt        go to state 67
-    statement            go to state 139
-    expression_stmt      go to state 69
-    selection_stmt       go to state 70
-    iteration_stmt       go to state 71
-    return_stmt          go to state 72
-    switch_stmt          go to state 73
-    expression           go to state 74
-    var                  go to state 75
-    simple_expression    go to state 76
-    additive_expression  go to state 77
-    term                 go to state 78
-    factor               go to state 79
-    call                 go to state 80
-    push_id              go to state 82
-    save_const           go to state 83
+    NUM       reduce using rule 68 (save_const)
+    $default  reduce using rule 67 (push_id)
+
+    compound_stmt        go to state 57
+    statement            go to state 128
+    expression_stmt      go to state 59
+    selection_stmt       go to state 60
+    iteration_stmt       go to state 61
+    return_stmt          go to state 62
+    switch_stmt          go to state 63
+    expression           go to state 64
+    var                  go to state 65
+    simple_expression    go to state 66
+    additive_expression  go to state 67
+    term                 go to state 68
+    factor               go to state 69
+    call                 go to state 70
+    push_id              go to state 72
+    save_const           go to state 73
 
 
-state 125
+state 115
 
    36 switch_stmt: "switch" '(' expression ')' . '{' case_stmts default_stmt '}'
 
-    '{'  shift, and go to state 140
+    '{'  shift, and go to state 129
 
 
-state 126
+state 116
 
-   59 call: "output" '(' expression ')' . "action_output"
+   59 call: "output" '(' expression ')' . output
+   80 output: .
 
-    "action_output"  shift, and go to state 141
+    $default  reduce using rule 80 (output)
+
+    output  go to state 130
 
 
-state 127
+state 117
 
-   46 simple_expression: additive_expression '<' additive_expression "action_lt" .
+   46 simple_expression: additive_expression '<' additive_expression lt .
 
     $default  reduce using rule 46 (simple_expression)
 
 
-state 128
+state 118
 
-   47 simple_expression: additive_expression "==" additive_expression "action_eq" .
+   47 simple_expression: additive_expression "==" additive_expression eq .
 
     $default  reduce using rule 47 (simple_expression)
 
 
-state 129
+state 119
 
-   49 additive_expression: additive_expression '+' term "action_add" .
+   49 additive_expression: additive_expression '+' term add .
 
     $default  reduce using rule 49 (additive_expression)
 
 
-state 130
+state 120
 
-   50 additive_expression: additive_expression '-' term "action_sub" .
+   50 additive_expression: additive_expression '-' term sub .
 
     $default  reduce using rule 50 (additive_expression)
 
 
-state 131
+state 121
 
-   52 term: term '*' factor "action_mult" .
+   52 term: term '*' factor mult .
 
     $default  reduce using rule 52 (term)
 
 
-state 132
+state 122
 
-   53 term: term '/' factor "action_div" .
+   53 term: term '/' factor div .
 
     $default  reduce using rule 53 (term)
 
 
-state 133
+state 123
 
-   45 var: push_id ID '[' expression . ']' "action_index_addr"
+   45 var: push_id ID '[' expression . ']' index_addr
 
-    ']'  shift, and go to state 142
+    ']'  shift, and go to state 131
 
 
-state 134
+state 124
 
    64 arg_list: expression .
 
     $default  reduce using rule 64 (arg_list)
 
 
-state 135
+state 125
 
-   60 call: push_id ID '(' args . ')' "action_call_fun"
+   60 call: push_id ID '(' args . ')' call_fun
 
-    ')'  shift, and go to state 143
+    ')'  shift, and go to state 132
 
 
-state 136
+state 126
 
    61 args: arg_list .  [')']
    63 arg_list: arg_list . ',' expression
 
-    ','  shift, and go to state 144
+    ','  shift, and go to state 133
 
     $default  reduce using rule 61 (args)
 
 
-state 137
-
-   69 save: "action_save" .
-
-    $default  reduce using rule 69 (save)
-
-
-state 138
+state 127
 
    17 compound_stmt: . '{' start_scope local_declarations statement_list end_scope '}'
    22 statement: . expression_stmt
@@ -2027,74 +2032,78 @@ state 138
    28 expression_stmt: . expression ';'
    29                | . "break" ';'
    30                | . ';'
-   31 selection_stmt: . "if" '(' expression ')' save statement "endif" "action_if"
-   31               | "if" '(' expression ')' save . statement "endif" "action_if"
-   32               | . "if" '(' expression ')' save statement save "else" label statement "endif" "action_ifelse"
-   32               | "if" '(' expression ')' save . statement save "else" label statement "endif" "action_ifelse"
-   33 iteration_stmt: . "while" '(' expression ')' statement "action_while_loop"
+   31 selection_stmt: . "if" '(' expression ')' save statement "endif" if
+   31               | "if" '(' expression ')' save . statement "endif" if
+   32               | . "if" '(' expression ')' save statement save "else" label statement "endif" ifelse
+   32               | "if" '(' expression ')' save . statement save "else" label statement "endif" ifelse
+   33 iteration_stmt: . "while" '(' expression ')' statement while_loop
    34 return_stmt: . "return" ';'
    35            | . "return" expression ';'
    36 switch_stmt: . "switch" '(' expression ')' '{' case_stmts default_stmt '}'
    42 expression: . var '=' expression
    43           | . simple_expression
    44 var: . push_id ID
-   45    | . push_id ID '[' expression ']' "action_index_addr"
-   46 simple_expression: . additive_expression '<' additive_expression "action_lt"
-   47                  | . additive_expression "==" additive_expression "action_eq"
+   45    | . push_id ID '[' expression ']' index_addr
+   46 simple_expression: . additive_expression '<' additive_expression lt
+   47                  | . additive_expression "==" additive_expression eq
    48                  | . additive_expression
-   49 additive_expression: . additive_expression '+' term "action_add"
-   50                    | . additive_expression '-' term "action_sub"
+   49 additive_expression: . additive_expression '+' term add
+   50                    | . additive_expression '-' term sub
    51                    | . term
-   52 term: . term '*' factor "action_mult"
-   53     | . term '/' factor "action_div"
+   52 term: . term '*' factor mult
+   53     | . term '/' factor div
    54     | . factor
    55 factor: . '(' expression ')'
    56       | . var
    57       | . call
    58       | . save_const NUM
-   59 call: . "output" '(' expression ')' "action_output"
-   60     | . push_id ID '(' args ')' "action_call_fun"
-   67 push_id: . "action_push_id"
-   68 save_const: . "action_save_const"
+   59 call: . "output" '(' expression ')' output
+   60     | . push_id ID '(' args ')' call_fun
+   67 push_id: .  [ID]
+   68 save_const: .  [NUM]
 
-    ';'                  shift, and go to state 57
-    '('                  shift, and go to state 58
-    '{'                  shift, and go to state 40
-    "break"              shift, and go to state 59
-    "if"                 shift, and go to state 60
-    "while"              shift, and go to state 61
-    "return"             shift, and go to state 62
-    "switch"             shift, and go to state 63
-    "output"             shift, and go to state 64
-    "action_push_id"     shift, and go to state 65
-    "action_save_const"  shift, and go to state 66
+    ';'       shift, and go to state 49
+    '('       shift, and go to state 50
+    '{'       shift, and go to state 33
+    "break"   shift, and go to state 51
+    "if"      shift, and go to state 52
+    "while"   shift, and go to state 53
+    "return"  shift, and go to state 54
+    "switch"  shift, and go to state 55
+    "output"  shift, and go to state 56
 
-    compound_stmt        go to state 67
-    statement            go to state 145
-    expression_stmt      go to state 69
-    selection_stmt       go to state 70
-    iteration_stmt       go to state 71
-    return_stmt          go to state 72
-    switch_stmt          go to state 73
-    expression           go to state 74
-    var                  go to state 75
-    simple_expression    go to state 76
-    additive_expression  go to state 77
-    term                 go to state 78
-    factor               go to state 79
-    call                 go to state 80
-    push_id              go to state 82
-    save_const           go to state 83
+    NUM       reduce using rule 68 (save_const)
+    $default  reduce using rule 67 (push_id)
 
-
-state 139
-
-   33 iteration_stmt: "while" '(' expression ')' statement . "action_while_loop"
-
-    "action_while_loop"  shift, and go to state 146
+    compound_stmt        go to state 57
+    statement            go to state 134
+    expression_stmt      go to state 59
+    selection_stmt       go to state 60
+    iteration_stmt       go to state 61
+    return_stmt          go to state 62
+    switch_stmt          go to state 63
+    expression           go to state 64
+    var                  go to state 65
+    simple_expression    go to state 66
+    additive_expression  go to state 67
+    term                 go to state 68
+    factor               go to state 69
+    call                 go to state 70
+    push_id              go to state 72
+    save_const           go to state 73
 
 
-state 140
+state 128
+
+   33 iteration_stmt: "while" '(' expression ')' statement . while_loop
+   82 while_loop: .
+
+    $default  reduce using rule 82 (while_loop)
+
+    while_loop  go to state 135
+
+
+state 129
 
    36 switch_stmt: "switch" '(' expression ')' '{' . case_stmts default_stmt '}'
    37 case_stmts: . case_stmts case_stmt
@@ -2102,91 +2111,99 @@ state 140
 
     $default  reduce using rule 38 (case_stmts)
 
-    case_stmts  go to state 147
+    case_stmts  go to state 136
 
 
-state 141
+state 130
 
-   59 call: "output" '(' expression ')' "action_output" .
+   59 call: "output" '(' expression ')' output .
 
     $default  reduce using rule 59 (call)
 
 
-state 142
+state 131
 
-   45 var: push_id ID '[' expression ']' . "action_index_addr"
+   45 var: push_id ID '[' expression ']' . index_addr
+   85 index_addr: .
 
-    "action_index_addr"  shift, and go to state 148
+    $default  reduce using rule 85 (index_addr)
 
-
-state 143
-
-   60 call: push_id ID '(' args ')' . "action_call_fun"
-
-    "action_call_fun"  shift, and go to state 149
+    index_addr  go to state 137
 
 
-state 144
+state 132
+
+   60 call: push_id ID '(' args ')' . call_fun
+   79 call_fun: .
+
+    $default  reduce using rule 79 (call_fun)
+
+    call_fun  go to state 138
+
+
+state 133
 
    42 expression: . var '=' expression
    43           | . simple_expression
    44 var: . push_id ID
-   45    | . push_id ID '[' expression ']' "action_index_addr"
-   46 simple_expression: . additive_expression '<' additive_expression "action_lt"
-   47                  | . additive_expression "==" additive_expression "action_eq"
+   45    | . push_id ID '[' expression ']' index_addr
+   46 simple_expression: . additive_expression '<' additive_expression lt
+   47                  | . additive_expression "==" additive_expression eq
    48                  | . additive_expression
-   49 additive_expression: . additive_expression '+' term "action_add"
-   50                    | . additive_expression '-' term "action_sub"
+   49 additive_expression: . additive_expression '+' term add
+   50                    | . additive_expression '-' term sub
    51                    | . term
-   52 term: . term '*' factor "action_mult"
-   53     | . term '/' factor "action_div"
+   52 term: . term '*' factor mult
+   53     | . term '/' factor div
    54     | . factor
    55 factor: . '(' expression ')'
    56       | . var
    57       | . call
    58       | . save_const NUM
-   59 call: . "output" '(' expression ')' "action_output"
-   60     | . push_id ID '(' args ')' "action_call_fun"
+   59 call: . "output" '(' expression ')' output
+   60     | . push_id ID '(' args ')' call_fun
    63 arg_list: arg_list ',' . expression
-   67 push_id: . "action_push_id"
-   68 save_const: . "action_save_const"
+   67 push_id: .  [ID]
+   68 save_const: .  [NUM]
 
-    '('                  shift, and go to state 58
-    "output"             shift, and go to state 64
-    "action_push_id"     shift, and go to state 65
-    "action_save_const"  shift, and go to state 66
+    '('       shift, and go to state 50
+    "output"  shift, and go to state 56
 
-    expression           go to state 150
-    var                  go to state 75
-    simple_expression    go to state 76
-    additive_expression  go to state 77
-    term                 go to state 78
-    factor               go to state 79
-    call                 go to state 80
-    push_id              go to state 82
-    save_const           go to state 83
+    NUM       reduce using rule 68 (save_const)
+    $default  reduce using rule 67 (push_id)
 
-
-state 145
-
-   31 selection_stmt: "if" '(' expression ')' save statement . "endif" "action_if"
-   32               | "if" '(' expression ')' save statement . save "else" label statement "endif" "action_ifelse"
-   69 save: . "action_save"
-
-    "endif"        shift, and go to state 151
-    "action_save"  shift, and go to state 137
-
-    save  go to state 152
+    expression           go to state 139
+    var                  go to state 65
+    simple_expression    go to state 66
+    additive_expression  go to state 67
+    term                 go to state 68
+    factor               go to state 69
+    call                 go to state 70
+    push_id              go to state 72
+    save_const           go to state 73
 
 
-state 146
+state 134
 
-   33 iteration_stmt: "while" '(' expression ')' statement "action_while_loop" .
+   31 selection_stmt: "if" '(' expression ')' save statement . "endif" if
+   32               | "if" '(' expression ')' save statement . save "else" label statement "endif" ifelse
+   69 save: .  ["else"]
+
+    "endif"  shift, and go to state 140
+
+    $default  reduce using rule 69 (save)
+
+    save  go to state 141
+
+
+state 135
+
+   33 iteration_stmt: "while" '(' expression ')' statement while_loop .
 
     $default  reduce using rule 33 (iteration_stmt)
 
 
-state 147
+state 136
 
    36 switch_stmt: "switch" '(' expression ')' '{' case_stmts . default_stmt '}'
    37 case_stmts: case_stmts . case_stmt
@@ -2194,106 +2211,109 @@ state 147
    40 default_stmt: . "default" ':' statement_list
    41             | .  ['}']
 
-    "case"     shift, and go to state 153
-    "default"  shift, and go to state 154
+    "case"     shift, and go to state 142
+    "default"  shift, and go to state 143
 
     $default  reduce using rule 41 (default_stmt)
 
-    case_stmt     go to state 155
-    default_stmt  go to state 156
+    case_stmt     go to state 144
+    default_stmt  go to state 145
 
 
-state 148
+state 137
 
-   45 var: push_id ID '[' expression ']' "action_index_addr" .
+   45 var: push_id ID '[' expression ']' index_addr .
 
     $default  reduce using rule 45 (var)
 
 
-state 149
+state 138
 
-   60 call: push_id ID '(' args ')' "action_call_fun" .
+   60 call: push_id ID '(' args ')' call_fun .
 
     $default  reduce using rule 60 (call)
 
 
-state 150
+state 139
 
    63 arg_list: arg_list ',' expression .
 
     $default  reduce using rule 63 (arg_list)
 
 
-state 151
+state 140
 
-   31 selection_stmt: "if" '(' expression ')' save statement "endif" . "action_if"
+   31 selection_stmt: "if" '(' expression ')' save statement "endif" . if
+   86 if: .
 
-    "action_if"  shift, and go to state 157
+    $default  reduce using rule 86 (if)
 
-
-state 152
-
-   32 selection_stmt: "if" '(' expression ')' save statement save . "else" label statement "endif" "action_ifelse"
-
-    "else"  shift, and go to state 158
+    if  go to state 146
 
 
-state 153
+state 141
+
+   32 selection_stmt: "if" '(' expression ')' save statement save . "else" label statement "endif" ifelse
+
+    "else"  shift, and go to state 147
+
+
+state 142
 
    39 case_stmt: "case" . save_const NUM ':' statement_list
-   68 save_const: . "action_save_const"
+   68 save_const: .
 
-    "action_save_const"  shift, and go to state 66
+    $default  reduce using rule 68 (save_const)
 
-    save_const  go to state 159
+    save_const  go to state 148
 
 
-state 154
+state 143
 
    40 default_stmt: "default" . ':' statement_list
 
-    ':'  shift, and go to state 160
+    ':'  shift, and go to state 149
 
 
-state 155
+state 144
 
    37 case_stmts: case_stmts case_stmt .
 
     $default  reduce using rule 37 (case_stmts)
 
 
-state 156
+state 145
 
    36 switch_stmt: "switch" '(' expression ')' '{' case_stmts default_stmt . '}'
 
-    '}'  shift, and go to state 161
+    '}'  shift, and go to state 150
 
 
-state 157
+state 146
 
-   31 selection_stmt: "if" '(' expression ')' save statement "endif" "action_if" .
+   31 selection_stmt: "if" '(' expression ')' save statement "endif" if .
 
     $default  reduce using rule 31 (selection_stmt)
 
 
-state 158
+state 147
 
-   32 selection_stmt: "if" '(' expression ')' save statement save "else" . label statement "endif" "action_ifelse"
-   70 label: . "action_label"
+   32 selection_stmt: "if" '(' expression ')' save statement save "else" . label statement "endif" ifelse
+   70 label: .
 
-    "action_label"  shift, and go to state 162
+    $default  reduce using rule 70 (label)
 
-    label  go to state 163
+    label  go to state 151
 
 
-state 159
+state 148
 
    39 case_stmt: "case" save_const . NUM ':' statement_list
 
-    NUM  shift, and go to state 164
+    NUM  shift, and go to state 152
 
 
-state 160
+state 149
 
    20 statement_list: . statement_list statement
    21               | .
@@ -2301,24 +2321,17 @@ state 160
 
     $default  reduce using rule 21 (statement_list)
 
-    statement_list  go to state 165
+    statement_list  go to state 153
 
 
-state 161
+state 150
 
    36 switch_stmt: "switch" '(' expression ')' '{' case_stmts default_stmt '}' .
 
     $default  reduce using rule 36 (switch_stmt)
 
 
-state 162
-
-   70 label: "action_label" .
-
-    $default  reduce using rule 70 (label)
-
-
-state 163
+state 151
 
    17 compound_stmt: . '{' start_scope local_declarations statement_list end_scope '}'
    22 statement: . expression_stmt
@@ -2330,73 +2343,74 @@ state 163
    28 expression_stmt: . expression ';'
    29                | . "break" ';'
    30                | . ';'
-   31 selection_stmt: . "if" '(' expression ')' save statement "endif" "action_if"
-   32               | . "if" '(' expression ')' save statement save "else" label statement "endif" "action_ifelse"
-   32               | "if" '(' expression ')' save statement save "else" label . statement "endif" "action_ifelse"
-   33 iteration_stmt: . "while" '(' expression ')' statement "action_while_loop"
+   31 selection_stmt: . "if" '(' expression ')' save statement "endif" if
+   32               | . "if" '(' expression ')' save statement save "else" label statement "endif" ifelse
+   32               | "if" '(' expression ')' save statement save "else" label . statement "endif" ifelse
+   33 iteration_stmt: . "while" '(' expression ')' statement while_loop
    34 return_stmt: . "return" ';'
    35            | . "return" expression ';'
    36 switch_stmt: . "switch" '(' expression ')' '{' case_stmts default_stmt '}'
    42 expression: . var '=' expression
    43           | . simple_expression
    44 var: . push_id ID
-   45    | . push_id ID '[' expression ']' "action_index_addr"
-   46 simple_expression: . additive_expression '<' additive_expression "action_lt"
-   47                  | . additive_expression "==" additive_expression "action_eq"
+   45    | . push_id ID '[' expression ']' index_addr
+   46 simple_expression: . additive_expression '<' additive_expression lt
+   47                  | . additive_expression "==" additive_expression eq
    48                  | . additive_expression
-   49 additive_expression: . additive_expression '+' term "action_add"
-   50                    | . additive_expression '-' term "action_sub"
+   49 additive_expression: . additive_expression '+' term add
+   50                    | . additive_expression '-' term sub
    51                    | . term
-   52 term: . term '*' factor "action_mult"
-   53     | . term '/' factor "action_div"
+   52 term: . term '*' factor mult
+   53     | . term '/' factor div
    54     | . factor
    55 factor: . '(' expression ')'
    56       | . var
    57       | . call
    58       | . save_const NUM
-   59 call: . "output" '(' expression ')' "action_output"
-   60     | . push_id ID '(' args ')' "action_call_fun"
-   67 push_id: . "action_push_id"
-   68 save_const: . "action_save_const"
+   59 call: . "output" '(' expression ')' output
+   60     | . push_id ID '(' args ')' call_fun
+   67 push_id: .  [ID]
+   68 save_const: .  [NUM]
 
-    ';'                  shift, and go to state 57
-    '('                  shift, and go to state 58
-    '{'                  shift, and go to state 40
-    "break"              shift, and go to state 59
-    "if"                 shift, and go to state 60
-    "while"              shift, and go to state 61
-    "return"             shift, and go to state 62
-    "switch"             shift, and go to state 63
-    "output"             shift, and go to state 64
-    "action_push_id"     shift, and go to state 65
-    "action_save_const"  shift, and go to state 66
+    ';'       shift, and go to state 49
+    '('       shift, and go to state 50
+    '{'       shift, and go to state 33
+    "break"   shift, and go to state 51
+    "if"      shift, and go to state 52
+    "while"   shift, and go to state 53
+    "return"  shift, and go to state 54
+    "switch"  shift, and go to state 55
+    "output"  shift, and go to state 56
 
-    compound_stmt        go to state 67
-    statement            go to state 166
-    expression_stmt      go to state 69
-    selection_stmt       go to state 70
-    iteration_stmt       go to state 71
-    return_stmt          go to state 72
-    switch_stmt          go to state 73
-    expression           go to state 74
-    var                  go to state 75
-    simple_expression    go to state 76
-    additive_expression  go to state 77
-    term                 go to state 78
-    factor               go to state 79
-    call                 go to state 80
-    push_id              go to state 82
-    save_const           go to state 83
+    NUM       reduce using rule 68 (save_const)
+    $default  reduce using rule 67 (push_id)
+
+    compound_stmt        go to state 57
+    statement            go to state 154
+    expression_stmt      go to state 59
+    selection_stmt       go to state 60
+    iteration_stmt       go to state 61
+    return_stmt          go to state 62
+    switch_stmt          go to state 63
+    expression           go to state 64
+    var                  go to state 65
+    simple_expression    go to state 66
+    additive_expression  go to state 67
+    term                 go to state 68
+    factor               go to state 69
+    call                 go to state 70
+    push_id              go to state 72
+    save_const           go to state 73
 
 
-state 164
+state 152
 
    39 case_stmt: "case" save_const NUM . ':' statement_list
 
-    ':'  shift, and go to state 167
+    ':'  shift, and go to state 155
 
 
-state 165
+state 153
 
    17 compound_stmt: . '{' start_scope local_declarations statement_list end_scope '}'
    20 statement_list: statement_list . statement
@@ -2409,9 +2423,9 @@ state 165
    28 expression_stmt: . expression ';'
    29                | . "break" ';'
    30                | . ';'
-   31 selection_stmt: . "if" '(' expression ')' save statement "endif" "action_if"
-   32               | . "if" '(' expression ')' save statement save "else" label statement "endif" "action_ifelse"
-   33 iteration_stmt: . "while" '(' expression ')' statement "action_while_loop"
+   31 selection_stmt: . "if" '(' expression ')' save statement "endif" if
+   32               | . "if" '(' expression ')' save statement save "else" label statement "endif" ifelse
+   33 iteration_stmt: . "while" '(' expression ')' statement while_loop
    34 return_stmt: . "return" ';'
    35            | . "return" expression ';'
    36 switch_stmt: . "switch" '(' expression ')' '{' case_stmts default_stmt '}'
@@ -2419,65 +2433,65 @@ state 165
    42 expression: . var '=' expression
    43           | . simple_expression
    44 var: . push_id ID
-   45    | . push_id ID '[' expression ']' "action_index_addr"
-   46 simple_expression: . additive_expression '<' additive_expression "action_lt"
-   47                  | . additive_expression "==" additive_expression "action_eq"
+   45    | . push_id ID '[' expression ']' index_addr
+   46 simple_expression: . additive_expression '<' additive_expression lt
+   47                  | . additive_expression "==" additive_expression eq
    48                  | . additive_expression
-   49 additive_expression: . additive_expression '+' term "action_add"
-   50                    | . additive_expression '-' term "action_sub"
+   49 additive_expression: . additive_expression '+' term add
+   50                    | . additive_expression '-' term sub
    51                    | . term
-   52 term: . term '*' factor "action_mult"
-   53     | . term '/' factor "action_div"
+   52 term: . term '*' factor mult
+   53     | . term '/' factor div
    54     | . factor
    55 factor: . '(' expression ')'
    56       | . var
    57       | . call
    58       | . save_const NUM
-   59 call: . "output" '(' expression ')' "action_output"
-   60     | . push_id ID '(' args ')' "action_call_fun"
-   67 push_id: . "action_push_id"
-   68 save_const: . "action_save_const"
+   59 call: . "output" '(' expression ')' output
+   60     | . push_id ID '(' args ')' call_fun
+   67 push_id: .  [ID]
+   68 save_const: .  [NUM]
 
-    ';'                  shift, and go to state 57
-    '('                  shift, and go to state 58
-    '{'                  shift, and go to state 40
-    "break"              shift, and go to state 59
-    "if"                 shift, and go to state 60
-    "while"              shift, and go to state 61
-    "return"             shift, and go to state 62
-    "switch"             shift, and go to state 63
-    "output"             shift, and go to state 64
-    "action_push_id"     shift, and go to state 65
-    "action_save_const"  shift, and go to state 66
+    ';'       shift, and go to state 49
+    '('       shift, and go to state 50
+    '{'       shift, and go to state 33
+    "break"   shift, and go to state 51
+    "if"      shift, and go to state 52
+    "while"   shift, and go to state 53
+    "return"  shift, and go to state 54
+    "switch"  shift, and go to state 55
+    "output"  shift, and go to state 56
 
+    NUM       reduce using rule 68 (save_const)
+    ID        reduce using rule 67 (push_id)
     $default  reduce using rule 40 (default_stmt)
 
-    compound_stmt        go to state 67
-    statement            go to state 68
-    expression_stmt      go to state 69
-    selection_stmt       go to state 70
-    iteration_stmt       go to state 71
-    return_stmt          go to state 72
-    switch_stmt          go to state 73
-    expression           go to state 74
-    var                  go to state 75
-    simple_expression    go to state 76
-    additive_expression  go to state 77
-    term                 go to state 78
-    factor               go to state 79
-    call                 go to state 80
-    push_id              go to state 82
-    save_const           go to state 83
+    compound_stmt        go to state 57
+    statement            go to state 58
+    expression_stmt      go to state 59
+    selection_stmt       go to state 60
+    iteration_stmt       go to state 61
+    return_stmt          go to state 62
+    switch_stmt          go to state 63
+    expression           go to state 64
+    var                  go to state 65
+    simple_expression    go to state 66
+    additive_expression  go to state 67
+    term                 go to state 68
+    factor               go to state 69
+    call                 go to state 70
+    push_id              go to state 72
+    save_const           go to state 73
 
 
-state 166
+state 154
 
-   32 selection_stmt: "if" '(' expression ')' save statement save "else" label statement . "endif" "action_ifelse"
+   32 selection_stmt: "if" '(' expression ')' save statement save "else" label statement . "endif" ifelse
 
-    "endif"  shift, and go to state 168
+    "endif"  shift, and go to state 156
 
 
-state 167
+state 155
 
    20 statement_list: . statement_list statement
    21               | .
@@ -2485,17 +2499,20 @@ state 167
 
     $default  reduce using rule 21 (statement_list)
 
-    statement_list  go to state 169
+    statement_list  go to state 157
 
 
-state 168
+state 156
 
-   32 selection_stmt: "if" '(' expression ')' save statement save "else" label statement "endif" . "action_ifelse"
+   32 selection_stmt: "if" '(' expression ')' save statement save "else" label statement "endif" . ifelse
+   77 ifelse: .
 
-    "action_ifelse"  shift, and go to state 170
+    $default  reduce using rule 77 (ifelse)
+
+    ifelse  go to state 158
 
 
-state 169
+state 157
 
    17 compound_stmt: . '{' start_scope local_declarations statement_list end_scope '}'
    20 statement_list: statement_list . statement
@@ -2508,9 +2525,9 @@ state 169
    28 expression_stmt: . expression ';'
    29                | . "break" ';'
    30                | . ';'
-   31 selection_stmt: . "if" '(' expression ')' save statement "endif" "action_if"
-   32               | . "if" '(' expression ')' save statement save "else" label statement "endif" "action_ifelse"
-   33 iteration_stmt: . "while" '(' expression ')' statement "action_while_loop"
+   31 selection_stmt: . "if" '(' expression ')' save statement "endif" if
+   32               | . "if" '(' expression ')' save statement save "else" label statement "endif" ifelse
+   33 iteration_stmt: . "while" '(' expression ')' statement while_loop
    34 return_stmt: . "return" ';'
    35            | . "return" expression ';'
    36 switch_stmt: . "switch" '(' expression ')' '{' case_stmts default_stmt '}'
@@ -2518,59 +2535,59 @@ state 169
    42 expression: . var '=' expression
    43           | . simple_expression
    44 var: . push_id ID
-   45    | . push_id ID '[' expression ']' "action_index_addr"
-   46 simple_expression: . additive_expression '<' additive_expression "action_lt"
-   47                  | . additive_expression "==" additive_expression "action_eq"
+   45    | . push_id ID '[' expression ']' index_addr
+   46 simple_expression: . additive_expression '<' additive_expression lt
+   47                  | . additive_expression "==" additive_expression eq
    48                  | . additive_expression
-   49 additive_expression: . additive_expression '+' term "action_add"
-   50                    | . additive_expression '-' term "action_sub"
+   49 additive_expression: . additive_expression '+' term add
+   50                    | . additive_expression '-' term sub
    51                    | . term
-   52 term: . term '*' factor "action_mult"
-   53     | . term '/' factor "action_div"
+   52 term: . term '*' factor mult
+   53     | . term '/' factor div
    54     | . factor
    55 factor: . '(' expression ')'
    56       | . var
    57       | . call
    58       | . save_const NUM
-   59 call: . "output" '(' expression ')' "action_output"
-   60     | . push_id ID '(' args ')' "action_call_fun"
-   67 push_id: . "action_push_id"
-   68 save_const: . "action_save_const"
+   59 call: . "output" '(' expression ')' output
+   60     | . push_id ID '(' args ')' call_fun
+   67 push_id: .  [ID]
+   68 save_const: .  [NUM]
 
-    ';'                  shift, and go to state 57
-    '('                  shift, and go to state 58
-    '{'                  shift, and go to state 40
-    "break"              shift, and go to state 59
-    "if"                 shift, and go to state 60
-    "while"              shift, and go to state 61
-    "return"             shift, and go to state 62
-    "switch"             shift, and go to state 63
-    "output"             shift, and go to state 64
-    "action_push_id"     shift, and go to state 65
-    "action_save_const"  shift, and go to state 66
+    ';'       shift, and go to state 49
+    '('       shift, and go to state 50
+    '{'       shift, and go to state 33
+    "break"   shift, and go to state 51
+    "if"      shift, and go to state 52
+    "while"   shift, and go to state 53
+    "return"  shift, and go to state 54
+    "switch"  shift, and go to state 55
+    "output"  shift, and go to state 56
 
+    NUM       reduce using rule 68 (save_const)
+    ID        reduce using rule 67 (push_id)
     $default  reduce using rule 39 (case_stmt)
 
-    compound_stmt        go to state 67
-    statement            go to state 68
-    expression_stmt      go to state 69
-    selection_stmt       go to state 70
-    iteration_stmt       go to state 71
-    return_stmt          go to state 72
-    switch_stmt          go to state 73
-    expression           go to state 74
-    var                  go to state 75
-    simple_expression    go to state 76
-    additive_expression  go to state 77
-    term                 go to state 78
-    factor               go to state 79
-    call                 go to state 80
-    push_id              go to state 82
-    save_const           go to state 83
+    compound_stmt        go to state 57
+    statement            go to state 58
+    expression_stmt      go to state 59
+    selection_stmt       go to state 60
+    iteration_stmt       go to state 61
+    return_stmt          go to state 62
+    switch_stmt          go to state 63
+    expression           go to state 64
+    var                  go to state 65
+    simple_expression    go to state 66
+    additive_expression  go to state 67
+    term                 go to state 68
+    factor               go to state 69
+    call                 go to state 70
+    push_id              go to state 72
+    save_const           go to state 73
 
 
-state 170
+state 158
 
-   32 selection_stmt: "if" '(' expression ')' save statement save "else" label statement "endif" "action_ifelse" .
+   32 selection_stmt: "if" '(' expression ')' save statement save "else" label statement "endif" ifelse .
 
     $default  reduce using rule 32 (selection_stmt)
