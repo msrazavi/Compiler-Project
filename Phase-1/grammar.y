@@ -49,7 +49,7 @@ expression_stmt: expression ';'
 selection_stmt: "if" '(' expression ')' save statement "endif" "action_if"
 | "if" '(' expression ')' save statement save "else" label statement "endif" "action_ifelse"
 ;
-iteration_stmt: "while" '(' expression ')' statement "action_while"
+iteration_stmt: "while" '(' expression ')' statement "action_while_loop"
 ;
 return_stmt: "return" ';'
 | "return" expression ';'
@@ -64,11 +64,11 @@ case_stmt: "case" save_const NUM ':' statement_list
 default_stmt: "default" ':' statement_list
 | /* epsilon */
 ;
-expression: var '=' expression "action_assign"
+expression: var '=' expression
 | simple_expression
 ;
 var: push_id ID
-| push_id ID '[' index_addr expression ']'
+| push_id ID '[' expression ']' "action_index_addr"
 ;
 simple_expression: additive_expression '<' additive_expression "action_lt"
 | additive_expression "==" additive_expression "action_eq"
@@ -85,7 +85,7 @@ term: term '*' factor "action_mult"
 factor: '(' expression ')'
 | var
 | call
-| NUM
+| save_const NUM
 ;
 call: "output" '(' output expression ')'
 | ID '(' args ')'
@@ -107,8 +107,6 @@ save_const: "action_save_const"
 save: "action_save"
 ;
 label: "action_label"
-;
-index_addr: "action_index_addr"
 ;
 output: "action_output"
 ;

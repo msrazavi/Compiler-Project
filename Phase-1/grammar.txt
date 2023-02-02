@@ -13,18 +13,18 @@
 13. statement -> expression_stmt | compound_stmt | selection_stmt | iteration_stmt | return_stmt | switch_stmt
 14. expression_stmt -> expression ; | break ; | ;
 15. selection_stmt -> if ( expression ) save statement endif action_if | if ( expression ) save statement save else label statement endif action_ifelse
-16. iteration_stmt -> while ( expression ) save statement action_while
+16. iteration_stmt -> while ( expression ) save statement action_while_loop
 17. return_stmt -> return ; | return expression ;
 18. switch_stmt -> switch ( expression ) { case_stmts default_stmt }
 19. case_stmts -> case_stmts case_stmt | Epsilon
 20. case_stmt -> case save_const NUM : statement_list
 21. default_stmt -> default : statement_list | Epsilon
-22. expression -> var = expression action_assign | simple_expression
-23. var -> push_id ID | push_id ID [ index_addr expression ]
+22. expression -> var = expression | simple_expression
+23. var -> push_id ID | push_id ID [ expression ] action_index_addr
 24. simple_expression -> additive_expression < additive_expression action_lt | additive_expression == additive_expression action_eq | additive_expression
 25. additive_expression -> additive_expression + term action_add | additive_expression - term action_sub | term
 26. term -> term * factor action_mult | term / factor action_div | factor
-27. factor -> ( expression ) | var | call | NUM
+27. factor -> ( expression ) | var | call | save_const NUM
 28. call -> output ( output expression ) | ID ( args )
 29. args -> arg_list | Epsilon
 30. arg_list -> arg_list , expression | expression

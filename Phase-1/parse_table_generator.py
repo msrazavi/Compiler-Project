@@ -79,7 +79,7 @@ while True:
 
         # first
         for symbol in expression:
-            if symbol == 'epsilon':
+            if expression == '/* empty */'.split():
                 updated |= union(epsilon, {nt})
                 break
             updated |= union(first[nt], first[symbol])
@@ -89,7 +89,7 @@ while True:
         # follow
         aux = follow[nt]
         for symbol in reversed(expression):
-            if symbol == 'epsilon':
+            if expression == '/* empty */'.split():
                 break
             if symbol in follow:
                 updated |= union(follow[symbol], aux)

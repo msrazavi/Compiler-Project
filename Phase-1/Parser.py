@@ -59,9 +59,26 @@ def read_parse_table():
     return parse_table
 
 
+def is_action_symbol(term: str) -> bool:
+    print(f'is_action_symbol: {term}')
+    if term.startswith('action_'): return True
+    for rule_no, rule in grammar.items():
+        if len(rule) == 3 and rule[0] == term and rule[2] == f'action_{term}':
+            return True
+    return False
+
+
 def get_next_action():
     state: State = stack.top()
-    return str(parse_table[state.state_num][next_token_nt]).split("_")
+    if not (next_token_nt in parse_table[state.state_num].keys()):
+        for term, action in parse_table[state.state_num].items():
+            if term.startswith('action_'):
+                codegen.call_action_routine(term.replace('action_', ''), next_token_nt)
+                state = State(action.split('_')[1])
+                stack.push(Node(term))
+                stack.push(state)
+                break
+    return parse_table[state.state_num][next_token_nt].split("_")
 
 
 def get_goto_state(last_state: State, non_terminal):
@@ -152,7 +169,7 @@ def start_parsing():
             print(str(stack), next_token_nt)
             action = get_next_action()
             print(str(stack), next_token_nt, action)
-        except KeyError:
+        except KeyError as e:
             panic_mode_recovery()
             if next_token_nt == '$':
                 syntax_errors.append((
@@ -161,22 +178,21 @@ def start_parsing():
                 ))
                 break
             continue
-        if action[0] == "shift":
+        if action[0] == "codegen":
+            stack.multipop(2)
+            codegen.call_action_routine(action[1].replace('action_', ''), next_token)
+        elif action[0] == "shift":
             stack.push(Node((next_token_type, next_token, next_token_nt)))
             stack.push(State(action[1]))
             next_token_type, next_token, next_token_nt = get_next_token_from_scanner()
         elif action[0] == "reduce":
             rule = grammar[action[1]]
             children = []
-            if rule[2] != "epsilon":
+            if rule[2:] != "/* empty */".split():
                 for _ in rule[2:]:
                     stack.pop()
                     children.insert(0, stack.pop())
-                has_action_symbol = str(rule[-1]).startswith('action_')
-                if has_action_symbol: codegen.call_action_routine(str(rule[-1])[7:], next_token)
             else:
-                print("epsilon!!")
-                print(str(stack))
                 children.append(Node('epsilon'))
             last_state: State = stack.top()
             parent_node = Node(rule[0], children=children)
