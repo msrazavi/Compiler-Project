@@ -15,7 +15,7 @@ class ErrorMessages:
 
 
 def create_symbol_table():
-    symbols.extend(['if', 'else', 'void', 'int', 'while', 'break', 'switch', 'default', 'case', 'return', 'endif'])
+    symbols.extend(['if', 'else', 'void', 'int', 'while', 'break', 'switch', 'default', 'case', 'return', 'endif', 'output'])
 
 
 def write_tokens():
@@ -146,7 +146,7 @@ def get_next_token():
                 word += input_text[text_pointer]
             elif detect_type(input_text[text_pointer]) == 'WHITESPACE' or \
                     detect_type(input_text[text_pointer]) == 'SYMBOL':
-                if word in symbols[:11]:
+                if word in symbols[:12]:
                     return [line_counter, 'KEYWORD', word]
                 if word not in symbols:
                     symbols.append(word)

@@ -17,6 +17,13 @@ class Element:
         self.is_var = not (is_func or is_arr)
         self.size = size
 
+    def __str__(self):
+        return f"{self.name}, " \
+               f"{self.type}, " \
+               f"{'func' if self.is_func else ('arr' if self.is_arr else 'var')}, " \
+               f"scope={self.scope}, " \
+               f"size={self.size}"
+
 
 class SymbolTable:
     elements: List[Element] = []
@@ -38,17 +45,11 @@ class SymbolTable:
         self.elements[-1].is_arr = True
         self.elements[-1].is_var = False
 
-    def add_var(self, name: str, type: str, scope: int):
-        self.elements.append(Element(name, type, scope))
-
-    def add_func(self, name: str, type: str, scope: int, arg_count: int):
-        self.elements.append(Element(name, type, scope, is_func=True, size=arg_count))
-
-    def add_arr(self, name: str, type: str, scope: int, size: int):
-        self.elements.append(Element(name, type, scope, is_arr=True, size=size))
-
     def index_of(self, name: str, scope: int) -> Optional[int]:
         for i, e in enumerate(self.elements):
             if e.name == name and e.scope == scope:
                 return i
         return None
+
+    def __str__(self):
+        return str([str(e) for e in self.elements])

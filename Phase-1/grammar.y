@@ -7,25 +7,27 @@ program: start_scope declaration_list end_scope
 declaration_list: declaration_list declaration
 | declaration
 ;
-declaration: var_declaration 
+declaration: var_declaration
+| arr_declaration
 | fun_declaration 
 ;
-var_declaration: declare type_specifier declare_id ID ';'
-| declare type_specifier declare_id ID declare_arr '[' declare_size NUM ']' ';'
+var_declaration: declare_type type_specifier declare_id ID ';'
+;
+arr_declaration: declare_type type_specifier declare_id ID '[' declare_size NUM ']' ';' declare_arr
 ;
 type_specifier: "int" 
 | "void"
 ;
-fun_declaration: declare type_specifier declare_id ID declare_func '(' params ')' compound_stmt
+fun_declaration: declare_type type_specifier declare_id ID '(' params ')' declare_func compound_stmt
 ;
 params: param_list
 | "void"
 ;
-param_list: param_list ',' param declare_scope_increment declare_size_increment
-| param declare_scope_increment declare_size_increment
+param_list: param_list ',' param
+| param
 ;
-param: declare type_specifier declare_id ID
-| declare type_specifier declare_id ID declare_arr '[' ']'
+param: type_specifier ID
+| type_specifier ID '[' ']'
 ;
 compound_stmt: '{' start_scope local_declarations statement_list end_scope '}'
 ;
@@ -46,7 +48,7 @@ expression_stmt: expression ';'
 | "break" ';'
 | ';'
 ;
-selection_stmt: "if" '(' expression ')' save statement "endif" if
+selection_stmt: "if" '(' expression ')' save statement "endif" if_block
 | "if" '(' expression ')' save statement save "else" label statement "endif" ifelse
 ;
 iteration_stmt: "while" '(' expression ')' statement while_loop
@@ -64,7 +66,7 @@ case_stmt: "case" save_const NUM ':' statement_list
 default_stmt: "default" ':' statement_list
 | /* epsilon */
 ;
-expression: var '=' expression
+expression: var '=' expression assign
 | simple_expression
 ;
 var: push_id ID
@@ -96,29 +98,28 @@ args: arg_list
 arg_list: arg_list ',' expression
 | expression
 ;
-start_scope: /* epsilon */;
-end_scope: /* epsilon */;
 push_id: /* epsilon */;
 save_const: /* epsilon */;
 save: /* epsilon */;
 label: /* epsilon */;
-declare: /* epsilon */;
-declare_id: /* epsilon */;
-declare_arr: /* epsilon */;
-declare_func: /* epsilon */;
-declare_size: /* epsilon */;
-declare_scope_increment: /* epsilon */;
-ifelse: /* epsilon */;
 lt: /* epsilon */;
-call_fun: /* epsilon */;
-output: /* epsilon */;
 add: /* epsilon */;
-while_loop: /* epsilon */;
 div: /* epsilon */;
 eq: /* epsilon */;
-index_addr: /* epsilon */;
-if: /* epsilon */;
 mult: /* epsilon */;
-declare_size_increment: /* epsilon */;
 sub: /* epsilon */;
+assign: /* epsilon */;
+output: /* epsilon */;
+start_scope: /* epsilon */;
+end_scope: /* epsilon */;
+ifelse: /* epsilon */;
+if_block: /* epsilon */;
+while_loop: /* epsilon */;
+index_addr: /* epsilon */;
+call_fun: /* epsilon */;
+declare_id: /* epsilon */;
+declare_type: /* epsilon */;
+declare_size: /* epsilon */;
+declare_arr: /* epsilon */;
+declare_func: /* epsilon */;
 %%

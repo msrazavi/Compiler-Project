@@ -15,11 +15,6 @@ def main():
 
     Parser.start_parsing()
 
-    Scanner.write_symbol_table()
-    Scanner.write_lexical_errors()
-    Scanner.write_tokens()
-    Parser.write_parse_tree()
-    Parser.write_syntax_errors()
     Parser.codegen.write_program_block()
 
 

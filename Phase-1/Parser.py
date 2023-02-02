@@ -12,6 +12,7 @@ follow = {}
 grammar = {}
 parse_table = {}
 syntax_errors = []  # (message, args as tuple)
+action_nt_start_index = -2
 codegen = CodeGenerator()
 
 
@@ -47,7 +48,7 @@ def get_next_token_from_scanner():
 
 
 def read_parse_table():
-    global parse_table, grammar, follow, terminals, non_terminals
+    global parse_table, grammar, follow, terminals, non_terminals, action_nt_start_index
     # with open('parse-table.json') as pt:
     with open('table.json') as pt:
         json_file = json.load(pt)
@@ -56,6 +57,7 @@ def read_parse_table():
         follow = json_file["follow"]
         terminals = json_file["terminals"]
         non_terminals = json_file["non_terminals"]
+        action_nt_start_index = list(grammar.values()).index("push_id -> epsilon".split())
     return parse_table
 
 
@@ -70,15 +72,10 @@ def is_action_symbol(term: str) -> bool:
 
 def get_next_action():
     state: State = stack.top()
-    if not (next_token_nt in parse_table[state.state_num].keys()):
-        for term, action in parse_table[state.state_num].items():
-            if term.startswith('action_'):
-                codegen.call_action_routine(term.replace('action_', ''), next_token_nt)
-                state = State(action.split('_')[1])
-                stack.push(Node(term))
-                stack.push(state)
-                break
-    return parse_table[state.state_num][next_token_nt].split("_")
+    action = parse_table[state.state_num][next_token_nt].split('_')
+    if action[0] == 'reduce' and int(action[1]) >= action_nt_start_index:
+        action[0] = 'codegen'
+    return action
 
 
 def get_goto_state(last_state: State, non_terminal):
@@ -178,14 +175,11 @@ def start_parsing():
                 ))
                 break
             continue
-        if action[0] == "codegen":
-            stack.multipop(2)
-            codegen.call_action_routine(action[1].replace('action_', ''), next_token)
-        elif action[0] == "shift":
+        if action[0] == "shift":
             stack.push(Node((next_token_type, next_token, next_token_nt)))
             stack.push(State(action[1]))
             next_token_type, next_token, next_token_nt = get_next_token_from_scanner()
-        elif action[0] == "reduce":
+        elif action[0] in ["reduce", "codegen"]:
             rule = grammar[action[1]]
             children = []
             if rule[2] != "epsilon":
@@ -198,6 +192,8 @@ def start_parsing():
             parent_node = Node(rule[0], children=children)
             stack.push(parent_node)
             stack.push(State(get_goto_state(last_state, rule[0])))
+            if action[0] == "codegen":
+                codegen.call_action_routine(rule[0], next_token)
         elif action[0] == "accept":
             stack.elements[1].children += (stack.elements[3],)
             break
