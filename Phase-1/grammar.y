@@ -91,13 +91,13 @@ factor: '(' expression ')'
 | save_const NUM
 ;
 call: "output" '(' expression ')' output
-| push_id ID '(' args ')' call_fun
+| push_id ID '(' call_args_start args ')' call_fun
 ;
 args: arg_list
 | /* epsilon */
 ;
-arg_list: arg_list ',' expression
-| expression
+arg_list: arg_list ',' new_call_arg expression
+| new_call_arg expression
 ;
 push_id: /* epsilon */;
 save_const: /* epsilon */;
@@ -127,4 +127,6 @@ declare_size: /* epsilon */;
 declare_arr: /* epsilon */;
 declare_func: /* epsilon */;
 declare_address: /* epsilon */;
+call_args_start: /* epsilon */;
+new_call_arg: /* epsilon */;
 %%

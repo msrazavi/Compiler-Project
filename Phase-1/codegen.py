@@ -5,6 +5,7 @@ from symbol_table import SymbolTable
 from stack import Stack
 
 
+# noinspection PyUnusedLocal
 class CodeGenerator:
     program_block = {}
     pc = 0
@@ -12,6 +13,7 @@ class CodeGenerator:
     break_stack = Stack()
     scope_stack = Stack()
     scope_counter = 0
+    call_args_count = Stack()
     symbol_table = SymbolTable()
     temp_addr = 500
 
@@ -141,9 +143,22 @@ class CodeGenerator:
             # todo error: "invalid break in {semantic_stack.top()}"
             self.semantic_stack.pop()
 
+    def call_args_start(self, lookahead: str = None):
+        self.call_args_count.push(0)
+        self.semantic_stack.push(None)  # to be set later
+
+    def new_call_arg(self, lookahead: str = None):
+        self.call_args_count.elements[-1] += 1
+
     def call_fun(self, lookahead: str = None):
-        # todo
-        pass
+        self.semantic_stack.push(self.call_args_count.top())
+        self.semantic_stack[-self.call_args_count.pop() - 1] = self.pc + 1
+        self.add_code(('JP', -self.semantic_stack.pop() - 2), index=self.pc)
+        self.add_code(('JP', -self.semantic_stack.pop() - 2), index=self.pc)
+        self.pc += 1
+
+        # todo add arguments
+
 
     def add_code(self, code, index: int):
         # print([f'PB[{i}] = {c}' for i, c in self.program_block.items()])
@@ -165,4 +180,3 @@ class CodeGenerator:
             for err in self.errors:
                 # todo write errors
                 pass
-
