@@ -1,8 +1,5 @@
-from typing import Dict
-
-from symbol_table import SymbolTable
-
 from stack import Stack
+from symbol_table import SymbolTable
 
 
 # noinspection PyUnusedLocal
@@ -21,8 +18,6 @@ class CodeGenerator:
         self.assign_chain_len = 0
         self.temp_addr = 500
         self.switch_case_count = 0
-
-        self.errors = []
 
     def call_action_routine(self, action_symbol: str, lookahead: str):
         self.__getattribute__(action_symbol)(lookahead)
@@ -215,18 +210,14 @@ class CodeGenerator:
             print(f'prev code[{index}] = {code}')
         self.program_block[index] = code
 
-    def write_program_block(self):
+    def write_program_block(self, generates_code=True):
         with open('output.txt', 'w') as file:
-            for i in sorted(self.program_block.keys()):
-                code = self.program_block[i]
-                if code is None: raise NameError
-                file.write(
-                    f'{i}.\t({code[0]}, {code[1]}, {code[2] if len(code) > 2 else ""}, {code[3] if len(code) > 3 else ""})\n'
-                )
-
-    def write_errors(self):
-        with open('semantic_errors.txt', 'w') as file:
-            if len(self.errors) == 0: file.write('The input program is semantically correct.\n')
-            for err in self.errors:
-                # todo write errors
-                pass
+            if not generates_code:
+                file.write('The code has not been generated.')
+            else:
+                for i in sorted(self.program_block.keys()):
+                    code = self.program_block[i]
+                    if code is None: raise NameError
+                    file.write(
+                        f'{i}.\t({code[0]}, {code[1]}, {code[2] if len(code) > 2 else ""}, {code[3] if len(code) > 3 else ""})\n'
+                    )

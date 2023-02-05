@@ -3,6 +3,7 @@ from parse_tree_node import Node
 import Scanner
 from stack import Stack
 from codegen import CodeGenerator
+from semantic_analyzer import SemanticAnalyzer
 import json
 
 stack = Stack()
@@ -15,6 +16,7 @@ parse_table = {}
 syntax_errors = []  # (message, args as tuple)
 action_nt_start_index = -2
 codegen = CodeGenerator()
+semantic_analyzer = SemanticAnalyzer()
 
 
 class ErrorMessages:
