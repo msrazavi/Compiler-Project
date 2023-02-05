@@ -15,8 +15,8 @@ grammar = {}
 parse_table = {}
 syntax_errors = []  # (message, args as tuple)
 action_nt_start_index = -2
-codegen = CodeGenerator()
 semantic_analyzer = SemanticAnalyzer()
+codegen = CodeGenerator(semantic_analyzer=semantic_analyzer)
 
 
 class ErrorMessages:
