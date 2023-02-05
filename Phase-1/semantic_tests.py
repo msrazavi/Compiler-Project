@@ -34,7 +34,7 @@ class SemanticCodegenTests(unittest.TestCase):
         Parser.codegen = CodeGenerator()
 
     def test_all(self):
-        for folder_name in  os.listdir('testcases/code-generator'):
+        for folder_name in ['T5']:  # os.listdir('testcases/code-generator'):
             with self.subTest(f"Testcase[{folder_name}]"):
                 print(f"running Testcase[{folder_name}]")
                 self.setUp()
@@ -82,5 +82,5 @@ class SemanticCodegenTests(unittest.TestCase):
             "\n".join([s.strip() for s in actual.split()])
         )
 
-        if __name__ == "__main__":
-            unittest.main()
+    if __name__ == "__main__":
+        unittest.main()

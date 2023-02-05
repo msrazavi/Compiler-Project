@@ -192,8 +192,8 @@ class CodeGenerator:
 
         # todo add arguments
 
-    def add_code(self, code, index: int):
-        # print([f'PB[{i}] = {c}' for i, c in self.program_block.items()])
+    def add_code(self, code, index):
+        index = int(index)
         if index in sorted(self.program_block.keys()):
             print(f'prev code[{index}] = {code}')
         self.program_block[index] = code
