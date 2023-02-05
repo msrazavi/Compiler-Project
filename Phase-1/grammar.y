@@ -57,12 +57,12 @@ iteration_stmt: "while" '(' label expression ')' save statement while_loop
 return_stmt: "return" ';'
 | "return" expression ';'
 ;
-switch_stmt: "switch" '(' expression ')' '{' case_stmts default_stmt '}'
+switch_stmt: "switch" '(' expression ')' '{' case_stmts default_stmt '}' switch
 ;
-case_stmts: case_stmts case_stmt
+case_stmts: case_stmts case_stmt label
 | /* epsilon */
 ;
-case_stmt: "case" save_const NUM ':' save statement_list
+case_stmt: new_case "case" save_const NUM ':' save empty_cell statement_list
 ;
 default_stmt: "default" ':' statement_list
 | /* epsilon */
@@ -102,6 +102,7 @@ arg_list: arg_list ',' new_call_arg expression
 push_id: /* epsilon */;
 save_const: /* epsilon */;
 save: /* epsilon */;
+empty_cell: /* epsilon */;
 label: /* epsilon */;
 lt: /* epsilon */;
 add: /* epsilon */;
@@ -110,12 +111,15 @@ eq: /* epsilon */;
 mult: /* epsilon */;
 sub: /* epsilon */;
 assign: /* epsilon */;
+assign_chain_inc: /* epsilon */;
 output: /* epsilon */;
 start_scope: /* epsilon */;
 end_scope: /* epsilon */;
 ifelse: /* epsilon */;
 if_block: /* epsilon */;
 while_loop: /* epsilon */;
+switch: /* epsilon */;
+new_case: /* epsilon */;
 break_stmt: /* epsilon */;
 index_addr: /* epsilon */;
 call_fun: /* epsilon */;
@@ -127,5 +131,4 @@ declare_func: /* epsilon */;
 declare_address: /* epsilon */;
 call_args_start: /* epsilon */;
 new_call_arg: /* epsilon */;
-assign_chain_inc: /* epsilon */;
 %%

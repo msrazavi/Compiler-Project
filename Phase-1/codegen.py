@@ -20,6 +20,7 @@ class CodeGenerator:
         self.symbol_table = SymbolTable()
         self.assign_chain_len = 0
         self.temp_addr = 500
+        self.switch_case_count = 0
 
         self.errors = []
 
@@ -33,6 +34,9 @@ class CodeGenerator:
 
     def save(self, lookahead: str = None):
         self.label()
+        self.empty_cell()
+
+    def empty_cell(self, lookahead: str = None):
         self.pc += 1
 
     def label(self, lookahead: str = None):
@@ -97,11 +101,6 @@ class CodeGenerator:
     def assign_chain_inc(self, lookahead: str = None):
         self.assign_chain_len += 1
 
-    # def end_expression_stmt(self, lookahead: str = None):
-    #     if self.assign_chain_len == 0:
-    #         self.semantic_stack.pop()
-    #     self.assign_chain_len = 0
-
     def output(self, lookahead: str = None):
         self.add_code(('PRINT', self.semantic_stack.pop()), index=self.pc)
         self.pc += 1
@@ -164,6 +163,29 @@ class CodeGenerator:
         self.add_code(('JP', self.semantic_stack[-2]), index=self.pc)
         self.pc += 1
         self.semantic_stack.multipop(3)
+
+    def switch(self, lookahead: str = None):
+        switch_val = self.semantic_stack[-3 * self.switch_case_count]
+
+        # self.semantic_stack.push(switch_val)  # for consistency
+        # self.semantic_stack.push(self.pc)
+        # self.semantic_stack.push('#1')  # for consistency
+        # self.switch_case_count += 1
+
+        while self.switch_case_count > 1:
+            t = self.get_temp_addr()
+            # self.add_code(('EQ', self.semantic_stack[-5], switch_val, t), index=self.semantic_stack[-4])
+            # self.add_code(('JPF', t, self.semantic_stack[-3]), index=self.semantic_stack[-4] + 1)
+            self.add_code(('EQ', self.semantic_stack[-2], switch_val, t), index=self.semantic_stack[-1])
+            self.add_code(('JPF', t, self.semantic_stack[0]), index=self.semantic_stack[-1] + 1)
+
+            self.semantic_stack.multipop(3)
+
+            self.switch_case_count -= 1
+        self.semantic_stack.pop()
+
+    def new_case(self, lookahead: str = None):
+        self.switch_case_count += 1
 
     def break_stmt(self, lookahead: str = None):
         break_accepted = False

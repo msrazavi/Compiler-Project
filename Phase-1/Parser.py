@@ -80,6 +80,8 @@ def get_next_action():
 
 
 def get_goto_state(last_state: State, non_terminal):
+    if non_terminal == 'statement':
+        print(end='')
     return str(parse_table[last_state.state_num][non_terminal]).split("_")[1]
 
 
