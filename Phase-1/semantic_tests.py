@@ -6,6 +6,7 @@ from stack import Stack
 from codegen import CodeGenerator
 import re
 
+import platform
 import os
 
 ntests = 15
@@ -34,7 +35,7 @@ class SemanticCodegenTests(unittest.TestCase):
         Parser.codegen = CodeGenerator()
 
     def test_all(self):
-        for folder_name in ['O1-FUNCTION']:  # os.listdir('testcases/code-generator'):
+        for folder_name in os.listdir('testcases/code-generator'):
             with self.subTest(f"Testcase[{folder_name}]"):
                 print(f"running Testcase[{folder_name}]")
                 self.setUp()
@@ -67,7 +68,12 @@ class SemanticCodegenTests(unittest.TestCase):
                 has_error = expected_semantic_errors != 'The input program is semantically correct.\n'
                 if not has_error:
                     os.system('cp output.txt interpreter/output.txt')
-                    os.system('./interpreter/tester_mac_non_m1 > interpreter/actual.txt')
+
+                    if platform.system() == 'Darwin':
+                        tester = 'tester_mac_non_m1'
+                    else:
+                        tester = 'tester_linux.out'
+                    os.system(f'./interpreter/{tester} > interpreter/actual.txt')
 
                 with open('interpreter/actual.txt') as f:
                     actual = f.read()
