@@ -14,7 +14,7 @@ def main():
 
     Parser.start_parsing()
 
-    Parser.codegen.write_errors()
+    Parser.semantic_analyzer.write_errors()
     if Parser.semantic_analyzer.has_errors():
         Parser.codegen.write_program_block(generates_code=False)
     else:
