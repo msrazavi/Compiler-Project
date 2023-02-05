@@ -39,9 +39,9 @@ statement_list: statement_list statement
 | /* epsilon */
 ;
 statement: expression_stmt
-| start_scope compound_stmt break_error end_scope
-| start_scope selection_stmt break_accept end_scope
-| start_scope iteration_stmt break_accept end_scope
+| start_scope compound_stmt end_scope
+| start_scope selection_stmt end_scope
+| start_scope iteration_stmt end_scope
 | return_stmt
 | start_scope switch_stmt end_scope
 ;
@@ -117,8 +117,6 @@ ifelse: /* epsilon */;
 if_block: /* epsilon */;
 while_loop: /* epsilon */;
 break_stmt: /* epsilon */;
-break_accept: /* epsilon */;
-break_error: /* epsilon */;
 index_addr: /* epsilon */;
 call_fun: /* epsilon */;
 declare_id: /* epsilon */;

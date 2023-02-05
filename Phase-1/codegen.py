@@ -72,10 +72,16 @@ class CodeGenerator:
         self.arith('==')
 
     def push_id(self, lookahead: str = None):
+        found = False
         for scope in self.scope_stack.elements[::-1]:
             id = self.symbol_table.get_addr(lookahead, scope)
             if id is not None:
                 self.semantic_stack.push(id)
+                found = True
+                break
+        if not found:
+            # todo id not found
+            pass
 
     def index_addr(self, lookahead: str = None):
         self.semantic_stack.elements[-2] = f'#{self.semantic_stack.elements[-2]}'
@@ -100,10 +106,25 @@ class CodeGenerator:
         self.pc += 1
 
     def start_scope(self, lookahead: str = None):
-        self.scope_stack.push(self.scope_counter)
+        if lookahead in ['if', 'while', 'switch']:
+            scope = f'{lookahead} '
+        elif lookahead in ['int', 'void']:
+            scope = ''
+        elif lookahead == '(':
+            scope = f'fun#{len(self.symbol_table.elements) - 1}'
+        elif lookahead == '{':
+            scope = ''
+        else:
+            raise NameError()
+        scope += f'{self.scope_counter}'
+        self.scope_stack.push(scope)
         self.scope_counter += 1
 
     def end_scope(self, lookahead: str = None):
+        while len(self.break_stack.elements) > 0:
+            bst = self.break_stack.pop().split()
+            self.add_code(('JP', self.pc), index=bst[-1])
+
         self.scope_stack.pop()
 
     def declare_type(self, lookahead: str = None):
@@ -140,19 +161,17 @@ class CodeGenerator:
         self.semantic_stack.multipop(2)
 
     def break_stmt(self, lookahead: str = None):
-        self.break_stack.push(self.scope_stack.top())
-        self.save()
-
-    def break_accept(self, lookahead: str = None):
-        for scope in self.break_stack.elements[::-1]:
-            if scope != self.scope_stack.top(): break
-            self.add_code(('JP', self.pc), index=self.semantic_stack.pop())
-
-    def break_error(self, lookahead: str = None):
-        for scope in self.break_stack.elements[::-1]:
-            if scope != self.scope_stack.top(): break
-            # todo error: "invalid break in {semantic_stack.top()}"
-            self.semantic_stack.pop()
+        break_accepted = False
+        for scope in self.scope_stack.elements[::-1]:
+            scope = str(scope).split()
+            if len(scope) == 2 and scope[0] in ['while', 'switch']:
+                break_accepted = True
+                self.break_stack.push(f'{scope} {self.pc}')
+                self.pc += 1
+                break
+        if not break_accepted:
+            # todo break not accepted
+            pass
 
     def call_args_start(self, lookahead: str = None):
         self.call_args_count.push(0)
