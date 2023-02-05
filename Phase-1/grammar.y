@@ -2,7 +2,7 @@
 %token ID
 %start program
 %%
-program: start_scope declaration_list end_scope
+program: save start_scope declaration_list end_scope
 ;
 declaration_list: declaration_list declaration
 | declaration

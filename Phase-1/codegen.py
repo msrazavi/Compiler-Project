@@ -123,6 +123,8 @@ class CodeGenerator:
 
     def declare_address(self, lookahead: str = None):
         self.symbol_table.declare_address(self.pc)
+        if self.symbol_table.elements[-1].name == 'main':
+            self.add_code(('JP', self.pc), index=self.semantic_stack.elements[0])
 
     def if_block(self, lookahead: str = None):
         self.add_code(('JPF', self.semantic_stack[-1], self.pc), index=self.semantic_stack.top())
@@ -183,7 +185,7 @@ class CodeGenerator:
                 )
 
     def write_errors(self):
-        with open('semanatic_errors.txt', 'w') as file:
+        with open('semantic_errors.txt', 'w') as file:
             if len(self.errors) == 0: file.write('The input program is semantically correct.\n')
             for err in self.errors:
                 # todo write errors
