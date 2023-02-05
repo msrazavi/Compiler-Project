@@ -19,6 +19,10 @@ class Stack:
         if item <= 0: return self.elements[item - 1]
         return self.elements[item]
 
+    def __setitem__(self, key, value):
+        if key <= 0:  self.elements[key - 1] = value
+        self.elements[key] = value
+
     def top(self):
         return self.elements[-1]
 

@@ -38,11 +38,11 @@ local_declarations: local_declarations var_declaration
 statement_list: statement_list statement
 | /* epsilon */
 ;
-statement: start_scope expression_stmt end_scope
+statement: expression_stmt
 | start_scope compound_stmt break_error end_scope
 | start_scope selection_stmt break_accept end_scope
 | start_scope iteration_stmt break_accept end_scope
-| start_scope return_stmt end_scope
+| return_stmt
 | start_scope switch_stmt end_scope
 ;
 expression_stmt: expression ';' end_expression_stmt

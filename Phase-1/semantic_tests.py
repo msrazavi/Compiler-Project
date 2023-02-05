@@ -1,7 +1,7 @@
 import unittest
 import compiler
 import Scanner
-import parser
+import Parser
 from stack import Stack
 from codegen import CodeGenerator
 import re
@@ -22,28 +22,28 @@ class SemanticCodegenTests(unittest.TestCase):
         Scanner.errors = []
         Scanner.symbols = []
 
-        parser.stack = Stack()
-        parser.next_token_type, next_token, next_token_nt = '', '', ''
-        parser.terminals = []
-        parser.non_terminals = []
-        parser.follow = {}
-        parser.grammar = {}
-        parser.parse_table = {}
-        parser.syntax_errors = []  # (message, args as tuple)
-        parser.action_nt_start_index = -2
-        parser.codegen = CodeGenerator()
+        Parser.stack = Stack()
+        Parser.next_token_type, next_token, next_token_nt = '', '', ''
+        Parser.terminals = []
+        Parser.non_terminals = []
+        Parser.follow = {}
+        Parser.grammar = {}
+        Parser.parse_table = {}
+        Parser.syntax_errors = []  # (message, args as tuple)
+        Parser.action_nt_start_index = -2
+        Parser.codegen = CodeGenerator()
 
     def test_all(self):
-        for i in [4]:#range(ntests + 1)[1:]:
-            with self.subTest(f"Testcase[{i}]"):
-                print(f"running Testcase[{i}]")
+        for folder_name in os.listdir('testcases/code-generator'):
+            with self.subTest(f"Testcase[{folder_name}]"):
+                print(f"running Testcase[{folder_name}]")
                 self.setUp()
 
-                with open(f"testcases/code-generator/T{i}/input.txt") as file:
+                with open(f"testcases/code-generator/{folder_name}/input.txt") as file:
                     input = file.read()
                     print("read input file")
 
-                with open(f"testcases/code-generator/T{i}/expected.txt") as file:
+                with open(f"testcases/code-generator/{folder_name}/expected.txt") as file:
                     expected = file.read()
                     print("read expected file for expected value")
 
@@ -55,12 +55,12 @@ class SemanticCodegenTests(unittest.TestCase):
                 compiler.main()
                 print("compiling ended")
 
-                with open(f"testcases/code-generator/T{i}/semantic_errors.txt") as f:
+                with open(f"testcases/code-generator/{folder_name}/semantic_errors.txt") as f:
                     expected_semantic_errors = f.read()
 
                 with open(f"semantic_errors.txt") as f:
                     semantic_errors = f.read()
-                self.assertEqualTrimWS(semantic_errors, expected_semantic_errors, f"semantic_errors[{i}]")
+                self.assertEqualTrimWS(semantic_errors, expected_semantic_errors, f"semantic_errors[{folder_name}]")
 
                 has_error = expected_semantic_errors != 'The input program is semantically correct.\n'
                 if not has_error:
@@ -70,15 +70,15 @@ class SemanticCodegenTests(unittest.TestCase):
                 with open('interpreter/actual.txt') as f:
                     actual = f.read()
                     actual = ''.join([s + '\n' for s in re.findall(r'PRINT +\d+', actual)])
-                    self.assertEqualTrimWS(actual, expected, f"output[{i}]")
+                    self.assertEqualTrimWS(actual, expected, f"output[{folder_name}]")
 
-        os.system('cd ..; zip -vr Phase-1.zip Phase-1/ -x "*.DS_Store"; cd Phase-1')
+        os.system('cd ..; zip -vr -q Phase-1.zip Phase-1/ -x "*.DS_Store"; cd Phase-1')
 
     def assertEqualTrimWS(self, actual: str, expected: str, msg):
         self.assertEqual(
-            "\n".join([f"{s.split('.')[0]}.\t" + "".join(s.split(".")[1:]).strip() for s in expected.split("\n")]),
-            "\n".join([f"{s.split('.')[0]}.\t" + "".join(s.split(".")[1:]).strip() for s in actual.split("\n")]), msg)
+            "\n".join([s.strip() for s in expected.split()]),
+            "\n".join([s.strip() for s in actual.split()])
+        )
 
-
-if __name__ == "__main__":
-    unittest.main()
+        if __name__ == "__main__":
+            unittest.main()

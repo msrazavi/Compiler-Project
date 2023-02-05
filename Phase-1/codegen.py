@@ -7,20 +7,21 @@ from stack import Stack
 
 # noinspection PyUnusedLocal
 class CodeGenerator:
-    program_block = {}
-    pc = 0
-    semantic_stack = Stack()
-    break_stack = Stack()
-    scope_stack = Stack()
-    scope_counter = 0
-    call_args_count = Stack()
-    symbol_table = SymbolTable()
-    assign_chain_len = 0
-    temp_addr = 500
-
-    errors = []
-
     arith_operators = {'+': 'ADD', '-': 'SUB', '*': 'MULT', '/': 'DIV', '<': 'LT', '==': 'EQ'}
+
+    def __init__(self):
+        self.program_block = {}
+        self.pc = 0
+        self.semantic_stack = Stack()
+        self.break_stack = Stack()
+        self.scope_stack = Stack()
+        self.scope_counter = 0
+        self.call_args_count = Stack()
+        self.symbol_table = SymbolTable()
+        self.assign_chain_len = 0
+        self.temp_addr = 500
+
+        self.errors = []
 
     def call_action_routine(self, action_symbol: str, lookahead: str):
         self.__getattribute__(action_symbol)(lookahead)
@@ -77,10 +78,9 @@ class CodeGenerator:
                 self.semantic_stack.push(id)
 
     def index_addr(self, lookahead: str = None):
-        index = str(self.semantic_stack.pop()).replace('#', '')
-        start_addr = str(self.semantic_stack.pop()).replace('#', '')
-        addr = int(index) + int(start_addr)
-        self.semantic_stack.push(addr)
+        self.semantic_stack.elements[-2] = f'#{self.semantic_stack.elements[-2]}'
+        self.add(lookahead)
+        self.semantic_stack[0] = f'@{self.semantic_stack.top()}'
 
     def assign(self, lookahead: str = None):
         self.add_code(('ASSIGN', self.semantic_stack.top(), self.semantic_stack[-1]), index=self.pc)

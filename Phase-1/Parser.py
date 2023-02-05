@@ -149,7 +149,7 @@ def panic_mode_recovery():
 
 
 def write_syntax_errors():
-    with open('syntax_errors.txt', 'w') as file:
+    with open('semantic_errors.txt', 'w') as file:
         for e, args in syntax_errors:
             file.write(f"{e}\n" % args)
         if len(syntax_errors) == 0:

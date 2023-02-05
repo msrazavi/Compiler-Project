@@ -9,7 +9,7 @@ class Element:
                  is_func: bool = False,
                  is_arr: bool = False,
                  size: int = 1,
-                 address: int = 1):
+                 address: int = 0):
         self.name = name
         self.type = type
         self.scope = scope
@@ -49,7 +49,11 @@ class SymbolTable:
                 if len(self.elements) == 1:
                     self.elements[-1].address = 1
                 else:
-                    self.elements[-1].address = self.elements[-2].address + self.elements[-1].size
+                    if not self.elements[-2].is_func:
+                        self.elements[-1].address = self.elements[-2].address + 4 * self.elements[-1].size
+                    else:
+                        self.elements[-1].address = self.roundup4(self.elements[-2].address) + 4 * self.elements[
+                            -1].size
         else:
             self.elements[-1].address = address
 
@@ -66,6 +70,9 @@ class SymbolTable:
             if e.name == name and e.scope == scope:
                 return e.address
         return None
+
+    def roundup4(self, address) -> int:
+        return address - (address % 4)
 
     def __str__(self):
         return str([str(e) for e in self.elements])
