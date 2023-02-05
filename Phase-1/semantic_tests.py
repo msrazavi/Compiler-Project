@@ -2,6 +2,7 @@ import unittest
 import compiler
 import Scanner
 import Parser
+from semantic_analyzer import SemanticAnalyzer
 from stack import Stack
 from codegen import CodeGenerator
 import re
@@ -32,7 +33,8 @@ class SemanticCodegenTests(unittest.TestCase):
         Parser.parse_table = {}
         Parser.syntax_errors = []  # (message, args as tuple)
         Parser.action_nt_start_index = -2
-        Parser.codegen = CodeGenerator()
+        Parser.semantic_analyzer = SemanticAnalyzer()
+        Parser.codegen = CodeGenerator(Parser.semantic_analyzer)
 
     def test_all(self):
         for folder_name in os.listdir('testcases/code-generator'):

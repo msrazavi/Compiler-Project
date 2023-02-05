@@ -56,11 +56,15 @@ class CodeGenerator:
         self.semantic_stack.push(temp)
         self.pc += 1
 
-        if operand1 < 500:
+        if str(operand1).startswith('#') or str(operand1).startswith('@'):
+            operand1_type = 'int'
+        elif int(operand1) < 500:
             operand1_type = self.symbol_table.get_type(operand1)
         else:
             operand1_type = self.temp_types[operand1]
-        if operand2 < 500:
+        if str(operand2).startswith('#') or str(operand2).startswith('@'):
+            operand2_type = 'int'
+        elif int(operand2) < 500:
             operand2_type = self.symbol_table.get_type(operand2)
         else:
             operand2_type = self.temp_types[operand2]
@@ -155,8 +159,7 @@ class CodeGenerator:
             # todo void type error
             pass
 
-    def declare_arr(self, lookahead: str = None):
-        self.symbol_table.declare_arr()
+    def declare_var(self, lookahead: str = None):
         if self.symbol_table.elements[-1].type == 'void':
             # todo void type error
             pass

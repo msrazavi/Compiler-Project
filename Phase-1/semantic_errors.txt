@@ -1,1 +1,1 @@
-#1 : Semantic Error! d is not defined.
+The input program is semantically correct.
