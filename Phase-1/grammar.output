@@ -57,7 +57,7 @@ Grammar
    36 return_stmt: "return" ';'
    37            | "return" expression ';'
 
-   38 switch_stmt: "switch" '(' expression ')' '{' case_stmts default_stmt '}' switch
+   38 switch_stmt: "switch" '(' expression ')' '{' case_stmts default_stmt '}' switch_block
 
    39 case_stmts: case_stmts case_stmt label
    40           | /* empty */
@@ -137,7 +137,7 @@ Grammar
 
    85 while_loop: /* empty */
 
-   86 switch: /* empty */
+   86 switch_block: /* empty */
 
    87 new_case: /* empty */
 
@@ -304,7 +304,7 @@ if_block (82)
     on left: 84, on right: 33
 while_loop (83)
     on left: 85, on right: 35
-switch (84)
+switch_block (84)
     on left: 86, on right: 38
 new_case (85)
     on left: 87, on right: 41
@@ -1091,7 +1091,7 @@ state 66
    33 selection_stmt: . "if" '(' expression ')' save statement "endif" if_block
    34               | . "if" '(' expression ')' save statement save "else" label statement "endif" ifelse
    35 iteration_stmt: . "while" '(' label expression ')' save statement while_loop
-   38 switch_stmt: . "switch" '(' expression ')' '{' case_stmts default_stmt '}' switch
+   38 switch_stmt: . "switch" '(' expression ')' '{' case_stmts default_stmt '}' switch_block
 
     '{'       shift, and go to state 40
     "if"      shift, and go to state 83
@@ -1424,7 +1424,7 @@ state 84
 
 state 85
 
-   38 switch_stmt: "switch" . '(' expression ')' '{' case_stmts default_stmt '}' switch
+   38 switch_stmt: "switch" . '(' expression ')' '{' case_stmts default_stmt '}' switch_block
 
     '('  shift, and go to state 107
 
@@ -1741,7 +1741,7 @@ state 106
 
 state 107
 
-   38 switch_stmt: "switch" '(' . expression ')' '{' case_stmts default_stmt '}' switch
+   38 switch_stmt: "switch" '(' . expression ')' '{' case_stmts default_stmt '}' switch_block
    44 expression: . var assign_chain_inc '=' expression assign
    45           | . simple_expression
    46 var: . push_id ID
@@ -1956,7 +1956,7 @@ state 124
 
 state 125
 
-   38 switch_stmt: "switch" '(' expression . ')' '{' case_stmts default_stmt '}' switch
+   38 switch_stmt: "switch" '(' expression . ')' '{' case_stmts default_stmt '}' switch_block
 
     ')'  shift, and go to state 134
 
@@ -2064,7 +2064,7 @@ state 133
 
 state 134
 
-   38 switch_stmt: "switch" '(' expression ')' . '{' case_stmts default_stmt '}' switch
+   38 switch_stmt: "switch" '(' expression ')' . '{' case_stmts default_stmt '}' switch_block
 
     '{'  shift, and go to state 141
 
@@ -2178,7 +2178,7 @@ state 140
 
 state 141
 
-   38 switch_stmt: "switch" '(' expression ')' '{' . case_stmts default_stmt '}' switch
+   38 switch_stmt: "switch" '(' expression ')' '{' . case_stmts default_stmt '}' switch_block
    39 case_stmts: . case_stmts case_stmt label
    40           | .
 
@@ -2313,7 +2313,7 @@ state 145
 
 state 146
 
-   38 switch_stmt: "switch" '(' expression ')' '{' case_stmts . default_stmt '}' switch
+   38 switch_stmt: "switch" '(' expression ')' '{' case_stmts . default_stmt '}' switch_block
    39 case_stmts: case_stmts . case_stmt label
    41 case_stmt: . new_case "case" save_const NUM ':' save empty_cell statement_list
    42 default_stmt: . "default" ':' statement_list
@@ -2383,7 +2383,7 @@ state 152
 
 state 153
 
-   38 switch_stmt: "switch" '(' expression ')' '{' case_stmts default_stmt . '}' switch
+   38 switch_stmt: "switch" '(' expression ')' '{' case_stmts default_stmt . '}' switch_block
 
     '}'  shift, and go to state 160
 
@@ -2439,12 +2439,12 @@ state 159
 
 state 160
 
-   38 switch_stmt: "switch" '(' expression ')' '{' case_stmts default_stmt '}' . switch
-   86 switch: .
+   38 switch_stmt: "switch" '(' expression ')' '{' case_stmts default_stmt '}' . switch_block
+   86 switch_block: .
 
-    $default  reduce using rule 86 (switch)
+    $default  reduce using rule 86 (switch_block)
 
-    switch  go to state 164
+    switch_block  go to state 164
 
 
 state 161
@@ -2585,7 +2585,7 @@ state 163
 
 state 164
 
-   38 switch_stmt: "switch" '(' expression ')' '{' case_stmts default_stmt '}' switch .
+   38 switch_stmt: "switch" '(' expression ')' '{' case_stmts default_stmt '}' switch_block .
 
     $default  reduce using rule 38 (switch_stmt)
 

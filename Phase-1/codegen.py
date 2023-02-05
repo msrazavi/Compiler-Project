@@ -164,18 +164,11 @@ class CodeGenerator:
         self.pc += 1
         self.semantic_stack.multipop(3)
 
-    def switch(self, lookahead: str = None):
+    def switch_block(self, lookahead: str = None):
         switch_val = self.semantic_stack[-3 * self.switch_case_count]
 
-        # self.semantic_stack.push(switch_val)  # for consistency
-        # self.semantic_stack.push(self.pc)
-        # self.semantic_stack.push('#1')  # for consistency
-        # self.switch_case_count += 1
-
-        while self.switch_case_count > 1:
+        while self.switch_case_count > 0:
             t = self.get_temp_addr()
-            # self.add_code(('EQ', self.semantic_stack[-5], switch_val, t), index=self.semantic_stack[-4])
-            # self.add_code(('JPF', t, self.semantic_stack[-3]), index=self.semantic_stack[-4] + 1)
             self.add_code(('EQ', self.semantic_stack[-2], switch_val, t), index=self.semantic_stack[-1])
             self.add_code(('JPF', t, self.semantic_stack[0]), index=self.semantic_stack[-1] + 1)
 

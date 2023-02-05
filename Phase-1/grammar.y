@@ -57,7 +57,7 @@ iteration_stmt: "while" '(' label expression ')' save statement while_loop
 return_stmt: "return" ';'
 | "return" expression ';'
 ;
-switch_stmt: "switch" '(' expression ')' '{' case_stmts default_stmt '}' switch
+switch_stmt: "switch" '(' expression ')' '{' case_stmts default_stmt '}' switch_block
 ;
 case_stmts: case_stmts case_stmt label
 | /* epsilon */
@@ -118,7 +118,7 @@ end_scope: /* epsilon */;
 ifelse: /* epsilon */;
 if_block: /* epsilon */;
 while_loop: /* epsilon */;
-switch: /* epsilon */;
+switch_block: /* epsilon */;
 new_case: /* epsilon */;
 break_stmt: /* epsilon */;
 index_addr: /* epsilon */;
