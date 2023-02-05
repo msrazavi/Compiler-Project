@@ -3,6 +3,7 @@ from parse_tree_node import Node
 import Scanner
 from stack import Stack
 from codegen import CodeGenerator
+from semantic_analyzer import SemanticAnalyzer
 import json
 
 stack = Stack()
@@ -15,6 +16,7 @@ parse_table = {}
 syntax_errors = []  # (message, args as tuple)
 action_nt_start_index = -2
 codegen = CodeGenerator()
+semantic_analyzer = SemanticAnalyzer()
 
 
 class ErrorMessages:
@@ -149,7 +151,7 @@ def panic_mode_recovery():
 
 
 def write_syntax_errors():
-    with open('semantic_errors.txt', 'w') as file:
+    with open('syntax_errors.txt', 'w') as file:
         for e, args in syntax_errors:
             file.write(f"{e}\n" % args)
         if len(syntax_errors) == 0:
