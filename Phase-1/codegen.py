@@ -129,6 +129,15 @@ class CodeGenerator:
 
     def declare_arr(self, lookahead: str = None):
         self.symbol_table.declare_arr()
+        if self.symbol_table.elements[-1].type == 'void':
+            # todo void type error
+            pass
+
+    def declare_arr(self, lookahead: str = None):
+        self.symbol_table.declare_arr()
+        if self.symbol_table.elements[-1].type == 'void':
+            # todo void type error
+            pass
 
     def declare_func(self, lookahead: str = None):
         self.symbol_table.declare_func()

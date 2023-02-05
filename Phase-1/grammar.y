@@ -11,7 +11,7 @@ declaration: var_declaration
 | arr_declaration
 | fun_declaration 
 ;
-var_declaration: declare_type type_specifier declare_id ID ';'
+var_declaration: declare_type type_specifier declare_id ID ';' declare_var
 ;
 arr_declaration: declare_type type_specifier declare_id ID '[' declare_size NUM ']' ';' declare_arr
 ;
@@ -126,6 +126,7 @@ call_fun: /* epsilon */;
 declare_id: /* epsilon */;
 declare_type: /* epsilon */;
 declare_size: /* epsilon */;
+declare_var: /* epsilon */;
 declare_arr: /* epsilon */;
 declare_func: /* epsilon */;
 declare_address: /* epsilon */;
