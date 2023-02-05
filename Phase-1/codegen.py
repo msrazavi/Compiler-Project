@@ -108,7 +108,7 @@ class CodeGenerator:
 
     def start_scope(self, lookahead: str = None):
         if lookahead in ['if', 'while', 'switch']:
-            scope = f'{lookahead} '
+            scope = f'{lookahead}#'
         elif lookahead in ['int', 'void']:
             scope = ''
         elif lookahead == '(':
@@ -123,8 +123,10 @@ class CodeGenerator:
 
     def end_scope(self, lookahead: str = None):
         while len(self.break_stack.elements) > 0:
-            bst = self.break_stack.pop().split()
-            self.add_code(('JP', self.pc), index=bst[-1])
+            break_scope, break_pc = tuple(self.break_stack.top().split(' '))
+            if break_scope != self.scope_stack.top(): break
+            self.add_code(('JP', self.pc), index=break_pc)
+            self.break_stack.pop()
 
         self.scope_stack.pop()
 
@@ -166,8 +168,8 @@ class CodeGenerator:
     def break_stmt(self, lookahead: str = None):
         break_accepted = False
         for scope in self.scope_stack.elements[::-1]:
-            scope = str(scope).split()
-            if len(scope) == 2 and scope[0] in ['while', 'switch']:
+            scope_split = str(scope).split('#')
+            if len(scope_split) == 2 and scope_split[0] in ['while', 'switch']:
                 break_accepted = True
                 self.break_stack.push(f'{scope} {self.pc}')
                 self.pc += 1
