@@ -67,5 +67,11 @@ class SymbolTable:
                 return e.address
         return None
 
+    def get_type(self, address: int) -> Optional[str]:
+        for i, e in enumerate(self.elements):
+            if e.address == address:
+                return e.type
+        return None
+
     def __str__(self):
         return str([str(e) for e in self.elements])

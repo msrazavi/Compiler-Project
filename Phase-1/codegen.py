@@ -15,6 +15,7 @@ class CodeGenerator:
         self.scope_counter = 0
         self.call_args_count = Stack()
         self.symbol_table = SymbolTable()
+        self.temp_types = {}
         self.assign_chain_len = 0
         self.temp_addr = 500
         self.switch_case_count = 0
@@ -51,6 +52,25 @@ class CodeGenerator:
         self.semantic_stack.multipop(2)
         self.semantic_stack.push(temp)
         self.pc += 1
+
+        if operand1 < 500:
+            operand1_type = self.symbol_table.get_type(operand1)
+        else:
+            operand1_type = self.temp_types[operand1]
+        if operand2 < 500:
+            operand2_type = self.symbol_table.get_type(operand2)
+        else:
+            operand2_type = self.temp_types[operand2]
+
+        if operand1_type != operand2_type:
+            # todo error type mismatch
+            temp_type = 'undefined'
+        elif operand1_type != 'undefined':
+            # fixme maybe needs an error?
+            temp_type = operand1_type
+        else:
+            temp_type = 'undefined'
+        self.temp_types[temp] = temp_type
 
     def add(self, lookahead: str = None):
         self.arith('+')
