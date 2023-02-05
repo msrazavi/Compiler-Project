@@ -168,9 +168,9 @@ def start_parsing():
 
     while True:
         try:
-            print(str(stack), next_token_nt)
+            #print(str(stack), next_token_nt)
             action = get_next_action()
-            print(str(stack), next_token_nt, action)
+            #print(str(stack), next_token_nt, action)
         except KeyError as e:
             panic_mode_recovery()
             if next_token_nt == '$':
@@ -198,7 +198,7 @@ def start_parsing():
             stack.push(parent_node)
             stack.push(State(get_goto_state(last_state, rule[0])))
             if action[0] == "codegen":
-                codegen.call_action_routine(rule[0], next_token)
+                codegen.call_action_routine(rule[0], next_token,Scanner.line_counter)
         elif action[0] == "accept":
             stack.elements[1].children += (stack.elements[3],)
             break

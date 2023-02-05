@@ -11,14 +11,14 @@ class SemanticAnalyzer:
 
     @staticmethod
     def generate_error_b(id_name):  # lineno: Semantic Error! Illegal type of void for 'ID'.
-        return 'Illegal type of void for ' + id_name
+        return 'Illegal type of void for ' + id_name + '.'
 
     @staticmethod
     def generate_error_c(id_name):  # lineno: Semantic error! Mismatch in numbers of arguments of 'ID'.
-        return 'Mismatch in numbers of arguments of ' + id_name
+        return 'Mismatch in numbers of arguments of ' + id_name + '.'
 
     @staticmethod
-    def generate_error_d(id_name):  # lineno: Semantic Error! No 'while' or 'switch case' found for 'break'.
+    def generate_error_d():  # lineno: Semantic Error! No 'while' or 'switch case' found for 'break'.
         return 'No \'while\' or \'switch case\' found for \'break\'.'
 
     @staticmethod
