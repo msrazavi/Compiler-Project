@@ -1,3 +1,5 @@
+from Scanner import *
+from semantic_analyzer import SemanticAnalyzer
 from stack import Stack
 from symbol_table import SymbolTable
 
@@ -6,7 +8,7 @@ from symbol_table import SymbolTable
 class CodeGenerator:
     arith_operators = {'+': 'ADD', '-': 'SUB', '*': 'MULT', '/': 'DIV', '<': 'LT', '==': 'EQ'}
 
-    def __init__(self):
+    def __init__(self, semantic_analyzer):
         self.program_block = {}
         self.pc = 0
         self.semantic_stack = Stack()
@@ -19,6 +21,7 @@ class CodeGenerator:
         self.assign_chain_len = 0
         self.temp_addr = 500
         self.switch_case_count = 0
+        self.semantic_analyzer = semantic_analyzer
 
     def call_action_routine(self, action_symbol: str, lookahead: str):
         self.__getattribute__(action_symbol)(lookahead)
@@ -99,8 +102,7 @@ class CodeGenerator:
                 found = True
                 break
         if not found:
-            # todo id not found
-            pass
+            self.semantic_analyzer.add_error(error=SemanticAnalyzer.generate_error_a(lookahead), line_num=line_counter)
 
     def index_addr(self, lookahead: str = None):
         self.semantic_stack.elements[-2] = f'#{self.semantic_stack.elements[-2]}'
