@@ -34,7 +34,7 @@ class SemanticCodegenTests(unittest.TestCase):
         Parser.codegen = CodeGenerator()
 
     def test_all(self):
-        for folder_name in os.listdir('testcases/code-generator'):
+        for folder_name in  os.listdir('testcases/code-generator'):
             with self.subTest(f"Testcase[{folder_name}]"):
                 print(f"running Testcase[{folder_name}]")
                 self.setUp()
@@ -52,6 +52,8 @@ class SemanticCodegenTests(unittest.TestCase):
                     print("wrote input file")
 
                 print("compiling started")
+                if folder_name == 'T9':
+                    print(end='')
                 compiler.main()
                 print("compiling ended")
 

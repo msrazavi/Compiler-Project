@@ -20,7 +20,7 @@ class Element:
         self.address = address
 
     def __str__(self):
-        return f"{self.name}, " \
+        return f"[{self.address}]\t -> {self.name}, " \
                f"{self.type}, " \
                f"{'func' if self.is_func else ('arr' if self.is_arr else 'var')}, " \
                f"scope={self.scope}, " \
@@ -49,11 +49,7 @@ class SymbolTable:
                 if len(self.elements) == 1:
                     self.elements[-1].address = 1
                 else:
-                    if not self.elements[-2].is_func:
-                        self.elements[-1].address = self.elements[-2].address + 4 * self.elements[-1].size
-                    else:
-                        self.elements[-1].address = self.roundup4(self.elements[-2].address) + 4 * self.elements[
-                            -1].size
+                    self.elements[-1].address = self.elements[-2].address + self.elements[-2].size + 1
         else:
             self.elements[-1].address = address
 
@@ -70,9 +66,6 @@ class SymbolTable:
             if e.name == name and e.scope == scope:
                 return e.address
         return None
-
-    def roundup4(self, address) -> int:
-        return address - (address % 4)
 
     def __str__(self):
         return str([str(e) for e in self.elements])

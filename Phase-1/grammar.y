@@ -45,14 +45,14 @@ statement: expression_stmt
 | return_stmt
 | start_scope switch_stmt end_scope
 ;
-expression_stmt: expression ';' end_expression_stmt
+expression_stmt: expression ';'
 | "break" ';' break_stmt
 | ';'
 ;
 selection_stmt: "if" '(' expression ')' save statement "endif" if_block
 | "if" '(' expression ')' save statement save "else" label statement "endif" ifelse
 ;
-iteration_stmt: "while" '(' expression ')' save statement while_loop
+iteration_stmt: "while" '(' label expression ')' save statement while_loop
 ;
 return_stmt: "return" ';'
 | "return" expression ';'
@@ -128,5 +128,4 @@ declare_address: /* epsilon */;
 call_args_start: /* epsilon */;
 new_call_arg: /* epsilon */;
 assign_chain_inc: /* epsilon */;
-end_expression_stmt: /* epsilon */;
 %%

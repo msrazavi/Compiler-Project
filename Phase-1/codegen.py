@@ -28,7 +28,7 @@ class CodeGenerator:
 
     def get_temp_addr(self, size=1):
         prev_addr = self.temp_addr
-        self.temp_addr += 4 * size
+        self.temp_addr += size
         return prev_addr
 
     def save(self, lookahead: str = None):
@@ -90,16 +90,17 @@ class CodeGenerator:
 
     def assign(self, lookahead: str = None):
         self.add_code(('ASSIGN', self.semantic_stack.top(), self.semantic_stack[-1]), index=self.pc)
-        self.semantic_stack.pop()
+        self.semantic_stack.multipop(2 if self.assign_chain_len == 1 and lookahead == ';' else 1)
         self.assign_chain_len -= 1
         self.pc += 1
 
     def assign_chain_inc(self, lookahead: str = None):
         self.assign_chain_len += 1
 
-    def end_expression_stmt(self, lookahead: str = None):
-        if self.assign_chain_len == 1: self.semantic_stack.pop()
-        self.assign_chain_len = 0
+    # def end_expression_stmt(self, lookahead: str = None):
+    #     if self.assign_chain_len == 0:
+    #         self.semantic_stack.pop()
+    #     self.assign_chain_len = 0
 
     def output(self, lookahead: str = None):
         self.add_code(('PRINT', self.semantic_stack.pop()), index=self.pc)
@@ -157,8 +158,10 @@ class CodeGenerator:
         self.semantic_stack.multipop(4)
 
     def while_loop(self, lookahead: str = None):
-        self.add_code(('JPF', self.semantic_stack[-1], self.pc), index=self.semantic_stack.top())
-        self.semantic_stack.multipop(2)
+        self.add_code(('JPF', self.semantic_stack[-1], self.pc + 1), index=self.semantic_stack[0])
+        self.add_code(('JP', self.semantic_stack[-2]), index=self.pc)
+        self.pc += 1
+        self.semantic_stack.multipop(3)
 
     def break_stmt(self, lookahead: str = None):
         break_accepted = False
@@ -197,7 +200,8 @@ class CodeGenerator:
 
     def write_program_block(self):
         with open('output.txt', 'w') as file:
-            for i, code in sorted(self.program_block.items()):
+            for i in sorted(self.program_block.keys()):
+                code = self.program_block[i]
                 if code is None: raise NameError
                 file.write(
                     f'{i}.\t({code[0]}, {code[1]}, {code[2] if len(code) > 2 else ""}, {code[3] if len(code) > 3 else ""})\n'
