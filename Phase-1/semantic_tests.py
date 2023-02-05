@@ -74,7 +74,7 @@ class SemanticCodegenTests(unittest.TestCase):
                     actual = ''.join([s + '\n' for s in re.findall(r'PRINT +\d+', actual)])
                     self.assertEqualTrimWS(actual, expected, f"output[{folder_name}]")
 
-        os.system('cd ..; zip -vr -q Phase-1.zip Phase-1/ -x "*.DS_Store"; cd Phase-1')
+        os.system('cd ..; zip -vr -q Phase-1.zip Phase-1 -i "*.py" "*.json" Phase-1/input.txt; cd Phase-1;')
 
     def assertEqualTrimWS(self, actual: str, expected: str, msg):
         self.assertEqual(
