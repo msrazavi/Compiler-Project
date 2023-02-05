@@ -1,8 +1,9 @@
+from parse_tree_node import Node
+
 import Scanner
 from stack import Stack
 from codegen import CodeGenerator
 import json
-from anytree import Node, RenderTree
 
 stack = Stack()
 next_token_type, next_token, next_token_nt = '', '', ''
@@ -131,20 +132,20 @@ def panic_mode_recovery():
         next_token_type, next_token, next_token_nt = get_next_token_from_scanner()
 
 
-def write_parse_tree():
-    with open('parse_tree.txt', 'w') as file:
-        if stack.elements[1].name != 'program':
-            file.write('')
-        else:
-            for pre, fill, node in RenderTree(stack.elements[1]):
-                if isinstance(node.name, tuple):
-                    if node.name[0] == 'EOF':
-                        node_name = '$'
-                    else:
-                        node_name = f"({node.name[0]}, {node.name[1]})"
-                else:
-                    node_name = node.name
-                file.write("%s%s\n" % (pre, node_name))
+# def write_parse_tree():
+#     with open('parse_tree.txt', 'w') as file:
+#         if stack.elements[1].name != 'program':
+#             file.write('')
+#         else:
+#             for pre, fill, node in RenderTree(stack.elements[1]):
+#                 if isinstance(node.name, tuple):
+#                     if node.name[0] == 'EOF':
+#                         node_name = '$'
+#                     else:
+#                         node_name = f"({node.name[0]}, {node.name[1]})"
+#                 else:
+#                     node_name = node.name
+#                 file.write("%s%s\n" % (pre, node_name))
 
 
 def write_syntax_errors():

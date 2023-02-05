@@ -1,18 +1,15 @@
-/* sample 10 */
+/* sample 1 */
 
-int add_sub(int a, int b, int add) {
-    if (add == 1) {
-        return a + b;
+void main(void){
+    int a;
+    int b;
+    int c;
+    a = 5;
+    b = 3;
+    c = a + b;
+    if(c < 5){
+    output(b - a);
     } else {
-        return a - b;
+    output(c / 2);
     } endif
-}
-
-int main(void)
-{
-    output(add_sub(5, 2, 1));
-    output(add_sub(5, 2, 0));
-    output(add_sub(5, 1));
-    output(add_sub(5, 1, 1, 1));
-}
-
+ }

@@ -45,7 +45,7 @@ statement: start_scope expression_stmt end_scope
 | start_scope return_stmt end_scope
 | start_scope switch_stmt end_scope
 ;
-expression_stmt: expression ';'
+expression_stmt: expression ';' end_expression_stmt
 | "break" ';' break_stmt
 | ';'
 ;
@@ -67,7 +67,7 @@ case_stmt: "case" save_const NUM ':' save statement_list
 default_stmt: "default" ':' statement_list
 | /* epsilon */
 ;
-expression: var '=' expression assign
+expression: var assign_chain_inc '=' expression assign
 | simple_expression
 ;
 var: push_id ID
@@ -129,4 +129,6 @@ declare_func: /* epsilon */;
 declare_address: /* epsilon */;
 call_args_start: /* epsilon */;
 new_call_arg: /* epsilon */;
+assign_chain_inc: /* epsilon */;
+end_expression_stmt: /* epsilon */;
 %%

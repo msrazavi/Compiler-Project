@@ -15,6 +15,7 @@ class CodeGenerator:
     scope_counter = 0
     call_args_count = Stack()
     symbol_table = SymbolTable()
+    assign_chain_len = 0
     temp_addr = 500
 
     errors = []
@@ -83,8 +84,16 @@ class CodeGenerator:
 
     def assign(self, lookahead: str = None):
         self.add_code(('ASSIGN', self.semantic_stack.top(), self.semantic_stack[-1]), index=self.pc)
-        self.semantic_stack.multipop(2)
+        self.semantic_stack.pop()
+        self.assign_chain_len -= 1
         self.pc += 1
+
+    def assign_chain_inc(self, lookahead: str = None):
+        self.assign_chain_len += 1
+
+    def end_expression_stmt(self, lookahead: str = None):
+        if self.assign_chain_len == 1: self.semantic_stack.pop()
+        self.assign_chain_len = 0
 
     def output(self, lookahead: str = None):
         self.add_code(('PRINT', self.semantic_stack.pop()), index=self.pc)
@@ -158,7 +167,6 @@ class CodeGenerator:
         self.pc += 1
 
         # todo add arguments
-
 
     def add_code(self, code, index: int):
         # print([f'PB[{i}] = {c}' for i, c in self.program_block.items()])

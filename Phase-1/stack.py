@@ -1,4 +1,4 @@
-from anytree import Node
+from parse_tree_node import Node
 
 
 class Stack:
@@ -16,11 +16,13 @@ class Stack:
             self.pop()
 
     def __getitem__(self, item):
-        if item <= 0: return self.elements[item-1]
+        if item <= 0: return self.elements[item - 1]
         return self.elements[item]
 
     def top(self):
         return self.elements[-1]
 
     def __str__(self):
-        return str([(str(e.name[2]) if isinstance(e.name, tuple) else str(e.name)) if isinstance(e, Node) else str(e) for e in self.elements])
+        return str(
+            [(str(e.name[2]) if isinstance(e.name, tuple) else str(e.name)) if isinstance(e, Node) else str(e) for e in
+             self.elements])
