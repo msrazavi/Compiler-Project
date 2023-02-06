@@ -21,10 +21,10 @@ type_specifier: "int"
 fun_declaration: declare_type type_specifier declare_id ID declare_func declare_address start_scope '(' params ')' compound_stmt end_func end_scope
 ;
 params: declare_type "void"
-| declare_type param_list
+| param_list
 ;
-param_list: param_list ',' param
-| param
+param_list: param_list ',' declare_type param
+| declare_type param
 ;
 param: "int" declare_id ID declare_var new_fun_arg
 | "int" declare_id ID '[' ']' declare_arr new_fun_arg

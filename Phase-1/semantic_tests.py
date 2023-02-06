@@ -38,7 +38,7 @@ class SemanticCodegenTests(unittest.TestCase):
         Parser.codegen = CodeGenerator(Parser.semantic_analyzer)
 
     def test_all(self):
-        for folder_name in ['T2']:  # os.listdir('testcases/code-generator'):
+        for folder_name in os.listdir('testcases/code-generator'):
             with self.subTest(f"Testcase[{folder_name}]"):
                 print(f"running Testcase[{folder_name}]")
                 self.setUp()
@@ -56,8 +56,6 @@ class SemanticCodegenTests(unittest.TestCase):
                     print("wrote input file")
 
                 print("compiling started")
-                if folder_name == 'T9':
-                    print(end='')
                 compiler.main()
                 print("compiling ended")
 
@@ -70,6 +68,7 @@ class SemanticCodegenTests(unittest.TestCase):
 
                 has_error = expected_semantic_errors.strip() != 'The input program is semantically correct.'
                 if not has_error:
+                    os.system('rm interpreter/output.txt')
                     os.system('cp output.txt interpreter/output.txt')
 
                     if platform.system() == 'Darwin':
@@ -81,6 +80,8 @@ class SemanticCodegenTests(unittest.TestCase):
                 with open('interpreter/actual.txt') as f:
                     actual = f.read()
                     actual = ''.join([s + '\n' for s in re.findall(r'PRINT +[\-+]?\d+', actual)])
+                    if folder_name == 'T15':
+                        print(end='')
                     self.assertEqualTrimWS(actual, expected, f"output[{folder_name}]")
 
         os.system('cd ..; zip -vr -q Phase-1.zip Phase-1 -i "*.py" "*.json" Phase-1/input.txt; cd Phase-1;')

@@ -108,9 +108,9 @@ class CodeGenerator:
     def push_id(self, lookahead: str = None):
         found = False
         for scope in self.scope_stack.elements[::-1]:
-            id = self.symbol_table.get_addr(lookahead, scope)
-            if id is not None:
-                self.semantic_stack.push(id)
+            addr = self.symbol_table.get_addr(lookahead, scope)
+            if addr is not None:
+                self.semantic_stack.push(addr)
                 found = True
                 break
         if not found:
@@ -151,7 +151,7 @@ class CodeGenerator:
 
     def end_scope(self, lookahead: str = None):
         while len(self.break_stack.elements) > 0:
-            break_scope, break_pc = tuple(self.break_stack.top().split(' '))
+            _, break_scope, break_pc = tuple(self.break_stack.top().split(' '))
             if break_scope != self.scope_stack.top(): break
             self.add_code(('JP', self.pc), index=break_pc)
             self.break_stack.pop()
@@ -256,6 +256,7 @@ class CodeGenerator:
         func_args = self.symbol_table.get_arguments(func_addr)
         func_return = self.symbol_table.get_type(func_addr)
         if self.call_args_count != len(func_args):
+            self.semantic_stack.multipop(self.call_args_count + 1)
             # todo error argument count wrong
             pass
         else:
@@ -266,8 +267,10 @@ class CodeGenerator:
             self.add_code(('JP', func_addr), index=self.pc + self.call_args_count + 1)
             self.semantic_stack.pop()
             if func_return != 'void':
-                self.semantic_stack.push('3000')
-            self.pc += self.call_args_count + 2
+                temp = self.get_temp_addr()
+                self.add_code(('ASSIGN', '3000', temp), index=self.pc + self.call_args_count + 2)
+                self.semantic_stack.push(temp)
+            self.pc += self.call_args_count + 3
 
     def return_void(self, lookahead: str = None):
         self.return_stmt()
@@ -302,6 +305,12 @@ class CodeGenerator:
             if not generates_code:
                 file.write('The code has not been generated.')
             else:
+                max_line = max([int(k) for k in self.program_block.keys()])
+                for i in range(max_line):
+                    try:
+                        self.program_block[i]
+                    except KeyError:
+                        self.program_block[i] = ('JP', i + 1)
                 for i in sorted(self.program_block.keys()):
                     code = self.program_block[i]
                     if code is None: raise NameError
