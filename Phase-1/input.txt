@@ -1,19 +1,14 @@
-/*==== Sample 2 =====*/
-int foo(int x){
-	int a;
-	a = 10;
-	output(x);
-	if(a < x){
-		return(0-1);
-	}
-	else {
-		return(0-2);
-	} endif
-}
-void main ( void )
-{
-	int i;
-	i = foo (4) ;
-	output (i);
-}
+/* sample 2 */
 
+void main(void){
+  int day;
+  day = 4;
+
+  switch (day) {
+  case 1:
+    output(1);
+    break;
+  default:
+    output(day);
+  }
+ }

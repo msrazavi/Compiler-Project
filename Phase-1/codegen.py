@@ -62,7 +62,11 @@ class CodeGenerator:
         operand1_type = self.get_mem_type(operand1)
         operand2_type = self.get_mem_type(operand2)
 
-        if operand1_type != operand2_type:
+        if operand2_type == 'any':
+            temp_type = operand1_type
+        elif operand1_type == 'any':
+            temp_type = operand2_type
+        elif operand1_type != operand2_type:
             # todo error type mismatch
             temp_type = 'undefined'
         elif operand1_type != 'undefined':
@@ -78,7 +82,10 @@ class CodeGenerator:
         elif int(address) < 500:
             return self.symbol_table.get_type(address)
         else:
-            return self.temp_types[address]
+            try:
+                return self.temp_types[address]
+            except KeyError:
+                return 'any'
 
     def add(self, lookahead: str = None):
         self.arith('+')
