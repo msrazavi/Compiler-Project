@@ -1,6 +1,6 @@
 import unittest
 import compiler
-import Scanner
+import scanner
 
 ntests = 15
 
@@ -9,12 +9,12 @@ class ScannerTests(unittest.TestCase):
     maxDiff = None
 
     def setUp(self) -> None:
-        Scanner.input_text = ""
-        Scanner.text_pointer = 0
-        Scanner.line_counter = 1
-        Scanner.tokens = []
-        Scanner.errors = []
-        Scanner.symbols = []
+        scanner.input_text = ""
+        scanner.text_pointer = 0
+        scanner.line_counter = 1
+        scanner.tokens = []
+        scanner.errors = []
+        scanner.symbols = []
 
     def test_all(self):
         for i in range(ntests + 1)[1:]:

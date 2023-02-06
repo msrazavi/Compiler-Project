@@ -3,22 +3,22 @@ Dorrin Sotoudeh         98170851
 Maryam Sadat Razavi     98101639
 '''
 
-import Parser
-import Scanner
+import parser
+import scanner
 
 
 def main():
-    Scanner.read_input('input.txt')
-    Scanner.create_symbol_table()
-    Parser.read_parse_table()
+    scanner.read_input('input.txt')
+    scanner.create_symbol_table()
+    parser.read_parse_table()
 
-    Parser.start_parsing()
+    parser.start_parsing()
 
-    Parser.semantic_analyzer.write_errors()
-    if Parser.semantic_analyzer.has_errors():
-        Parser.codegen.write_program_block(generates_code=False)
+    parser.semantic_analyzer.write_errors()
+    if parser.semantic_analyzer.has_errors():
+        parser.codegen.write_program_block(generates_code=False)
     else:
-        Parser.codegen.write_program_block()
+        parser.codegen.write_program_block()
 
 
 if __name__ == '__main__':

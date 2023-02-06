@@ -1,7 +1,7 @@
 import unittest
 import compiler
-import Scanner
-import Parser
+import scanner
+import parser
 from semantic_analyzer import SemanticAnalyzer
 from stack import Stack
 from codegen import CodeGenerator
@@ -17,30 +17,30 @@ class SemanticCodegenTests(unittest.TestCase):
     maxDiff = None
 
     def setUp(self) -> None:
-        Scanner.input_text = ""
-        Scanner.text_pointer = 0
-        Scanner.line_counter = 1
-        Scanner.tokens = []
-        Scanner.errors = []
-        Scanner.symbols = []
+        scanner.input_text = ""
+        scanner.text_pointer = 0
+        scanner.line_counter = 1
+        scanner.tokens = []
+        scanner.errors = []
+        scanner.symbols = []
 
-        Parser.stack = Stack()
-        Parser.next_token_type, next_token, next_token_nt = '', '', ''
-        Parser.terminals = []
-        Parser.non_terminals = []
-        Parser.follow = {}
-        Parser.grammar = {}
-        Parser.parse_table = {}
-        Parser.syntax_errors = []  # (message, args as tuple)
-        Parser.action_nt_start_index = -2
-        Parser.semantic_analyzer = SemanticAnalyzer()
-        Parser.semantic_analyzer.errors = []
-        Parser.codegen = CodeGenerator(Parser.semantic_analyzer)
+        parser.stack = Stack()
+        parser.next_token_type, next_token, next_token_nt = '', '', ''
+        parser.terminals = []
+        parser.non_terminals = []
+        parser.follow = {}
+        parser.grammar = {}
+        parser.parse_table = {}
+        parser.syntax_errors = []  # (message, args as tuple)
+        parser.action_nt_start_index = -2
+        parser.semantic_analyzer = SemanticAnalyzer()
+        parser.semantic_analyzer.errors = []
+        parser.codegen = CodeGenerator(parser.semantic_analyzer)
 
     def test_all(self):
         # remaining tests: T15 o3-function o1-semantic o2-semantic o3-semantic
-        # for folder_name in ['T15']:  # os.listdir('testcases/code-generator'):
-        for folder_name in ['o3-semantic'.upper()]:  # os.listdir('testcases/code-generator'):
+        for folder_name in ['T15']:  # os.listdir('testcases/code-generator'):
+        # for folder_name in ['o3-semantic'.upper()]:  # os.listdir('testcases/code-generator'):
             with self.subTest(f"Testcase[{folder_name}]"):
                 print(f"running Testcase[{folder_name}]")
                 self.setUp()

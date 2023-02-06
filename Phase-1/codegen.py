@@ -1,6 +1,6 @@
 from typing import List
 
-from Scanner import *
+from scanner import *
 from semantic_analyzer import SemanticAnalyzer
 from stack import Stack
 from symbol_table import SymbolTable, FunArg, Element

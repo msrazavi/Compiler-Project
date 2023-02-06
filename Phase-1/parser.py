@@ -1,6 +1,6 @@
 from parse_tree_node import Node
 
-import Scanner
+import scanner
 from stack import Stack
 from codegen import CodeGenerator
 from semantic_analyzer import SemanticAnalyzer
@@ -37,11 +37,11 @@ class State:
 
 def get_next_token_from_scanner():
     while True:
-        if Scanner.text_pointer >= len(Scanner.input_text):
+        if scanner.text_pointer >= len(scanner.input_text):
             return 'EOF', '$', '$'
-        token = Scanner.get_next_token()
+        token = scanner.get_next_token()
         if token[0] != 'ERROR' and token[0] != 'WHITESPACE' and token[0] != 'COMMENT':
-            Scanner.tokens.append(token)
+            scanner.tokens.append(token)
             break
     if token[1] == 'ID':
         return 'ID', token[2], token[1]
@@ -92,7 +92,7 @@ def panic_mode_recovery():
     global next_token, next_token_type, next_token_nt
     syntax_errors.append((
         ErrorMessages.illegal_terminal_in_input,
-        (Scanner.line_counter, next_token)
+        (scanner.line_counter, next_token)
     ))
     while True:
         if any(v.startswith('goto_') for s, v in parse_table[stack.elements[-1].state_num].items()): break
@@ -120,14 +120,14 @@ def panic_mode_recovery():
                 stack.push(Node(nt))
                 syntax_errors.append((
                     ErrorMessages.missing_nonterminal_push_to_stack,
-                    (Scanner.line_counter, nt)
+                    (scanner.line_counter, nt)
                 ))
                 stack.push(State(get_goto_state(last_state, nt)))
                 break
         if not found and next_token_nt != '$':
             syntax_errors.append((
                 ErrorMessages.discarded_terminal_from_input,
-                (Scanner.line_counter, next_token)
+                (scanner.line_counter, next_token)
             ))
         else:
             break
@@ -176,7 +176,7 @@ def start_parsing():
             if next_token_nt == '$':
                 syntax_errors.append((
                     ErrorMessages.unexpected_eof,
-                    (Scanner.line_counter,)
+                    (scanner.line_counter,)
                 ))
                 break
             continue
@@ -198,7 +198,7 @@ def start_parsing():
             stack.push(parent_node)
             stack.push(State(get_goto_state(last_state, rule[0])))
             if action[0] == "codegen":
-                codegen.call_action_routine(rule[0], next_token,Scanner.line_counter)
+                codegen.call_action_routine(rule[0], next_token, scanner.line_counter)
         elif action[0] == "accept":
             stack.elements[1].children += (stack.elements[3],)
             break
