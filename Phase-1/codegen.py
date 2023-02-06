@@ -26,8 +26,9 @@ class CodeGenerator:
         self.switch_case_count = 0
         self.semantic_analyzer = semantic_analyzer
 
-    def call_action_routine(self, action_symbol: str, lookahead: str):
+    def call_action_routine(self, action_symbol: str, lookahead: str, line_counter):
         self.__getattribute__(action_symbol)(lookahead)
+        self.line_counter = line_counter
 
     def get_temp_addr(self, size=1):
         prev_addr = self.temp_addr
@@ -67,7 +68,7 @@ class CodeGenerator:
         elif operand1_type == 'any':
             temp_type = operand2_type
         elif operand1_type != operand2_type:
-            # todo error type mismatch
+            self.semantic_analyzer.add_error(SemanticAnalyzer.generate_error_e(operand2_type,operand1_type),self.line_counter)
             temp_type = 'undefined'
         elif operand1_type != 'undefined':
             # fixme maybe needs an error?
@@ -114,7 +115,7 @@ class CodeGenerator:
                 found = True
                 break
         if not found:
-            self.semantic_analyzer.add_error(error=SemanticAnalyzer.generate_error_a(lookahead), line_num=line_counter)
+            self.semantic_analyzer.add_error(error=SemanticAnalyzer.generate_error_a(lookahead), line_num=self.line_counter+1)
 
     def index_addr(self, lookahead: str = None):
         self.semantic_stack.elements[-2] = f'#{self.semantic_stack.elements[-2]}'
@@ -164,13 +165,11 @@ class CodeGenerator:
     def declare_arr(self, lookahead: str = None):
         self.symbol_table.declare_arr()
         if self.symbol_table.elements[-1].type == 'void':
-            # todo void type error
-            pass
+            self.semantic_analyzer.add_error(SemanticAnalyzer.generate_error_b(lookahead), line_num=self.line_counter)
 
     def declare_var(self, lookahead: str = None):
         if self.symbol_table.elements[-1].type == 'void':
-            # todo void type error
-            pass
+            self.semantic_analyzer.add_error(SemanticAnalyzer.generate_error_b(lookahead), line_num=self.line_counter)
 
     def declare_func(self, lookahead: str = None):
         self.symbol_table.declare_func()
@@ -228,8 +227,7 @@ class CodeGenerator:
                 self.pc += 1
                 break
         if not break_accepted:
-            # todo break not accepted
-            pass
+            self.semantic_analyzer.add_error(SemanticAnalyzer.generate_error_d(), line_num=self.line_counter+1)
 
     def new_fun_arg(self, lookahead: str = None):
         for i in range(len(self.symbol_table.elements))[::-1]:
