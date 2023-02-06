@@ -18,6 +18,7 @@ class Element:
         self.is_var = not (is_func or is_arr)
         self.size = size
         self.address = address
+        self.arguments = []
 
     def __str__(self):
         return f"[{self.address}]\t -> {self.name}, " \
@@ -25,6 +26,13 @@ class Element:
                f"{'func' if self.is_func else ('arr' if self.is_arr else 'var')}, " \
                f"scope={self.scope}, " \
                f"size={self.size}"
+
+
+class FunArg:
+    def __init__(self, name: str = '', type: str = '', address: int = 0):
+        self.name = name
+        self.type = type
+        self.address = address
 
 
 class SymbolTable:
@@ -43,7 +51,7 @@ class SymbolTable:
 
     def declare_address(self, address: int = None):
         if address is None:
-            if len(self.elements) == 0:
+            if len(self.elements) == 0 or self.elements[-1].is_func:
                 raise EOFError
             elif not self.elements[-1].is_func:
                 if len(self.elements) == 1:
@@ -61,6 +69,9 @@ class SymbolTable:
         self.elements[-1].is_arr = True
         self.elements[-1].is_var = False
 
+    def add_argument(self, name: str, type: str, address: int):
+        self.elements[-1].arguments.append(FunArg(name, type, address))
+
     def get_addr(self, name: str, scope: int) -> Optional[int]:
         for i, e in enumerate(self.elements):
             if e.name == name and e.scope == scope:
@@ -71,6 +82,18 @@ class SymbolTable:
         for i, e in enumerate(self.elements):
             if e.address == address:
                 return e.type
+        return None
+
+    def get_arguments(self, address: int) -> Optional[List]:
+        for i, e in enumerate(self.elements):
+            if e.address == address:
+                return e.arguments
+        return None
+
+    def get_name(self, address: int) -> Optional[str]:
+        for i, e in enumerate(self.elements):
+            if e.address == address:
+                return e.name
         return None
 
     def __str__(self):

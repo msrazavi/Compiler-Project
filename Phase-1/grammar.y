@@ -2,7 +2,7 @@
 %token ID
 %start program
 %%
-program: save start_scope declaration_list end_scope
+program: save empty_cell start_scope declaration_list end_scope
 ;
 declaration_list: declaration_list declaration
 | declaration
@@ -18,16 +18,16 @@ arr_declaration: declare_type type_specifier declare_id ID '[' declare_size NUM 
 type_specifier: "int" 
 | "void"
 ;
-fun_declaration: declare_type type_specifier declare_id ID declare_address start_scope '(' params ')' declare_func compound_stmt end_scope
+fun_declaration: declare_type type_specifier declare_id ID declare_func declare_address start_scope '(' params ')' compound_stmt end_func end_scope
 ;
-params: param_list
-| "void"
+params: declare_type "void"
+| declare_type param_list
 ;
 param_list: param_list ',' param
 | param
 ;
-param: type_specifier ID
-| type_specifier ID '[' ']'
+param: "int" declare_id ID declare_var new_fun_arg
+| "int" declare_id ID '[' ']' declare_arr new_fun_arg
 ;
 compound_stmt: '{' local_declarations statement_list '}'
 ;
@@ -54,8 +54,8 @@ selection_stmt: "if" '(' expression ')' save statement "endif" if_block
 ;
 iteration_stmt: "while" '(' label expression ')' save statement while_loop
 ;
-return_stmt: "return" ';'
-| "return" expression ';'
+return_stmt: "return" ';' return_void
+| "return" expression ';' return_expr
 ;
 switch_stmt: "switch" '(' expression ')' '{' case_stmts default_stmt '}' switch_block
 ;
@@ -132,4 +132,8 @@ declare_func: /* epsilon */;
 declare_address: /* epsilon */;
 call_args_start: /* epsilon */;
 new_call_arg: /* epsilon */;
+new_fun_arg: /* epsilon */;
+end_func: /* epsilon */;
+return_void: /* epsilon */;
+return_expr: /* epsilon */;
 %%

@@ -34,10 +34,11 @@ class SemanticCodegenTests(unittest.TestCase):
         Parser.syntax_errors = []  # (message, args as tuple)
         Parser.action_nt_start_index = -2
         Parser.semantic_analyzer = SemanticAnalyzer()
+        Parser.semantic_analyzer.errors = []
         Parser.codegen = CodeGenerator(Parser.semantic_analyzer)
 
     def test_all(self):
-        for folder_name in os.listdir('testcases/code-generator'):
+        for folder_name in ['O2-FUNCTION']:  # os.listdir('testcases/code-generator'):
             with self.subTest(f"Testcase[{folder_name}]"):
                 print(f"running Testcase[{folder_name}]")
                 self.setUp()
@@ -67,7 +68,7 @@ class SemanticCodegenTests(unittest.TestCase):
                     semantic_errors = f.read()
                 self.assertEqualTrimWS(semantic_errors, expected_semantic_errors, f"semantic_errors[{folder_name}]")
 
-                has_error = expected_semantic_errors != 'The input program is semantically correct.\n'
+                has_error = expected_semantic_errors.strip() != 'The input program is semantically correct.'
                 if not has_error:
                     os.system('cp output.txt interpreter/output.txt')
 

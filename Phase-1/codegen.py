@@ -1,7 +1,9 @@
+from typing import List
+
 from Scanner import *
 from semantic_analyzer import SemanticAnalyzer
 from stack import Stack
-from symbol_table import SymbolTable
+from symbol_table import SymbolTable, FunArg, Element
 
 
 # noinspection PyUnusedLocal
@@ -15,7 +17,8 @@ class CodeGenerator:
         self.break_stack = Stack()
         self.scope_stack = Stack()
         self.scope_counter = 0
-        self.call_args_count = Stack()
+        self.call_args_count = 0
+        self.return_stack = Stack()
         self.symbol_table = SymbolTable()
         self.temp_types = {}
         self.assign_chain_len = 0
@@ -56,18 +59,8 @@ class CodeGenerator:
         self.semantic_stack.push(temp)
         self.pc += 1
 
-        if str(operand1).startswith('#') or str(operand1).startswith('@'):
-            operand1_type = 'int'
-        elif int(operand1) < 500:
-            operand1_type = self.symbol_table.get_type(operand1)
-        else:
-            operand1_type = self.temp_types[operand1]
-        if str(operand2).startswith('#') or str(operand2).startswith('@'):
-            operand2_type = 'int'
-        elif int(operand2) < 500:
-            operand2_type = self.symbol_table.get_type(operand2)
-        else:
-            operand2_type = self.temp_types[operand2]
+        operand1_type = self.get_mem_type(operand1)
+        operand2_type = self.get_mem_type(operand2)
 
         if operand1_type != operand2_type:
             # todo error type mismatch
@@ -78,6 +71,14 @@ class CodeGenerator:
         else:
             temp_type = 'undefined'
         self.temp_types[temp] = temp_type
+
+    def get_mem_type(self, address: str) -> str:
+        if str(address).startswith('#') or str(address).startswith('@'):
+            return 'int'
+        elif int(address) < 500:
+            return self.symbol_table.get_type(address)
+        else:
+            return self.temp_types[address]
 
     def add(self, lookahead: str = None):
         self.arith('+')
@@ -132,12 +133,12 @@ class CodeGenerator:
         elif lookahead in ['int', 'void']:
             scope = ''
         elif lookahead == '(':
-            scope = f'fun#{len(self.symbol_table.elements) - 1}'
+            scope = f'fun#{self.symbol_table.elements[-1].address}'
         elif lookahead == '{':
             scope = ''
         else:
             raise NameError()
-        scope += f'{self.scope_counter}'
+        scope += f' {self.scope_counter}'
         self.scope_stack.push(scope)
         self.scope_counter += 1
 
@@ -176,7 +177,8 @@ class CodeGenerator:
     def declare_address(self, lookahead: str = None):
         self.symbol_table.declare_address(self.pc)
         if self.symbol_table.elements[-1].name == 'main':
-            self.add_code(('JP', self.pc), index=self.semantic_stack.elements[0])
+            self.add_code(('ASSIGN', '#2000', '2000'), index=self.semantic_stack.elements[0])
+            self.add_code(('JP', self.pc), index=self.semantic_stack.elements[0] + 1)
 
     def if_block(self, lookahead: str = None):
         self.add_code(('JPF', self.semantic_stack[-1], self.pc), index=self.semantic_stack.top())
@@ -222,21 +224,65 @@ class CodeGenerator:
             # todo break not accepted
             pass
 
-    def call_args_start(self, lookahead: str = None):
-        self.call_args_count.push(0)
-        self.semantic_stack.push(None)  # to be set later
+    def new_fun_arg(self, lookahead: str = None):
+        for i in range(len(self.symbol_table.elements))[::-1]:
+            elem = self.symbol_table.elements[i]
+            if elem.is_func:
+                arg = self.symbol_table.elements[-1]
+                elem.arguments.append(FunArg(arg.name, arg.type, arg.address))
+                break
 
     def new_call_arg(self, lookahead: str = None):
-        self.call_args_count.elements[-1] += 1
+        self.call_args_count += 1
+        func_args = self.symbol_table.get_arguments(self.semantic_stack.elements[-self.call_args_count])
+        if self.get_mem_type(self.semantic_stack[0]) \
+                != \
+                func_args[self.call_args_count - 1].type:
+            # todo error type mismatch for function argument
+            pass
+
+    def call_args_start(self, lookahead: str = None):
+        self.call_args_count = 0
 
     def call_fun(self, lookahead: str = None):
-        self.semantic_stack.push(self.call_args_count.top())
-        self.semantic_stack[-self.call_args_count.pop() - 1] = self.pc + 1
-        self.add_code(('JP', -self.semantic_stack.pop() - 2), index=self.pc)
-        self.add_code(('JP', -self.semantic_stack.pop() - 2), index=self.pc)
+        func_addr = self.semantic_stack[-self.call_args_count]
+        func_args = self.symbol_table.get_arguments(func_addr)
+        func_return = self.symbol_table.get_type(func_addr)
+        if self.call_args_count != len(func_args):
+            # todo error argument count wrong
+            pass
+        else:
+            ra_reg = '2000'
+            self.add_code(('ASSIGN', f'#{self.pc + self.call_args_count + 2}', ra_reg), index=self.pc)
+            for i in range(self.call_args_count)[::-1]:
+                self.add_code(('ASSIGN', self.semantic_stack.pop(), func_args[i].address), index=self.pc + i + 1)
+            self.add_code(('JP', func_addr), index=self.pc + self.call_args_count + 1)
+            self.semantic_stack.pop()
+            if func_return != 'void':
+                self.semantic_stack.push('3000')
+            self.pc += self.call_args_count + 2
+
+    def return_void(self, lookahead: str = None):
+        self.return_stmt()
+
+    def return_expr(self, lookahead: str = None):
+        ret_val = str(self.semantic_stack.pop())
+        is_num = ret_val.startswith('#')
+        self.add_code(('ASSIGN', ret_val, '3000'), index=self.pc)
+        self.pc += 1
+        self.return_stmt()
+
+    def return_stmt(self):
+        self.return_stack.push(self.pc)
         self.pc += 1
 
-        # todo add arguments
+    def end_func(self, lookahead: str = None):
+        while len(self.return_stack.elements) != 0:
+            ret_pc = self.return_stack.pop()
+            self.add_code(('JP', self.pc), index=ret_pc)
+        if self.symbol_table.get_name(int(self.scope_stack.top().split('#')[-1].split()[0])) != 'main':
+            self.add_code(('JP', '@2000'), index=self.pc)
+            self.pc += 1
 
     def add_code(self, code, index):
         index = int(index)
