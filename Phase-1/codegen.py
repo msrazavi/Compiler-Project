@@ -168,10 +168,20 @@ class CodeGenerator:
         self.symbol_table.declare_arr()
         if self.symbol_table.elements[-1].type == 'void':
             self.semantic_analyzer.add_error(SemanticAnalyzer.generate_error_b(lookahead), line_num=self.line_counter)
+        else:
+            var = self.symbol_table.elements[-1]
+            for i in range(var.size):
+                self.add_code(('ASSIGN', '#0', var.address + var.size), index=self.pc)
+                self.pc += 1
+
 
     def declare_var(self, lookahead: str = None):
         if self.symbol_table.elements[-1].type == 'void':
             self.semantic_analyzer.add_error(SemanticAnalyzer.generate_error_b(lookahead), line_num=self.line_counter)
+        else:
+            var = self.symbol_table.elements[-1]
+            self.add_code(('ASSIGN', '#0', var.address), index=self.pc)
+            self.pc += 1
 
     def declare_func(self, lookahead: str = None):
         self.symbol_table.declare_func()

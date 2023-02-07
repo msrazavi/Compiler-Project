@@ -38,9 +38,9 @@ class SemanticCodegenTests(unittest.TestCase):
         parser.codegen = CodeGenerator(parser.semantic_analyzer)
 
     def test_all(self):
-        # remaining tests: T15 o3-function o1-semantic o2-semantic o3-semantic
-        for folder_name in ['T15']:  # os.listdir('testcases/code-generator'):
-        # for folder_name in ['o3-semantic'.upper()]:  # os.listdir('testcases/code-generator'):
+        # remaining tests: o3-function o1-semantic o2-semantic o3-semantic
+        for folder_name in ['o3-semantic']:  # os.listdir('testcases/code-generator'):
+        # for folder_name in ['o1-semantic'.upper()]:  # os.listdir('testcases/code-generator'):
             with self.subTest(f"Testcase[{folder_name}]"):
                 print(f"running Testcase[{folder_name}]")
                 self.setUp()
