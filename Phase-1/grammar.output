@@ -2,7 +2,7 @@ Grammar
 
     0 $accept: program $end
 
-    1 program: save empty_cell start_scope declaration_list end_scope
+    1 program: empty_cell empty_cell start_scope declaration_list end_scope
 
     2 declaration_list: declaration_list declaration
     3                 | declaration
@@ -281,7 +281,7 @@ push_id (65)
 save_const (66)
     on left: 68, on right: 41 60
 save (67)
-    on left: 69, on right: 1 33 34 35 41
+    on left: 69, on right: 33 34 35 41
 empty_cell (68)
     on left: 70, on right: 1 41
 label (69)
@@ -355,13 +355,13 @@ return_expr (101)
 state 0
 
     0 $accept: . program $end
-    1 program: . save empty_cell start_scope declaration_list end_scope
-   69 save: .
+    1 program: . empty_cell empty_cell start_scope declaration_list end_scope
+   70 empty_cell: .
 
-    $default  reduce using rule 69 (save)
+    $default  reduce using rule 70 (empty_cell)
 
-    program  go to state 1
-    save     go to state 2
+    program     go to state 1
+    empty_cell  go to state 2
 
 
 state 1
@@ -373,7 +373,7 @@ state 1
 
 state 2
 
-    1 program: save . empty_cell start_scope declaration_list end_scope
+    1 program: empty_cell . empty_cell start_scope declaration_list end_scope
    70 empty_cell: .
 
     $default  reduce using rule 70 (empty_cell)
@@ -390,7 +390,7 @@ state 3
 
 state 4
 
-    1 program: save empty_cell . start_scope declaration_list end_scope
+    1 program: empty_cell empty_cell . start_scope declaration_list end_scope
    81 start_scope: .
 
     $default  reduce using rule 81 (start_scope)
@@ -400,7 +400,7 @@ state 4
 
 state 5
 
-    1 program: save empty_cell start_scope . declaration_list end_scope
+    1 program: empty_cell empty_cell start_scope . declaration_list end_scope
     2 declaration_list: . declaration_list declaration
     3                 | . declaration
     4 declaration: . var_declaration
@@ -423,7 +423,7 @@ state 5
 
 state 6
 
-    1 program: save empty_cell start_scope declaration_list . end_scope
+    1 program: empty_cell empty_cell start_scope declaration_list . end_scope
     2 declaration_list: declaration_list . declaration
     4 declaration: . var_declaration
     5            | . arr_declaration
@@ -496,7 +496,7 @@ state 12
 
 state 13
 
-    1 program: save empty_cell start_scope declaration_list end_scope .
+    1 program: empty_cell empty_cell start_scope declaration_list end_scope .
 
     $default  reduce using rule 1 (program)
 

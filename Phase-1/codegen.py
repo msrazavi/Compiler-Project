@@ -1,9 +1,6 @@
-from typing import List
-
-from scanner import *
 from semantic_analyzer import SemanticAnalyzer
 from stack import Stack
-from symbol_table import SymbolTable, FunArg, Element
+from symbol_table import SymbolTable, FunArg
 
 
 # noinspection PyUnusedLocal
@@ -122,7 +119,7 @@ class CodeGenerator:
     def index_addr(self, lookahead: str = None):
         self.semantic_stack.elements[-2] = f'#{self.semantic_stack.elements[-2]}'
         self.add(lookahead)
-        self.semantic_stack[0] = f'@{self.semantic_stack.top()}'
+        self.semantic_stack.push(f'@{self.semantic_stack.pop()}')
 
     def assign(self, lookahead: str = None):
         self.add_code(('ASSIGN', self.semantic_stack.top(), self.semantic_stack[-1]), index=self.pc)
@@ -164,24 +161,32 @@ class CodeGenerator:
     def declare_type(self, lookahead: str = None):
         self.symbol_table.declare(lookahead, self.scope_stack.top())
 
-    def declare_arr(self, lookahead: str = None):
+    def declare_arr_init(self, lookahead: str = None):
         self.symbol_table.declare_arr()
         if self.symbol_table.elements[-1].type == 'void':
             self.semantic_analyzer.add_error(SemanticAnalyzer.generate_error_b(lookahead), line_num=self.line_counter)
         else:
             var = self.symbol_table.elements[-1]
             for i in range(var.size):
-                self.add_code(('ASSIGN', '#0', var.address + var.size), index=self.pc)
+                self.add_code(('ASSIGN', '#0', var.address + i), index=self.pc)
                 self.pc += 1
 
-
-    def declare_var(self, lookahead: str = None):
+    def declare_var_init(self, lookahead: str = None):
         if self.symbol_table.elements[-1].type == 'void':
             self.semantic_analyzer.add_error(SemanticAnalyzer.generate_error_b(lookahead), line_num=self.line_counter)
         else:
             var = self.symbol_table.elements[-1]
             self.add_code(('ASSIGN', '#0', var.address), index=self.pc)
             self.pc += 1
+
+    def declare_arr(self, lookahead: str = None):
+        self.symbol_table.declare_arr()
+        if self.symbol_table.elements[-1].type == 'void':
+            self.semantic_analyzer.add_error(SemanticAnalyzer.generate_error_b(lookahead), line_num=self.line_counter)
+
+    def declare_var(self, lookahead: str = None):
+        if self.symbol_table.elements[-1].type == 'void':
+            self.semantic_analyzer.add_error(SemanticAnalyzer.generate_error_b(lookahead), line_num=self.line_counter)
 
     def declare_func(self, lookahead: str = None):
         self.symbol_table.declare_func()
@@ -195,8 +200,8 @@ class CodeGenerator:
     def declare_address(self, lookahead: str = None):
         self.symbol_table.declare_address(self.pc)
         if self.symbol_table.elements[-1].name == 'main':
-            self.add_code(('ASSIGN', '#2000', '2000'), index=self.semantic_stack.elements[0])
-            self.add_code(('JP', self.pc), index=self.semantic_stack.elements[0] + 1)
+            self.add_code(('ASSIGN', '#2000', '2000'), index=0)
+            self.add_code(('JP', self.pc), index=1)
 
     def if_block(self, lookahead: str = None):
         self.add_code(('JPF', self.semantic_stack[-1], self.pc), index=self.semantic_stack.top())

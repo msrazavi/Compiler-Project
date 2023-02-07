@@ -2,7 +2,7 @@
 %token ID
 %start program
 %%
-program: save empty_cell start_scope declaration_list end_scope
+program: empty_cell empty_cell start_scope declaration_list end_scope
 ;
 declaration_list: declaration_list declaration
 | declaration
@@ -11,9 +11,9 @@ declaration: var_declaration
 | arr_declaration
 | fun_declaration 
 ;
-var_declaration: declare_type type_specifier declare_id ID ';' declare_var
+var_declaration: declare_type type_specifier declare_id ID ';' declare_var_init
 ;
-arr_declaration: declare_type type_specifier declare_id ID '[' declare_size NUM ']' ';' declare_arr
+arr_declaration: declare_type type_specifier declare_id ID '[' declare_size NUM ']' ';' declare_arr_init
 ;
 type_specifier: "int" 
 | "void"
