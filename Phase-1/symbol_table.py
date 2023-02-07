@@ -29,10 +29,11 @@ class Element:
 
 
 class FunArg:
-    def __init__(self, name: str = '', type: str = '', address: int = 0):
+    def __init__(self, name: str = '', type: str = '', is_arr: bool = False, address: int = 0):
         self.name = name
         self.type = type
         self.address = address
+        self.is_arr = is_arr
 
 
 class SymbolTable:
@@ -82,6 +83,12 @@ class SymbolTable:
         for i, e in enumerate(self.elements):
             if e.address == address:
                 return e.type
+        return None
+
+    def get_is_arr(self, address: int) -> Optional[bool]:
+        for i, e in enumerate(self.elements):
+            if e.address == address:
+                return e.is_arr
         return None
 
     def get_arguments(self, address: int) -> Optional[List]:

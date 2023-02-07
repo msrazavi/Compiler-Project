@@ -1,3 +1,5 @@
+from typing import List
+
 from semantic_analyzer import SemanticAnalyzer
 from stack import Stack
 from symbol_table import SymbolTable, FunArg
@@ -79,7 +81,10 @@ class CodeGenerator:
         if str(address).startswith('#') or str(address).startswith('@'):
             return 'int'
         elif int(address) < 500:
-            return self.symbol_table.get_type(address)
+            if not self.symbol_table.get_is_arr(address):
+                return self.symbol_table.get_type(address)
+            else:
+                return 'array'
         else:
             try:
                 return self.temp_types[address]
@@ -115,6 +120,7 @@ class CodeGenerator:
         if not found:
             self.semantic_analyzer.add_error(error=SemanticAnalyzer.generate_error_a(lookahead),
                                              line_num=self.line_counter + 1)
+            self.semantic_stack.push('#0');
 
     def index_addr(self, lookahead: str = None):
         self.semantic_stack.elements[-2] = f'#{self.semantic_stack.elements[-2]}'
@@ -164,7 +170,8 @@ class CodeGenerator:
     def declare_arr_init(self, lookahead: str = None):
         self.symbol_table.declare_arr()
         if self.symbol_table.elements[-1].type == 'void':
-            self.semantic_analyzer.add_error(SemanticAnalyzer.generate_error_b(lookahead), line_num=self.line_counter)
+            self.semantic_analyzer.add_error(SemanticAnalyzer.generate_error_b(self.symbol_table.elements[-1].name),
+                                             line_num=self.line_counter)
         else:
             var = self.symbol_table.elements[-1]
             for i in range(var.size):
@@ -173,7 +180,7 @@ class CodeGenerator:
 
     def declare_var_init(self, lookahead: str = None):
         if self.symbol_table.elements[-1].type == 'void':
-            self.semantic_analyzer.add_error(SemanticAnalyzer.generate_error_b(lookahead), line_num=self.line_counter)
+            self.semantic_analyzer.add_error(SemanticAnalyzer.generate_error_b(self.symbol_table.elements[-1].name), line_num=self.line_counter)
         else:
             var = self.symbol_table.elements[-1]
             self.add_code(('ASSIGN', '#0', var.address), index=self.pc)
@@ -182,11 +189,11 @@ class CodeGenerator:
     def declare_arr(self, lookahead: str = None):
         self.symbol_table.declare_arr()
         if self.symbol_table.elements[-1].type == 'void':
-            self.semantic_analyzer.add_error(SemanticAnalyzer.generate_error_b(lookahead), line_num=self.line_counter)
+            self.semantic_analyzer.add_error(SemanticAnalyzer.generate_error_b(self.symbol_table.elements[-1].name), line_num=self.line_counter)
 
     def declare_var(self, lookahead: str = None):
         if self.symbol_table.elements[-1].type == 'void':
-            self.semantic_analyzer.add_error(SemanticAnalyzer.generate_error_b(lookahead), line_num=self.line_counter)
+            self.semantic_analyzer.add_error(SemanticAnalyzer.generate_error_b(self.symbol_table.elements[-1].name), line_num=self.line_counter)
 
     def declare_func(self, lookahead: str = None):
         self.symbol_table.declare_func()
@@ -244,24 +251,29 @@ class CodeGenerator:
                 self.pc += 1
                 break
         if not break_accepted:
-            self.semantic_analyzer.add_error(SemanticAnalyzer.generate_error_d(), line_num=self.line_counter + 1)
+            self.semantic_analyzer.add_error(SemanticAnalyzer.generate_error_d(), line_num=self.line_counter)
 
     def new_fun_arg(self, lookahead: str = None):
         for i in range(len(self.symbol_table.elements))[::-1]:
             elem = self.symbol_table.elements[i]
             if elem.is_func:
                 arg = self.symbol_table.elements[-1]
-                elem.arguments.append(FunArg(arg.name, arg.type, arg.address))
+                elem.arguments.append(FunArg(arg.name, arg.type, arg.is_arr, arg.address))
                 break
 
     def new_call_arg(self, lookahead: str = None):
         self.call_args_count += 1
-        func_args = self.symbol_table.get_arguments(self.semantic_stack.elements[-self.call_args_count])
+        func_args: List[FunArg] = self.symbol_table.get_arguments(self.semantic_stack.elements[-self.call_args_count])
+        func_arg = func_args[self.call_args_count - 1]
         if self.get_mem_type(self.semantic_stack[0]) \
                 != \
-                func_args[self.call_args_count - 1].type:
-            # todo error type mismatch for function argument
-            pass
+                func_arg.type or func_arg.is_arr:
+            self.semantic_analyzer.add_error(
+                SemanticAnalyzer.generate_error_f(id_name=self.symbol_table.get_name(self.semantic_stack.elements[-self.call_args_count]),
+                                                  arg_num=self.call_args_count,
+                                                  given_type=self.get_mem_type(self.semantic_stack[0]),
+                                                  expected_type='array' if func_arg.is_arr else func_arg.type),
+                self.line_counter)
 
     def call_args_start(self, lookahead: str = None):
         self.call_args_count = 0
@@ -271,9 +283,11 @@ class CodeGenerator:
         func_args = self.symbol_table.get_arguments(func_addr)
         func_return = self.symbol_table.get_type(func_addr)
         if self.call_args_count != len(func_args):
+            self.semantic_analyzer.add_error(SemanticAnalyzer.generate_error_c(self.symbol_table.get_name(func_addr)),
+                                             self.line_counter)
             self.semantic_stack.multipop(self.call_args_count + 1)
-            # todo error argument count wrong
-            pass
+            if func_return == 'int':
+                self.semantic_stack.push('#0')
         else:
             ra_reg = '2000'
             self.add_code(('ASSIGN', f'#{self.pc + self.call_args_count + 2}', ra_reg), index=self.pc)

@@ -1,36 +1,33 @@
-int b;
-int foo2(int k[]) {
-    return (k[0] + k[1]);
-    k[1] = b = 5;
-    }
-int foo(int d, int e){
-    int f;
-    int fff[2];
-    void g;
-    fff[0] = d;
-    fff[1] = d + 1;
-    f = foo2(3);
-    output(f);
-    b = e + f;
-    while (d < 1){
-        f = f + d;
-        d = d - 1;
-        if (d == 4)
-            break; else {} endif;
-    }
-    return f + b + fff;
+/*==== Sample S2 ====*/
+int result[50];
+
+
+int f(int a, int result[]) {
+    count = count + 1;
+    if(result[a - 1]){
+        return result[a - 1];
+    } else {
+        if (a == 1) {
+            result[a - 1] = 1;
+            return 1;
+        } else if (a == 2){
+            result[a - 1] = 1;
+            return 1;
+        } else {
+            result[a - 1] = a - 1;
+            return result[a - 1];
+        } endif endif
+    } endif
 }
-int arr[3];
-void main(void){
-    int a;
-    a = (0-3) + 11;
-    b = 5 * a  + foo(a,a);
-    arr[1] = b + (0-3);
-    if (b == 108){break;
-        arr[0] = 0-7;
-        arr[2] = foo(arr[0])-75;
-    }
-    else {arr[2] = 3;} endif
-    output (arr[2]);
-    u = 5;
+
+void main(void) {
+    int i;
+	i = 0;
+    while (i < 49) {
+        result[i] = 0;
+        i = i + result;
+    } 
+    count = 0;
+    output(f(40, result));
+    output(count);
 }
