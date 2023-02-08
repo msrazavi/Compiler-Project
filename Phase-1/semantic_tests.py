@@ -25,7 +25,7 @@ class SemanticCodegenTests(unittest.TestCase):
         scanner.symbols = []
 
         parser.stack = Stack()
-        parser.next_token_type, next_token, next_token_nt = '', '', ''
+        parser.next_token_type, parser.next_token, parser.next_token_nt = '', '', ''
         parser.terminals = []
         parser.non_terminals = []
         parser.follow = {}
@@ -34,12 +34,11 @@ class SemanticCodegenTests(unittest.TestCase):
         parser.syntax_errors = []  # (message, args as tuple)
         parser.action_nt_start_index = -2
         parser.semantic_analyzer = SemanticAnalyzer()
-        parser.semantic_analyzer.errors = []
-        parser.codegen = CodeGenerator(parser.semantic_analyzer)
+        parser.codegen = CodeGenerator(semantic_analyzer=parser.semantic_analyzer)
 
     def test_all(self):
         # remaining tests: o3-function
-        for folder_name in ['t13']:  # os.listdir('testcases/code-generator'):
+        for folder_name in ['o2-function']:
             with self.subTest(f"Testcase[{folder_name}]"):
                 print(f"running Testcase[{folder_name}]")
                 self.setUp()
@@ -93,5 +92,6 @@ class SemanticCodegenTests(unittest.TestCase):
             " ".join([s.replace('PRINT ', '').strip() for s in actual.split('\n')])
         )
 
-    if __name__ == "__main__":
-        unittest.main()
+
+if __name__ == "__main__":
+    SemanticCodegenTests().test_all()

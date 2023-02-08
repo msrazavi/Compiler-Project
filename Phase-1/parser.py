@@ -110,7 +110,7 @@ def panic_mode_recovery():
         stack.pop()
     nts_with_goto = {k: v for k, v in parse_table[stack.elements[-1].state_num].items() if v.startswith('goto_')}
 
-    next_token_type, next_token, next_token_nt = get_next_token_from_scanner()
+    next_token_type, next_token, next_token_nt, line_counter = get_next_token_from_scanner()
     while True:
         found = False
         for nt, goto in sorted(nts_with_goto.items()):
