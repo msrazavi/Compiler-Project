@@ -18,6 +18,7 @@ class CodeGenerator:
         self.scope_counter = 0
         self.call_args_count = 0
         self.return_stack = Stack()
+        self.return_addr_stack = Stack()
         self.symbol_table = SymbolTable()
         self.temp_types = {}
         self.assign_chain_len = 0

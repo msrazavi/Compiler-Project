@@ -1,4 +1,5 @@
-PRINT    4
-PRINT    40
-PRINT    4
-Total memory used: 6
+PRINT    0
+PRINT    2
+PRINT    10
+PRINT    12
+Total memory used: 8
