@@ -349,5 +349,5 @@ class CodeGenerator:
                     code = self.program_block[i]
                     if code is None: raise NameError
                     file.write(
-                        f'{i}.\t({code[0]}, {code[1]}, {code[2] if len(code) > 2 else ""}, {code[3] if len(code) > 3 else ""})\n'
+                        f'{i}\t({code[0]}, {code[1]}, {code[2] if len(code) > 2 else ""}, {code[3] if len(code) > 3 else ""})\n'
                     )

@@ -38,7 +38,7 @@ class SemanticCodegenTests(unittest.TestCase):
 
     def test_all(self):
         # remaining tests: o3-function
-        for folder_name in ['o2-function']:
+        for folder_name in ['o3-function']:
             with self.subTest(f"Testcase[{folder_name}]"):
                 print(f"running Testcase[{folder_name}]")
                 self.setUp()
@@ -80,8 +80,6 @@ class SemanticCodegenTests(unittest.TestCase):
                 with open('interpreter/actual.txt') as f:
                     actual = f.read()
                     actual = ''.join([s + '\n' for s in re.findall(r'PRINT +[\-+]?\d+', actual)])
-                    if folder_name == 'T15':
-                        print(end='')
                     self.assertEqualTrimWS(actual, expected, f"output[{folder_name}]")
 
         os.system('cd ..; zip -vr -q Phase-1.zip Phase-1 -i "*.py" "*.json" Phase-1/input.txt; cd Phase-1;')
