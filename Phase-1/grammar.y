@@ -96,8 +96,8 @@ call: "output" '(' expression ')' output
 args: arg_list
 | /* epsilon */
 ;
-arg_list: arg_list ',' new_call_arg expression
-| new_call_arg expression
+arg_list: arg_list ',' expression new_call_arg
+| expression new_call_arg
 ;
 push_id: /* epsilon */;
 save_const: /* epsilon */;
@@ -128,6 +128,8 @@ declare_type: /* epsilon */;
 declare_size: /* epsilon */;
 declare_var: /* epsilon */;
 declare_arr: /* epsilon */;
+declare_var_init: /* epsilon */;
+declare_arr_init: /* epsilon */;
 declare_func: /* epsilon */;
 declare_address: /* epsilon */;
 call_args_start: /* epsilon */;

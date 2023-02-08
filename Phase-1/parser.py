@@ -38,16 +38,16 @@ class State:
 def get_next_token_from_scanner():
     while True:
         if scanner.text_pointer >= len(scanner.input_text):
-            return 'EOF', '$', '$'
+            return 'EOF', '$', '$', scanner.line_counter
         token = scanner.get_next_token()
         if token[0] != 'ERROR' and token[0] != 'WHITESPACE' and token[0] != 'COMMENT':
             scanner.tokens.append(token)
             break
     if token[1] == 'ID':
-        return 'ID', token[2], token[1]
+        return 'ID', token[2], token[1], token[0]
     if token[1] == 'NUM':
-        return 'NUM', token[2], token[1]
-    return token[1], token[2], token[2]
+        return 'NUM', token[2], token[1], token[0]
+    return token[1], token[2], token[2], token[0]
 
 
 def read_parse_table():
@@ -164,13 +164,13 @@ def start_parsing():
     global next_token, next_token_type, next_token_nt
 
     stack.push(State("0"))
-    next_token_type, next_token, next_token_nt = get_next_token_from_scanner()
+    next_token_type, next_token, next_token_nt, line_counter = get_next_token_from_scanner()
 
     while True:
         try:
-            #print(str(stack), next_token_nt)
+            # print(str(stack), next_token_nt)
             action = get_next_action()
-            #print(str(stack), next_token_nt, action)
+            # print(str(stack), next_token_nt, action)
         except KeyError as e:
             panic_mode_recovery()
             if next_token_nt == '$':
@@ -183,7 +183,7 @@ def start_parsing():
         if action[0] == "shift":
             stack.push(Node((next_token_type, next_token, next_token_nt)))
             stack.push(State(action[1]))
-            next_token_type, next_token, next_token_nt = get_next_token_from_scanner()
+            next_token_type, next_token, next_token_nt, line_counter = get_next_token_from_scanner()
         elif action[0] in ["reduce", "codegen"]:
             rule = grammar[action[1]]
             children = []
@@ -198,7 +198,7 @@ def start_parsing():
             stack.push(parent_node)
             stack.push(State(get_goto_state(last_state, rule[0])))
             if action[0] == "codegen":
-                codegen.call_action_routine(rule[0], next_token, scanner.line_counter)
+                codegen.call_action_routine(rule[0], next_token, line_counter)
         elif action[0] == "accept":
             stack.elements[1].children += (stack.elements[3],)
             break

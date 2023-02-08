@@ -35,6 +35,9 @@ class FunArg:
         self.address = address
         self.is_arr = is_arr
 
+    def get_type(self):
+        return 'array' if self.is_arr else self.type
+
 
 class SymbolTable:
     elements: List[Element] = []
@@ -82,6 +85,8 @@ class SymbolTable:
     def get_type(self, address: int) -> Optional[str]:
         for i, e in enumerate(self.elements):
             if e.address == address:
+                if e.is_arr:
+                    return 'array'
                 return e.type
         return None
 

@@ -11,9 +11,9 @@ Grammar
     5            | arr_declaration
     6            | fun_declaration
 
-    7 var_declaration: declare_type type_specifier declare_id ID ';' declare_var
+    7 var_declaration: declare_type type_specifier declare_id ID ';' declare_var_init
 
-    8 arr_declaration: declare_type type_specifier declare_id ID '[' declare_size NUM ']' ';' declare_arr
+    8 arr_declaration: declare_type type_specifier declare_id ID '[' declare_size NUM ']' ';' declare_arr_init
 
     9 type_specifier: "int"
    10               | "void"
@@ -96,8 +96,8 @@ Grammar
    63 args: arg_list
    64     | /* empty */
 
-   65 arg_list: arg_list ',' new_call_arg expression
-   66         | new_call_arg expression
+   65 arg_list: arg_list ',' expression new_call_arg
+   66         | expression new_call_arg
 
    67 push_id: /* empty */
 
@@ -157,21 +157,25 @@ Grammar
 
    95 declare_arr: /* empty */
 
-   96 declare_func: /* empty */
+   96 declare_var_init: /* empty */
 
-   97 declare_address: /* empty */
+   97 declare_arr_init: /* empty */
 
-   98 call_args_start: /* empty */
+   98 declare_func: /* empty */
 
-   99 new_call_arg: /* empty */
+   99 declare_address: /* empty */
 
-  100 new_fun_arg: /* empty */
+  100 call_args_start: /* empty */
 
-  101 end_func: /* empty */
+  101 new_call_arg: /* empty */
 
-  102 return_void: /* empty */
+  102 new_fun_arg: /* empty */
 
-  103 return_expr: /* empty */
+  103 end_func: /* empty */
+
+  104 return_void: /* empty */
+
+  105 return_expr: /* empty */
 
 
 Terminals, with rules where they appear
@@ -331,25 +335,29 @@ declare_type (90)
 declare_size (91)
     on left: 93, on right: 8
 declare_var (92)
-    on left: 94, on right: 7 16
+    on left: 94, on right: 16
 declare_arr (93)
-    on left: 95, on right: 8 17
-declare_func (94)
-    on left: 96, on right: 11
-declare_address (95)
-    on left: 97, on right: 11
-call_args_start (96)
-    on left: 98, on right: 62
-new_call_arg (97)
-    on left: 99, on right: 65 66
-new_fun_arg (98)
-    on left: 100, on right: 16 17
-end_func (99)
-    on left: 101, on right: 11
-return_void (100)
-    on left: 102, on right: 36
-return_expr (101)
-    on left: 103, on right: 37
+    on left: 95, on right: 17
+declare_var_init (94)
+    on left: 96, on right: 7
+declare_arr_init (95)
+    on left: 97, on right: 8
+declare_func (96)
+    on left: 98, on right: 11
+declare_address (97)
+    on left: 99, on right: 11
+call_args_start (98)
+    on left: 100, on right: 62
+new_call_arg (99)
+    on left: 101, on right: 65 66
+new_fun_arg (100)
+    on left: 102, on right: 16 17
+end_func (101)
+    on left: 103, on right: 11
+return_void (102)
+    on left: 104, on right: 36
+return_expr (103)
+    on left: 105, on right: 37
 
 
 state 0
@@ -406,8 +414,8 @@ state 5
     4 declaration: . var_declaration
     5            | . arr_declaration
     6            | . fun_declaration
-    7 var_declaration: . declare_type type_specifier declare_id ID ';' declare_var
-    8 arr_declaration: . declare_type type_specifier declare_id ID '[' declare_size NUM ']' ';' declare_arr
+    7 var_declaration: . declare_type type_specifier declare_id ID ';' declare_var_init
+    8 arr_declaration: . declare_type type_specifier declare_id ID '[' declare_size NUM ']' ';' declare_arr_init
    11 fun_declaration: . declare_type type_specifier declare_id ID declare_func declare_address start_scope '(' params ')' compound_stmt end_func end_scope
    92 declare_type: .
 
@@ -428,8 +436,8 @@ state 6
     4 declaration: . var_declaration
     5            | . arr_declaration
     6            | . fun_declaration
-    7 var_declaration: . declare_type type_specifier declare_id ID ';' declare_var
-    8 arr_declaration: . declare_type type_specifier declare_id ID '[' declare_size NUM ']' ';' declare_arr
+    7 var_declaration: . declare_type type_specifier declare_id ID ';' declare_var_init
+    8 arr_declaration: . declare_type type_specifier declare_id ID '[' declare_size NUM ']' ';' declare_arr_init
    11 fun_declaration: . declare_type type_specifier declare_id ID declare_func declare_address start_scope '(' params ')' compound_stmt end_func end_scope
    82 end_scope: .  [$end]
    92 declare_type: .  ["int", "void"]
@@ -475,8 +483,8 @@ state 10
 
 state 11
 
-    7 var_declaration: declare_type . type_specifier declare_id ID ';' declare_var
-    8 arr_declaration: declare_type . type_specifier declare_id ID '[' declare_size NUM ']' ';' declare_arr
+    7 var_declaration: declare_type . type_specifier declare_id ID ';' declare_var_init
+    8 arr_declaration: declare_type . type_specifier declare_id ID '[' declare_size NUM ']' ';' declare_arr_init
     9 type_specifier: . "int"
    10               | . "void"
    11 fun_declaration: declare_type . type_specifier declare_id ID declare_func declare_address start_scope '(' params ')' compound_stmt end_func end_scope
@@ -517,8 +525,8 @@ state 15
 
 state 16
 
-    7 var_declaration: declare_type type_specifier . declare_id ID ';' declare_var
-    8 arr_declaration: declare_type type_specifier . declare_id ID '[' declare_size NUM ']' ';' declare_arr
+    7 var_declaration: declare_type type_specifier . declare_id ID ';' declare_var_init
+    8 arr_declaration: declare_type type_specifier . declare_id ID '[' declare_size NUM ']' ';' declare_arr_init
    11 fun_declaration: declare_type type_specifier . declare_id ID declare_func declare_address start_scope '(' params ')' compound_stmt end_func end_scope
    91 declare_id: .
 
@@ -529,8 +537,8 @@ state 16
 
 state 17
 
-    7 var_declaration: declare_type type_specifier declare_id . ID ';' declare_var
-    8 arr_declaration: declare_type type_specifier declare_id . ID '[' declare_size NUM ']' ';' declare_arr
+    7 var_declaration: declare_type type_specifier declare_id . ID ';' declare_var_init
+    8 arr_declaration: declare_type type_specifier declare_id . ID '[' declare_size NUM ']' ';' declare_arr_init
    11 fun_declaration: declare_type type_specifier declare_id . ID declare_func declare_address start_scope '(' params ')' compound_stmt end_func end_scope
 
     ID  shift, and go to state 18
@@ -538,32 +546,32 @@ state 17
 
 state 18
 
-    7 var_declaration: declare_type type_specifier declare_id ID . ';' declare_var
-    8 arr_declaration: declare_type type_specifier declare_id ID . '[' declare_size NUM ']' ';' declare_arr
+    7 var_declaration: declare_type type_specifier declare_id ID . ';' declare_var_init
+    8 arr_declaration: declare_type type_specifier declare_id ID . '[' declare_size NUM ']' ';' declare_arr_init
    11 fun_declaration: declare_type type_specifier declare_id ID . declare_func declare_address start_scope '(' params ')' compound_stmt end_func end_scope
-   96 declare_func: .  ['(']
+   98 declare_func: .  ['(']
 
     ';'  shift, and go to state 19
     '['  shift, and go to state 20
 
-    $default  reduce using rule 96 (declare_func)
+    $default  reduce using rule 98 (declare_func)
 
     declare_func  go to state 21
 
 
 state 19
 
-    7 var_declaration: declare_type type_specifier declare_id ID ';' . declare_var
-   94 declare_var: .
+    7 var_declaration: declare_type type_specifier declare_id ID ';' . declare_var_init
+   96 declare_var_init: .
 
-    $default  reduce using rule 94 (declare_var)
+    $default  reduce using rule 96 (declare_var_init)
 
-    declare_var  go to state 22
+    declare_var_init  go to state 22
 
 
 state 20
 
-    8 arr_declaration: declare_type type_specifier declare_id ID '[' . declare_size NUM ']' ';' declare_arr
+    8 arr_declaration: declare_type type_specifier declare_id ID '[' . declare_size NUM ']' ';' declare_arr_init
    93 declare_size: .
 
     $default  reduce using rule 93 (declare_size)
@@ -574,23 +582,23 @@ state 20
 state 21
 
    11 fun_declaration: declare_type type_specifier declare_id ID declare_func . declare_address start_scope '(' params ')' compound_stmt end_func end_scope
-   97 declare_address: .
+   99 declare_address: .
 
-    $default  reduce using rule 97 (declare_address)
+    $default  reduce using rule 99 (declare_address)
 
     declare_address  go to state 24
 
 
 state 22
 
-    7 var_declaration: declare_type type_specifier declare_id ID ';' declare_var .
+    7 var_declaration: declare_type type_specifier declare_id ID ';' declare_var_init .
 
     $default  reduce using rule 7 (var_declaration)
 
 
 state 23
 
-    8 arr_declaration: declare_type type_specifier declare_id ID '[' declare_size . NUM ']' ';' declare_arr
+    8 arr_declaration: declare_type type_specifier declare_id ID '[' declare_size . NUM ']' ';' declare_arr_init
 
     NUM  shift, and go to state 25
 
@@ -607,7 +615,7 @@ state 24
 
 state 25
 
-    8 arr_declaration: declare_type type_specifier declare_id ID '[' declare_size NUM . ']' ';' declare_arr
+    8 arr_declaration: declare_type type_specifier declare_id ID '[' declare_size NUM . ']' ';' declare_arr_init
 
     ']'  shift, and go to state 27
 
@@ -621,7 +629,7 @@ state 26
 
 state 27
 
-    8 arr_declaration: declare_type type_specifier declare_id ID '[' declare_size NUM ']' . ';' declare_arr
+    8 arr_declaration: declare_type type_specifier declare_id ID '[' declare_size NUM ']' . ';' declare_arr_init
 
     ';'  shift, and go to state 29
 
@@ -644,12 +652,12 @@ state 28
 
 state 29
 
-    8 arr_declaration: declare_type type_specifier declare_id ID '[' declare_size NUM ']' ';' . declare_arr
-   95 declare_arr: .
+    8 arr_declaration: declare_type type_specifier declare_id ID '[' declare_size NUM ']' ';' . declare_arr_init
+   97 declare_arr_init: .
 
-    $default  reduce using rule 95 (declare_arr)
+    $default  reduce using rule 97 (declare_arr_init)
 
-    declare_arr  go to state 33
+    declare_arr_init  go to state 33
 
 
 state 30
@@ -684,7 +692,7 @@ state 32
 
 state 33
 
-    8 arr_declaration: declare_type type_specifier declare_id ID '[' declare_size NUM ']' ';' declare_arr .
+    8 arr_declaration: declare_type type_specifier declare_id ID '[' declare_size NUM ']' ';' declare_arr_init .
 
     $default  reduce using rule 8 (arr_declaration)
 
@@ -749,9 +757,9 @@ state 39
 state 40
 
    11 fun_declaration: declare_type type_specifier declare_id ID declare_func declare_address start_scope '(' params ')' compound_stmt . end_func end_scope
-  101 end_func: .
+  103 end_func: .
 
-    $default  reduce using rule 101 (end_func)
+    $default  reduce using rule 103 (end_func)
 
     end_func  go to state 44
 
@@ -777,8 +785,8 @@ state 42
 
 state 43
 
-    7 var_declaration: . declare_type type_specifier declare_id ID ';' declare_var
-    8 arr_declaration: . declare_type type_specifier declare_id ID '[' declare_size NUM ']' ';' declare_arr
+    7 var_declaration: . declare_type type_specifier declare_id ID ';' declare_var_init
+    8 arr_declaration: . declare_type type_specifier declare_id ID '[' declare_size NUM ']' ';' declare_arr_init
    18 compound_stmt: '{' local_declarations . statement_list '}'
    19 local_declarations: local_declarations . var_declaration
    20                   | local_declarations . arr_declaration
@@ -906,8 +914,8 @@ state 49
 
 state 50
 
-    7 var_declaration: declare_type . type_specifier declare_id ID ';' declare_var
-    8 arr_declaration: declare_type . type_specifier declare_id ID '[' declare_size NUM ']' ';' declare_arr
+    7 var_declaration: declare_type . type_specifier declare_id ID ';' declare_var_init
+    8 arr_declaration: declare_type . type_specifier declare_id ID '[' declare_size NUM ']' ';' declare_arr_init
     9 type_specifier: . "int"
    10               | . "void"
 
@@ -934,9 +942,9 @@ state 52
 state 53
 
    16 param: "int" declare_id ID declare_var . new_fun_arg
-  100 new_fun_arg: .
+  102 new_fun_arg: .
 
-    $default  reduce using rule 100 (new_fun_arg)
+    $default  reduce using rule 102 (new_fun_arg)
 
     new_fun_arg  go to state 75
 
@@ -1185,8 +1193,8 @@ state 72
 
 state 73
 
-    7 var_declaration: declare_type type_specifier . declare_id ID ';' declare_var
-    8 arr_declaration: declare_type type_specifier . declare_id ID '[' declare_size NUM ']' ';' declare_arr
+    7 var_declaration: declare_type type_specifier . declare_id ID ';' declare_var_init
+    8 arr_declaration: declare_type type_specifier . declare_id ID '[' declare_size NUM ']' ';' declare_arr_init
    91 declare_id: .
 
     $default  reduce using rule 91 (declare_id)
@@ -1231,9 +1239,9 @@ state 77
 state 78
 
    36 return_stmt: "return" ';' . return_void
-  102 return_void: .
+  104 return_void: .
 
-    $default  reduce using rule 102 (return_void)
+    $default  reduce using rule 104 (return_void)
 
     return_void  go to state 102
 
@@ -1570,8 +1578,8 @@ state 97
 
 state 98
 
-    7 var_declaration: declare_type type_specifier declare_id . ID ';' declare_var
-    8 arr_declaration: declare_type type_specifier declare_id . ID '[' declare_size NUM ']' ';' declare_arr
+    7 var_declaration: declare_type type_specifier declare_id . ID ';' declare_var_init
+    8 arr_declaration: declare_type type_specifier declare_id . ID '[' declare_size NUM ']' ';' declare_arr_init
 
     ID  shift, and go to state 122
 
@@ -1579,9 +1587,9 @@ state 98
 state 99
 
    17 param: "int" declare_id ID '[' ']' declare_arr . new_fun_arg
-  100 new_fun_arg: .
+  102 new_fun_arg: .
 
-    $default  reduce using rule 100 (new_fun_arg)
+    $default  reduce using rule 102 (new_fun_arg)
 
     new_fun_arg  go to state 123
 
@@ -1610,9 +1618,9 @@ state 102
 state 103
 
    37 return_stmt: "return" expression ';' . return_expr
-  103 return_expr: .
+  105 return_expr: .
 
-    $default  reduce using rule 103 (return_expr)
+    $default  reduce using rule 105 (return_expr)
 
     return_expr  go to state 124
 
@@ -1798,9 +1806,9 @@ state 113
 state 114
 
    62 call: push_id ID '(' . call_args_start args ')' call_fun
-   98 call_args_start: .
+  100 call_args_start: .
 
-    $default  reduce using rule 98 (call_args_start)
+    $default  reduce using rule 100 (call_args_start)
 
     call_args_start  go to state 134
 
@@ -1930,8 +1938,8 @@ state 121
 
 state 122
 
-    7 var_declaration: declare_type type_specifier declare_id ID . ';' declare_var
-    8 arr_declaration: declare_type type_specifier declare_id ID . '[' declare_size NUM ']' ';' declare_arr
+    7 var_declaration: declare_type type_specifier declare_id ID . ';' declare_var_init
+    8 arr_declaration: declare_type type_specifier declare_id ID . '[' declare_size NUM ']' ';' declare_arr_init
 
     ';'  shift, and go to state 19
     '['  shift, and go to state 20
@@ -2022,19 +2030,51 @@ state 133
 
 state 134
 
-   62 call: push_id ID '(' call_args_start . args ')' call_fun
+   44 expression: . var assign_chain_inc '=' expression assign
+   45           | . simple_expression
+   46 var: . push_id ID
+   47    | . push_id ID '[' expression ']' index_addr
+   48 simple_expression: . additive_expression '<' additive_expression lt
+   49                  | . additive_expression "==" additive_expression eq
+   50                  | . additive_expression
+   51 additive_expression: . additive_expression '+' term add
+   52                    | . additive_expression '-' term sub
+   53                    | . term
+   54 term: . term '*' factor mult
+   55     | . term '/' factor div
+   56     | . factor
+   57 factor: . '(' expression ')'
+   58       | . var
+   59       | . call
+   60       | . save_const NUM
+   61 call: . "output" '(' expression ')' output
+   62     | . push_id ID '(' call_args_start args ')' call_fun
+   62     | push_id ID '(' call_args_start . args ')' call_fun
    63 args: . arg_list
    64     | .  [')']
-   65 arg_list: . arg_list ',' new_call_arg expression
-   66         | . new_call_arg expression
-   99 new_call_arg: .  [NUM, ID, '(', "output"]
+   65 arg_list: . arg_list ',' expression new_call_arg
+   66         | . expression new_call_arg
+   67 push_id: .  [ID]
+   68 save_const: .  [NUM]
 
-    ')'       reduce using rule 64 (args)
-    $default  reduce using rule 99 (new_call_arg)
+    '('       shift, and go to state 55
+    "output"  shift, and go to state 59
 
-    args          go to state 141
-    arg_list      go to state 142
-    new_call_arg  go to state 143
+    NUM       reduce using rule 68 (save_const)
+    ID        reduce using rule 67 (push_id)
+    $default  reduce using rule 64 (args)
+
+    expression           go to state 141
+    var                  go to state 64
+    simple_expression    go to state 65
+    additive_expression  go to state 66
+    term                 go to state 67
+    factor               go to state 68
+    call                 go to state 69
+    args                 go to state 142
+    arg_list             go to state 143
+    push_id              go to state 70
+    save_const           go to state 71
 
 
 state 135
@@ -2120,61 +2160,29 @@ state 140
 
 state 141
 
-   62 call: push_id ID '(' call_args_start args . ')' call_fun
+   66 arg_list: expression . new_call_arg
+  101 new_call_arg: .
 
-    ')'  shift, and go to state 148
+    $default  reduce using rule 101 (new_call_arg)
+
+    new_call_arg  go to state 148
 
 
 state 142
 
-   63 args: arg_list .  [')']
-   65 arg_list: arg_list . ',' new_call_arg expression
+   62 call: push_id ID '(' call_args_start args . ')' call_fun
 
-    ','  shift, and go to state 149
-
-    $default  reduce using rule 63 (args)
+    ')'  shift, and go to state 149
 
 
 state 143
 
-   44 expression: . var assign_chain_inc '=' expression assign
-   45           | . simple_expression
-   46 var: . push_id ID
-   47    | . push_id ID '[' expression ']' index_addr
-   48 simple_expression: . additive_expression '<' additive_expression lt
-   49                  | . additive_expression "==" additive_expression eq
-   50                  | . additive_expression
-   51 additive_expression: . additive_expression '+' term add
-   52                    | . additive_expression '-' term sub
-   53                    | . term
-   54 term: . term '*' factor mult
-   55     | . term '/' factor div
-   56     | . factor
-   57 factor: . '(' expression ')'
-   58       | . var
-   59       | . call
-   60       | . save_const NUM
-   61 call: . "output" '(' expression ')' output
-   62     | . push_id ID '(' call_args_start args ')' call_fun
-   66 arg_list: new_call_arg . expression
-   67 push_id: .  [ID]
-   68 save_const: .  [NUM]
+   63 args: arg_list .  [')']
+   65 arg_list: arg_list . ',' expression new_call_arg
 
-    '('       shift, and go to state 55
-    "output"  shift, and go to state 59
+    ','  shift, and go to state 150
 
-    NUM       reduce using rule 68 (save_const)
-    $default  reduce using rule 67 (push_id)
-
-    expression           go to state 150
-    var                  go to state 64
-    simple_expression    go to state 65
-    additive_expression  go to state 66
-    term                 go to state 67
-    factor               go to state 68
-    call                 go to state 69
-    push_id              go to state 70
-    save_const           go to state 71
+    $default  reduce using rule 63 (args)
 
 
 state 144
@@ -2211,6 +2219,13 @@ state 147
 
 state 148
 
+   66 arg_list: expression new_call_arg .
+
+    $default  reduce using rule 66 (arg_list)
+
+
+state 149
+
    62 call: push_id ID '(' call_args_start args ')' . call_fun
    90 call_fun: .
 
@@ -2219,21 +2234,46 @@ state 148
     call_fun  go to state 154
 
 
-state 149
-
-   65 arg_list: arg_list ',' . new_call_arg expression
-   99 new_call_arg: .
-
-    $default  reduce using rule 99 (new_call_arg)
-
-    new_call_arg  go to state 155
-
-
 state 150
 
-   66 arg_list: new_call_arg expression .
+   44 expression: . var assign_chain_inc '=' expression assign
+   45           | . simple_expression
+   46 var: . push_id ID
+   47    | . push_id ID '[' expression ']' index_addr
+   48 simple_expression: . additive_expression '<' additive_expression lt
+   49                  | . additive_expression "==" additive_expression eq
+   50                  | . additive_expression
+   51 additive_expression: . additive_expression '+' term add
+   52                    | . additive_expression '-' term sub
+   53                    | . term
+   54 term: . term '*' factor mult
+   55     | . term '/' factor div
+   56     | . factor
+   57 factor: . '(' expression ')'
+   58       | . var
+   59       | . call
+   60       | . save_const NUM
+   61 call: . "output" '(' expression ')' output
+   62     | . push_id ID '(' call_args_start args ')' call_fun
+   65 arg_list: arg_list ',' . expression new_call_arg
+   67 push_id: .  [ID]
+   68 save_const: .  [NUM]
 
-    $default  reduce using rule 66 (arg_list)
+    '('       shift, and go to state 55
+    "output"  shift, and go to state 59
+
+    NUM       reduce using rule 68 (save_const)
+    $default  reduce using rule 67 (push_id)
+
+    expression           go to state 155
+    var                  go to state 64
+    simple_expression    go to state 65
+    additive_expression  go to state 66
+    term                 go to state 67
+    factor               go to state 68
+    call                 go to state 69
+    push_id              go to state 70
+    save_const           go to state 71
 
 
 state 151
@@ -2329,44 +2369,12 @@ state 154
 
 state 155
 
-   44 expression: . var assign_chain_inc '=' expression assign
-   45           | . simple_expression
-   46 var: . push_id ID
-   47    | . push_id ID '[' expression ']' index_addr
-   48 simple_expression: . additive_expression '<' additive_expression lt
-   49                  | . additive_expression "==" additive_expression eq
-   50                  | . additive_expression
-   51 additive_expression: . additive_expression '+' term add
-   52                    | . additive_expression '-' term sub
-   53                    | . term
-   54 term: . term '*' factor mult
-   55     | . term '/' factor div
-   56     | . factor
-   57 factor: . '(' expression ')'
-   58       | . var
-   59       | . call
-   60       | . save_const NUM
-   61 call: . "output" '(' expression ')' output
-   62     | . push_id ID '(' call_args_start args ')' call_fun
-   65 arg_list: arg_list ',' new_call_arg . expression
-   67 push_id: .  [ID]
-   68 save_const: .  [NUM]
+   65 arg_list: arg_list ',' expression . new_call_arg
+  101 new_call_arg: .
 
-    '('       shift, and go to state 55
-    "output"  shift, and go to state 59
+    $default  reduce using rule 101 (new_call_arg)
 
-    NUM       reduce using rule 68 (save_const)
-    $default  reduce using rule 67 (push_id)
-
-    expression           go to state 159
-    var                  go to state 64
-    simple_expression    go to state 65
-    additive_expression  go to state 66
-    term                 go to state 67
-    factor               go to state 68
-    call                 go to state 69
-    push_id              go to state 70
-    save_const           go to state 71
+    new_call_arg  go to state 159
 
 
 state 156
@@ -2465,7 +2473,7 @@ state 158
 
 state 159
 
-   65 arg_list: arg_list ',' new_call_arg expression .
+   65 arg_list: arg_list ',' expression new_call_arg .
 
     $default  reduce using rule 65 (arg_list)
 
