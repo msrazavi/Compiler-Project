@@ -19,6 +19,7 @@ class Element:
         self.size = size
         self.address = address
         self.arguments = []
+        self.return_addr_addr = -1
 
     def __str__(self):
         return f"[{self.address}]\t -> {self.name}, " \
@@ -106,6 +107,12 @@ class SymbolTable:
         for i, e in enumerate(self.elements):
             if e.address == address:
                 return e.name
+        return None
+
+    def get_return_addr_addr(self, address: int) -> Optional[str]:
+        for i, e in enumerate(self.elements):
+            if e.address == address:
+                return e.return_addr_addr
         return None
 
     def __str__(self):

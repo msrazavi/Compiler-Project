@@ -210,8 +210,9 @@ class CodeGenerator:
 
     def declare_address(self, lookahead: str = None):
         self.symbol_table.declare_address(self.pc)
+        self.symbol_table.elements[-1].return_addr_addr = self.get_temp_addr()
         if self.symbol_table.elements[-1].name == 'main':
-            self.add_code(('ASSIGN', '#2000', '2000'), index=0)
+            self.add_code(('ASSIGN', '#2000', self.symbol_table.elements[-1].return_addr_addr), index=0)
             self.add_code(('JP', self.pc), index=1)
 
     def if_block(self, lookahead: str = None):
@@ -295,8 +296,9 @@ class CodeGenerator:
             if func_return == 'int':
                 self.semantic_stack.push('#0')
         else:
-            ra_reg = '2000'
-            self.add_code(('ASSIGN', f'#{self.pc + self.call_args_count + 2}', ra_reg), index=self.pc)
+            self.add_code(
+                ('ASSIGN', f'#{self.pc + self.call_args_count + 2}', self.symbol_table.get_return_addr_addr(func_addr)),
+                index=self.pc)
             for i in range(self.call_args_count)[::-1]:
                 self.add_code(('ASSIGN', self.semantic_stack.pop(), func_args[i].address), index=self.pc + i + 1)
             self.add_code(('JP', func_addr), index=self.pc + self.call_args_count + 1)
@@ -325,8 +327,9 @@ class CodeGenerator:
         while len(self.return_stack.elements) != 0:
             ret_pc = self.return_stack.pop()
             self.add_code(('JP', self.pc), index=ret_pc)
-        if self.symbol_table.get_name(int(self.scope_stack.top().split('#')[-1].split()[0])) != 'main':
-            self.add_code(('JP', '@2000'), index=self.pc)
+        func_addr = int(self.scope_stack.top().split('#')[-1].split()[0])
+        if self.symbol_table.get_name(func_addr) != 'main':
+            self.add_code(('JP', f'@{self.symbol_table.get_return_addr_addr(func_addr)}'), index=self.pc)
             self.pc += 1
 
     def add_code(self, code, index):

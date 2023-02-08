@@ -38,7 +38,7 @@ class SemanticCodegenTests(unittest.TestCase):
 
     def test_all(self):
         # remaining tests: o3-function
-        for folder_name in ['o1-function']:
+        for folder_name in ['o3-function']:
             with self.subTest(f"Testcase[{folder_name}]"):
                 print(f"running Testcase[{folder_name}]")
                 self.setUp()
