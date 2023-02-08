@@ -1,19 +1,47 @@
-/*==== Sample S3 ====*/
-int foo(int x){
-	int a;
-	void j;
-	a = 10;
-	output(x);
-	if(a < x){return(1);
-	}
-	else {return(2);
-	} endif
-}
-void main ( void )
-{
-	int a[10];
-	a[3] = foo(2,3);	
-	a[1]= 2 + 3 * foo(a);
-	output (a[1]);
-}
+/* sample 13 */
 
+int main(void)
+{
+   int a;
+   int b;
+   int c;
+   int i;
+   int t;
+   int sum;
+   int num;
+   i = 3;
+   a = 0;
+   b = 1;
+   num = 12;
+   if(num == 1){
+   output(a);
+    }endif
+
+   if( 2 < num){
+   output(a);
+   output(b);
+   }endif
+
+   while(i < num)
+   {
+      c = a + b;
+      output(c);
+      a = b;
+      b = c;
+      i = i + 1;
+   }
+
+   i = 1;
+    while(i < 10)
+    {
+        t = i;
+        sum = t * t * t;
+
+
+        if(20 < sum){
+        output(1);
+        }endif
+        i = i + 1;
+    }
+    }
+}
